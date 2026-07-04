@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   Search,
   Heart,
@@ -52,6 +53,15 @@ const MOBILE_BOTTOM_LINKS = [
 export const Navbar = memo(function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [activeTabIndex, setActiveTabIndex] = useState(() => {
+    const path = location.pathname;
+    if (path === PAGES.HOME) return 0;
+    if (path === PAGES.CATEGORIES) return 1;
+    if (path === PAGES.WISHLIST) return 2;
+    if (path.startsWith(PAGES.PROFILE)) return 3;
+    if (path === PAGES.CART) return 4;
+    return 0;
+  });
   const { itemsCount } = useCart();
   const { itemsCount: wishlistCount } = useWishlist();
   const { user, isAuthenticated, logout } = useAuth();
@@ -66,7 +76,8 @@ export const Navbar = memo(function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [hideBottomNav, setHideBottomNav] = useState(false);
+  const [hideHeader, setHideHeader] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -81,12 +92,14 @@ export const Navbar = memo(function Navbar() {
     if (!el) return;
     const onScroll = () => {
       const currentY = window.scrollY;
+      const isScrollingDown = currentY > lastScrollY.current;
       el.classList.toggle('shadow-lg', currentY > 20);
       if (currentY > 60) {
-        setHideBottomNav(currentY > lastScrollY.current);
+        setHideHeader(isScrollingDown);
       } else {
-        setHideBottomNav(false);
+        setHideHeader(false);
       }
+      setScrolled(currentY > 10);
       lastScrollY.current = currentY;
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -131,7 +144,8 @@ export const Navbar = memo(function Navbar() {
     navigate(PAGES.HOME);
   };
 
-  const handleTabClick = useCallback((tab: { href: string }) => {
+  const handleTabClick = useCallback((tab: { href: string }, idx: number) => {
+    setActiveTabIndex(idx);
     navigate(tab.href);
   }, [navigate]);
 
@@ -142,12 +156,25 @@ export const Navbar = memo(function Navbar() {
         ref={headerRef}
         dir="rtl"
         className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
+          'fixed top-0 left-0 right-0 z-40 transition-transform duration-500 ease-in-out',
+          hideHeader && '-translate-y-full',
           isDark
             ? 'ios-dark-nav-bar'
             : 'ios-nav-bar',
-          !isDark && 'bg-white/90 backdrop-blur-xl border-b border-gray-100',
+          !isDark && cn(
+            'border-b transition-all duration-300',
+            scrolled
+              ? 'bg-white/95 backdrop-blur-2xl border-gray-200/80'
+              : 'bg-white/80 backdrop-blur-md border-transparent'
+          ),
+          isDark && cn(
+            'transition-all duration-300',
+            scrolled
+              ? 'bg-dark-bg/95 backdrop-blur-2xl border-white/10'
+              : 'bg-dark-bg/80 backdrop-blur-md border-transparent'
+          ),
         )}
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20 gap-2 sm:gap-3 lg:gap-4">
@@ -427,39 +454,22 @@ export const Navbar = memo(function Navbar() {
       {/* Spacer for fixed header */}
       <div className="h-16 lg:h-20" />
 
-      {/* Floating Search Button - Mobile */}
-      <button
-        onClick={() => setMobileSearchOpen(true)}
-        className={cn(
-          'md:hidden fixed z-40 bottom-24 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-blue-500 text-white shadow-lg shadow-secondary/30 flex items-center justify-center transition-all duration-300 active:scale-90',
-          hideBottomNav && 'bottom-4'
-        )}
-        aria-label="بحث"
-      >
-        <Search className="w-5 h-5" />
-      </button>
-
       {/* Premium Bottom Navigation for Mobile */}
       <nav className={cn(
-        'md:hidden fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300',
-        hideBottomNav && 'translate-y-full',
+        'md:hidden fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out',
+        hideHeader && 'translate-y-full',
         'ios-safe-area-inset'
       )}>
         <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20 dark:border-dark-border/50">
           <div className="flex items-center justify-around h-16 px-1">
-            {MOBILE_BOTTOM_LINKS.map((tab) => {
+            {MOBILE_BOTTOM_LINKS.map((tab, idx) => {
               const Icon = tab.icon;
-              const isActive =
-                (tab.href === PAGES.HOME && location.pathname === PAGES.HOME) ||
-                (tab.href === PAGES.CATEGORIES && location.pathname === PAGES.CATEGORIES) ||
-                (tab.href === PAGES.WISHLIST && location.pathname === PAGES.WISHLIST) ||
-                (tab.href === PAGES.CART && location.pathname === PAGES.CART) ||
-                (tab.href === PAGES.PROFILE && location.pathname.startsWith(PAGES.PROFILE));
+              const isActive = activeTabIndex === idx;
               const badgeCount = tab.badge === 'cart' ? itemsCount : tab.badge === 'wishlist' ? wishlistCount : 0;
               return (
                 <button
                   key={tab.label}
-                  onClick={() => handleTabClick(tab)}
+                  onClick={() => handleTabClick(tab, idx)}
                   className={cn(
                     'flex flex-col items-center justify-center w-full h-full relative py-1',
                     'transition-all duration-200'
@@ -487,6 +497,13 @@ export const Navbar = memo(function Navbar() {
                   )}>
                     {tab.label}
                   </span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="bottomTab"
+                      className="absolute -bottom-0.5 w-6 h-0.5 rounded-full bg-secondary"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
                 </button>
               );
             })}
