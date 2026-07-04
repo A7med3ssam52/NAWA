@@ -177,119 +177,119 @@ export const Navbar = memo(function Navbar() {
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20 gap-2 sm:gap-3 lg:gap-4">
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="lg:hidden relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all duration-200 active:scale-90"
-              aria-label="القائمة"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-
-            {/* Logo */}
-            <Link
-              to={PAGES.HOME}
-              className="shrink-0"
-              aria-label="الصفحة الرئيسية"
-            >
-              <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">
-                {SITE_NAME}
-              </span>
-            </Link>
-
-            {/* Mobile Search Button */}
-            <button
-              onClick={() => setMobileSearchOpen(true)}
-              className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
-              aria-label="بحث"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {/* Categories Dropdown */}
-              <div ref={categoriesRef} className="relative">
-                <button
-                  onClick={() => setShowCategories(!showCategories)}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
-                  aria-expanded={showCategories}
-                  aria-haspopup="true"
-                >
-                  الأقسام
-                  <ChevronDown
-                    className={cn(
-                      'w-4 h-4 transition-transform duration-200',
-                      showCategories && 'rotate-180'
-                    )}
-                  />
-                </button>
-                {showCategories && (
-                  <div className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden animate-fade-in">
-                    <div className="p-2">
-                      {categories.map((cat) => (
-                        <Link
-                          key={cat.id}
-                          to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
-                          onClick={() => setShowCategories(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                        >
-                          <span className="text-sm font-cairo text-gray-900 dark:text-dark-text">
-                            {cat.name}
-                          </span>
-                          <span className="mr-auto text-xs text-gray-400 dark:text-dark-muted">
-                            {cat.productsCount}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </nav>
-
-            {/* Search Bar - Desktop */}
-            <div ref={searchRef} className="hidden lg:flex flex-1 max-w-md relative">
-              <form onSubmit={handleSearchSubmit} className="w-full">
-                <div className="relative">
-                  <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-dark-muted pointer-events-none" />
-                  <input
-                    ref={searchInputRef}
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setShowSearchSuggestions(true);
-                    }}
-                    onFocus={() => setShowSearchSuggestions(true)}
-                    placeholder="ابحث عن منتجات..."
-                    className="w-full py-2.5 pr-10 pl-4 text-sm font-cairo bg-gray-100 dark:bg-dark-border/50 border border-transparent focus:border-secondary/30 rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
-                    dir="rtl"
-                  />
-                </div>
-              </form>
-                {showSearchSuggestions && (searchQuery || debouncedSearch) && (
-                  <SearchSuggestions
-                    query={debouncedSearch}
-                    onSelect={handleSuggestionSelect}
-                    onClose={() => setShowSearchSuggestions(false)}
-                  />
-                )}
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            {/* Left group: Menu + Logo */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all duration-200 active:scale-90"
+                aria-label="القائمة"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              <Link
+                to={PAGES.HOME}
+                className="shrink-0"
+                aria-label="الصفحة الرئيسية"
+              >
+                <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">
+                  {SITE_NAME}
+                </span>
+              </Link>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-0 sm:gap-1 lg:gap-2">
+            {/* Right group: Search + Actions */}
+            <div className="flex items-center gap-1 lg:gap-2">
+              {/* Mobile Search Button */}
+              <button
+                onClick={() => setMobileSearchOpen(true)}
+                className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
+                aria-label="بحث"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden lg:flex items-center gap-1">
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div ref={categoriesRef} className="relative">
+                  <button
+                    onClick={() => setShowCategories(!showCategories)}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
+                    aria-expanded={showCategories}
+                    aria-haspopup="true"
+                  >
+                    الأقسام
+                    <ChevronDown
+                      className={cn(
+                        'w-4 h-4 transition-transform duration-200',
+                        showCategories && 'rotate-180'
+                      )}
+                    />
+                  </button>
+                  {showCategories && (
+                    <div className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden animate-fade-in">
+                      <div className="p-2">
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat.id}
+                            to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                            onClick={() => setShowCategories(false)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                          >
+                            <span className="text-sm font-cairo text-gray-900 dark:text-dark-text">
+                              {cat.name}
+                            </span>
+                            <span className="mr-auto text-xs text-gray-400 dark:text-dark-muted">
+                              {cat.productsCount}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </nav>
+
+              {/* Search Bar - Desktop */}
+              <div ref={searchRef} className="hidden lg:flex flex-1 max-w-md relative">
+                <form onSubmit={handleSearchSubmit} className="w-full">
+                  <div className="relative">
+                    <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-dark-muted pointer-events-none" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setShowSearchSuggestions(true);
+                      }}
+                      onFocus={() => setShowSearchSuggestions(true)}
+                      placeholder="ابحث عن منتجات..."
+                      className="w-full py-2.5 pr-10 pl-4 text-sm font-cairo bg-gray-100 dark:bg-dark-border/50 border border-transparent focus:border-secondary/30 rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
+                      dir="rtl"
+                    />
+                  </div>
+                </form>
+                  {showSearchSuggestions && (searchQuery || debouncedSearch) && (
+                    <SearchSuggestions
+                      query={debouncedSearch}
+                      onSelect={handleSuggestionSelect}
+                      onClose={() => setShowSearchSuggestions(false)}
+                    />
+                  )}
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-0 sm:gap-1 lg:gap-2">
               {/* Theme Toggle - Desktop only */}
               <button
                 onClick={toggleTheme}
@@ -443,6 +443,7 @@ export const Navbar = memo(function Navbar() {
                     </Link>
                   </>
                 )}
+              </div>
               </div>
             </div>
           </div>
