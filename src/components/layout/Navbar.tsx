@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   Heart,
@@ -150,15 +149,15 @@ export const Navbar = memo(function Navbar() {
           !isDark && 'bg-white/90 backdrop-blur-xl border-b border-gray-100',
         )}
       >
-        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 lg:h-20 gap-0 sm:gap-2 lg:gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 lg:h-20 gap-2 sm:gap-3 lg:gap-4">
             {/* Mobile menu button */}
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden relative p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all duration-200 active:scale-90"
+              className="lg:hidden relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all duration-200 active:scale-90"
               aria-label="القائمة"
             >
-              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Menu className="w-6 h-6" />
             </button>
 
             {/* Logo */}
@@ -167,7 +166,7 @@ export const Navbar = memo(function Navbar() {
               className="shrink-0"
               aria-label="الصفحة الرئيسية"
             >
-              <span className="text-base sm:text-xl lg:text-3xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo leading-tight">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">
                 {SITE_NAME}
               </span>
             </Link>
@@ -175,10 +174,10 @@ export const Navbar = memo(function Navbar() {
             {/* Mobile Search Button */}
             <button
               onClick={() => setMobileSearchOpen(true)}
-              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
+              className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
               aria-label="بحث"
             >
-              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Search className="w-5 h-5" />
             </button>
 
             {/* Desktop Navigation */}
@@ -209,35 +208,27 @@ export const Navbar = memo(function Navbar() {
                     )}
                   />
                 </button>
-                <AnimatePresence>
-                  {showCategories && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden"
-                    >
-                      <div className="p-2">
-                        {categories.map((cat) => (
-                          <Link
-                            key={cat.id}
-                            to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
-                            onClick={() => setShowCategories(false)}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                          >
-                            <span className="text-sm font-cairo text-gray-900 dark:text-dark-text">
-                              {cat.name}
-                            </span>
-                            <span className="mr-auto text-xs text-gray-400 dark:text-dark-muted">
-                              {cat.productsCount}
-                            </span>
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {showCategories && (
+                  <div className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden animate-fade-in">
+                    <div className="p-2">
+                      {categories.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                          onClick={() => setShowCategories(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                        >
+                          <span className="text-sm font-cairo text-gray-900 dark:text-dark-text">
+                            {cat.name}
+                          </span>
+                          <span className="mr-auto text-xs text-gray-400 dark:text-dark-muted">
+                            {cat.productsCount}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </nav>
 
@@ -261,7 +252,6 @@ export const Navbar = memo(function Navbar() {
                   />
                 </div>
               </form>
-              <AnimatePresence>
                 {showSearchSuggestions && (searchQuery || debouncedSearch) && (
                   <SearchSuggestions
                     query={debouncedSearch}
@@ -269,7 +259,6 @@ export const Navbar = memo(function Navbar() {
                     onClose={() => setShowSearchSuggestions(false)}
                   />
                 )}
-              </AnimatePresence>
             </div>
 
             {/* Actions */}
@@ -313,10 +302,10 @@ export const Navbar = memo(function Navbar() {
               {/* Cart */}
               <Link
                 to={PAGES.CART}
-                className="relative p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                className="relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
                 aria-label="سلة التسوق"
               >
-                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ShoppingCart className="w-5 h-5" />
                 {itemsCount > 0 && (
                   <Badge
                     variant="secondary"
@@ -343,7 +332,7 @@ export const Navbar = memo(function Navbar() {
                       aria-expanded={showUserMenu}
                       aria-haspopup="true"
                     >
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs sm:text-sm font-bold font-cairo overflow-hidden">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -360,73 +349,65 @@ export const Navbar = memo(function Navbar() {
                         )}
                       />
                     </button>
-                    <AnimatePresence>
-                      {showUserMenu && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 8 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden"
-                        >
-                          <div className="p-2">
-                            <div className="px-3 py-2 border-b border-gray-100 dark:border-dark-border mb-1">
-                              <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{user.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{user.email}</p>
-                            </div>
-                            <Link
-                              to={PAGES.PROFILE}
-                              onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                            >
-                              <User className="w-4 h-4" />
-                              الملف الشخصي
-                            </Link>
-                            <Link
-                              to={PAGES.MY_ORDERS}
-                              onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                            >
-                              <Package className="w-4 h-4" />
-                              طلباتي
-                            </Link>
-                            <Link
-                              to={PAGES.SETTINGS}
-                              onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                            >
-                              <Settings className="w-4 h-4" />
-                              الإعدادات
-                            </Link>
-                            <Link
-                              to={PAGES.FAQ}
-                              onClick={() => setShowUserMenu(false)}
-                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
-                            >
-                              <HelpCircle className="w-4 h-4" />
-                              المساعدة
-                            </Link>
-                            <hr className="my-1 border-gray-100 dark:border-dark-border" />
-                            <button
-                              onClick={handleLogout}
-                              className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-danger hover:bg-danger/5 transition-colors"
-                            >
-                              <LogOut className="w-4 h-4" />
-                              تسجيل الخروج
-                            </button>
+                    {showUserMenu && (
+                      <div className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden animate-fade-in">
+                        <div className="p-2">
+                          <div className="px-3 py-2 border-b border-gray-100 dark:border-dark-border mb-1">
+                            <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{user.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{user.email}</p>
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                          <Link
+                            to={PAGES.PROFILE}
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                          >
+                            <User className="w-4 h-4" />
+                            الملف الشخصي
+                          </Link>
+                          <Link
+                            to={PAGES.MY_ORDERS}
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                          >
+                            <Package className="w-4 h-4" />
+                            طلباتي
+                          </Link>
+                          <Link
+                            to={PAGES.SETTINGS}
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                          >
+                            <Settings className="w-4 h-4" />
+                            الإعدادات
+                          </Link>
+                          <Link
+                            to={PAGES.FAQ}
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                          >
+                            <HelpCircle className="w-4 h-4" />
+                            المساعدة
+                          </Link>
+                          <hr className="my-1 border-gray-100 dark:border-dark-border" />
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-danger hover:bg-danger/5 transition-colors"
+                          >
+                            <LogOut className="w-4 h-4" />
+                            تسجيل الخروج
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
                     <Link
                       to="/login"
-                      className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                      className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
                       aria-label="تسجيل الدخول"
                     >
-                      <UserCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <UserCircle className="w-5 h-5" />
                     </Link>
                     <Link to="/login" className="hidden lg:block">
                       <Button variant="primary" size="sm" rounded="full" className="shadow-none hover:shadow-none">
@@ -444,18 +425,18 @@ export const Navbar = memo(function Navbar() {
       </header>
 
       {/* Spacer for fixed header */}
-      <div className="h-14 lg:h-20" />
+      <div className="h-16 lg:h-20" />
 
       {/* Floating Search Button - Mobile */}
       <button
         onClick={() => setMobileSearchOpen(true)}
         className={cn(
-          'md:hidden fixed z-40 bottom-20 right-3 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-secondary to-blue-500 text-white shadow-lg shadow-secondary/30 flex items-center justify-center transition-all duration-300 active:scale-90',
+          'md:hidden fixed z-40 bottom-24 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-blue-500 text-white shadow-lg shadow-secondary/30 flex items-center justify-center transition-all duration-300 active:scale-90',
           hideBottomNav && 'bottom-4'
         )}
         aria-label="بحث"
       >
-        <Search className="w-4 h-4 sm:w-5 sm:h-5" />
+        <Search className="w-5 h-5" />
       </button>
 
       {/* Premium Bottom Navigation for Mobile */}
@@ -464,8 +445,8 @@ export const Navbar = memo(function Navbar() {
         hideBottomNav && 'translate-y-full',
         'ios-safe-area-inset'
       )}>
-        <div className="relative mx-2 sm:mx-3 mb-1.5 sm:mb-2 rounded-2xl bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20 dark:border-dark-border/50">
-          <div className="flex items-center justify-around h-14 sm:h-16 px-0.5 sm:px-1">
+        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20 dark:border-dark-border/50">
+          <div className="flex items-center justify-around h-16 px-1">
             {MOBILE_BOTTOM_LINKS.map((tab) => {
               const Icon = tab.icon;
               const isActive =
@@ -485,11 +466,11 @@ export const Navbar = memo(function Navbar() {
                   )}
                 >
                   <div className={cn(
-                    'relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-all duration-200',
+                    'relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200',
                     isActive && 'bg-secondary/10 dark:bg-secondary/20'
                   )}>
                     <Icon className={cn(
-                      'w-[18px] h-[18px] sm:w-5 sm:h-5 transition-all duration-200',
+                      'w-5 h-5 transition-all duration-200',
                       isActive ? 'text-secondary scale-110' : 'text-gray-400 dark:text-dark-muted'
                     )} />
                     {badgeCount > 0 && (
@@ -499,7 +480,7 @@ export const Navbar = memo(function Navbar() {
                     )}
                   </div>
                   <span className={cn(
-                    'text-[9px] sm:text-[10px] font-cairo mt-0.5 transition-all duration-200',
+                    'text-[10px] font-cairo mt-0.5 transition-all duration-200',
                     isActive
                       ? 'text-secondary font-bold'
                       : 'text-gray-400 dark:text-dark-muted'
@@ -520,15 +501,13 @@ export const Navbar = memo(function Navbar() {
       />
 
       {/* Mobile Search Overlay */}
-      <AnimatePresence>
-        {mobileSearchOpen && (
-          <MobileSearchOverlay
-            isOpen={mobileSearchOpen}
-            onClose={() => setMobileSearchOpen(false)}
-            initialQuery={searchQuery}
-          />
-        )}
-      </AnimatePresence>
+      {mobileSearchOpen && (
+        <MobileSearchOverlay
+          isOpen={mobileSearchOpen}
+          onClose={() => setMobileSearchOpen(false)}
+          initialQuery={searchQuery}
+        />
+      )}
     </>
   );
 });

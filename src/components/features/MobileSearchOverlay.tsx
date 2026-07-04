@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { Search, ArrowRight, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '@/hooks';
@@ -53,12 +52,8 @@ export function MobileSearchOverlay({ isOpen, onClose, initialQuery = '' }: Mobi
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-0 z-[100] flex flex-col bg-white/95 dark:bg-dark-bg/98 backdrop-blur-2xl"
+    <div
+      className="fixed inset-0 z-[100] flex flex-col bg-white/95 dark:bg-dark-bg/98 backdrop-blur-2xl animate-fade-in"
     >
       {/* Header with search input */}
       <div className="shrink-0 px-3 pt-12 pb-2">
@@ -105,21 +100,16 @@ export function MobileSearchOverlay({ isOpen, onClose, initialQuery = '' }: Mobi
       {/* Suggestions */}
       <div className="flex-1 overflow-y-auto px-3 pb-6">
         {showSuggestions && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.15, delay: 0.1 }}
-            className="pt-3"
-          >
+          <div className="pt-3 animate-fade-in-up">
             <SearchSuggestions
               query={debouncedQuery}
               onSelect={handleSelect}
               onClose={onClose}
               standalone
             />
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
