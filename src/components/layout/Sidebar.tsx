@@ -15,9 +15,13 @@ import {
   Phone,
   MapPin,
   ArrowLeft,
+  Sun,
+  Moon,
+  Bell,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/utils';
-import { useAuth } from '@/contexts';
+import { useAuth, useTheme } from '@/contexts';
 import { categories } from '@/data';
 import { PAGES } from '@/constants';
 
@@ -63,6 +67,7 @@ const itemVariants = {
 
 export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { user, isAuthenticated } = useAuth();
+  const { isDark, toggle: toggleTheme } = useTheme();
 
   useEffect(() => {
     if (isOpen) {
@@ -235,6 +240,49 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     </Link>
                   );
                 })}
+              </motion.div>
+
+              {/* Divider */}
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100 dark:border-white/5" />
+                </div>
+              </div>
+
+              {/* More */}
+              <motion.div className="space-y-0.5 mb-6" variants={itemVariants}>
+                <div className="px-3.5 mb-2">
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 dark:text-dark-muted uppercase tracking-widest">المزيد</span>
+                </div>
+                <Link
+                  to={PAGES.NOTIFICATIONS}
+                  onClick={onClose}
+                  className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:bg-secondary/5 dark:hover:bg-white/5 hover:text-secondary dark:hover:text-secondary transition-all duration-200 group"
+                >
+                  <span className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
+                    <Bell className="w-4 h-4" />
+                  </span>
+                  الإشعارات
+                </Link>
+                <Link
+                  to={PAGES.COMPARE}
+                  onClick={onClose}
+                  className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:bg-secondary/5 dark:hover:bg-white/5 hover:text-secondary dark:hover:text-secondary transition-all duration-200 group"
+                >
+                  <span className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
+                    <BarChart3 className="w-4 h-4" />
+                  </span>
+                  المقارنة
+                </Link>
+                <button
+                  onClick={() => { toggleTheme(); onClose(); }}
+                  className="flex items-center gap-3.5 w-full px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:bg-secondary/5 dark:hover:bg-white/5 hover:text-secondary dark:hover:text-secondary transition-all duration-200 group"
+                >
+                  <span className="p-1.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
+                    {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                  </span>
+                  {isDark ? 'الوضع النهاري' : 'الوضع الليلي'}
+                </button>
               </motion.div>
 
               {/* Divider */}

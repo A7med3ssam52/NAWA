@@ -20,6 +20,7 @@ import {
   ShoppingBag,
   UserCircle,
   BarChart3,
+  Grid3X3,
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useCart } from '@/contexts';
@@ -41,6 +42,14 @@ const NAV_LINKS = [
   { label: 'الحساب', href: PAGES.PROFILE, icon: UserCircle },
 ];
 
+const MOBILE_BOTTOM_LINKS = [
+  { label: 'الرئيسية', href: PAGES.HOME, icon: Home },
+  { label: 'الأقسام', href: PAGES.CATEGORIES, icon: Grid3X3 },
+  { label: 'المفضلة', href: PAGES.WISHLIST, icon: Heart, badge: 'wishlist' as const },
+  { label: 'الحساب', href: PAGES.PROFILE, icon: UserCircle },
+  { label: 'سلة التسوق', href: PAGES.CART, icon: ShoppingBag, badge: 'cart' as const },
+];
+
 export const Navbar = memo(function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -58,6 +67,7 @@ export const Navbar = memo(function Navbar() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [hideBottomNav, setHideBottomNav] = useState(false);
 
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -65,11 +75,20 @@ export const Navbar = memo(function Navbar() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
 
+  const lastScrollY = useRef(0);
+
   useEffect(() => {
     const el = headerRef.current;
     if (!el) return;
     const onScroll = () => {
-      el.classList.toggle('shadow-lg', window.scrollY > 20);
+      const currentY = window.scrollY;
+      el.classList.toggle('shadow-lg', currentY > 20);
+      if (currentY > 60) {
+        setHideBottomNav(currentY > lastScrollY.current);
+      } else {
+        setHideBottomNav(false);
+      }
+      lastScrollY.current = currentY;
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -153,16 +172,14 @@ export const Navbar = memo(function Navbar() {
               </span>
             </Link>
 
-            {/* Mobile Search Trigger */}
-            <div className="flex-1 max-w-md mx-2 lg:hidden">
-              <button
-                onClick={() => setMobileSearchOpen(true)}
-                className="flex items-center gap-2 w-full h-9 px-3 bg-gray-100 dark:bg-dark-border/50 rounded-xl text-gray-400 dark:text-dark-muted hover:bg-gray-200 dark:hover:bg-dark-border transition-all active:scale-[0.98]"
-              >
-                <Search className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-cairo">ابحث...</span>
-              </button>
-            </div>
+            {/* Mobile Search Button */}
+            <button
+              onClick={() => setMobileSearchOpen(true)}
+              className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
+              aria-label="بحث"
+            >
+              <Search className="w-5 h-5" />
+            </button>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
@@ -257,10 +274,10 @@ export const Navbar = memo(function Navbar() {
 
             {/* Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              {/* Theme Toggle */}
+              {/* Theme Toggle - Desktop only */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                className="hidden lg:flex p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
                 aria-label={isDark ? 'الوضع النهاري' : 'الوضع الليلي'}
               >
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -284,10 +301,10 @@ export const Navbar = memo(function Navbar() {
                 )}
               </Link>
 
-              {/* Compare */}
+              {/* Compare - Desktop only */}
               <Link
                 to={PAGES.COMPARE}
-                className="relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                className="hidden lg:flex relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
                 aria-label="مقارنة"
               >
                 <BarChart3 className="w-5 h-5" />
@@ -311,8 +328,10 @@ export const Navbar = memo(function Navbar() {
                 )}
               </Link>
 
-              {/* Notifications */}
-              <NotificationPopover />
+              {/* Notifications - Desktop only */}
+              <div className="hidden lg:block">
+                <NotificationPopover />
+              </div>
 
               {/* User Menu */}
               <div ref={userMenuRef} className="relative">
@@ -427,19 +446,35 @@ export const Navbar = memo(function Navbar() {
       {/* Spacer for fixed header */}
       <div className="h-16 lg:h-20" />
 
+      {/* Floating Search Button - Mobile */}
+      <button
+        onClick={() => setMobileSearchOpen(true)}
+        className={cn(
+          'md:hidden fixed z-40 bottom-20 right-4 w-12 h-12 rounded-full bg-gradient-to-br from-secondary to-blue-500 text-white shadow-lg shadow-secondary/30 flex items-center justify-center transition-all duration-300 active:scale-90',
+          hideBottomNav && 'bottom-4'
+        )}
+        aria-label="بحث"
+      >
+        <Search className="w-5 h-5" />
+      </button>
+
       {/* Premium Bottom Navigation for Mobile */}
       <nav className={cn(
-        'md:hidden fixed bottom-0 left-0 right-0 z-50',
+        'md:hidden fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300',
+        hideBottomNav && 'translate-y-full',
         'ios-safe-area-inset'
       )}>
         <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20 dark:border-dark-border/50">
           <div className="flex items-center justify-around h-16 px-1">
-            {NAV_LINKS.map((tab) => {
+            {MOBILE_BOTTOM_LINKS.map((tab) => {
               const Icon = tab.icon;
-              const isActive = (tab.label === 'الرئيسية' && location.pathname === PAGES.HOME) ||
-                             (tab.label === 'المنتجات' && location.pathname === PAGES.PRODUCTS) ||
-                             (tab.label === 'سلة التسوق' && location.pathname === PAGES.CART) ||
-                             (tab.label === 'الحساب' && location.pathname.startsWith(PAGES.PROFILE));
+              const isActive =
+                (tab.href === PAGES.HOME && location.pathname === PAGES.HOME) ||
+                (tab.href === PAGES.CATEGORIES && location.pathname === PAGES.CATEGORIES) ||
+                (tab.href === PAGES.WISHLIST && location.pathname === PAGES.WISHLIST) ||
+                (tab.href === PAGES.CART && location.pathname === PAGES.CART) ||
+                (tab.href === PAGES.PROFILE && location.pathname.startsWith(PAGES.PROFILE));
+              const badgeCount = tab.badge === 'cart' ? itemsCount : tab.badge === 'wishlist' ? wishlistCount : 0;
               return (
                 <button
                   key={tab.label}
@@ -457,17 +492,11 @@ export const Navbar = memo(function Navbar() {
                       'w-5 h-5 transition-all duration-200',
                       isActive ? 'text-secondary scale-110' : 'text-gray-400 dark:text-dark-muted'
                     )} />
-                    {tab.label === 'سلة التسوق' && itemsCount > 0 && (
+                    {badgeCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-danger text-[9px] font-bold text-white shadow-lg shadow-danger/30">
-                        {itemsCount > 99 ? '99+' : itemsCount}
+                        {badgeCount > 99 ? '99+' : badgeCount}
                       </span>
                     )}
-                    {tab.label === 'المفضلة' && wishlistCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-danger text-[9px] font-bold text-white shadow-lg shadow-danger/30">
-                        {wishlistCount > 99 ? '99+' : wishlistCount}
-                      </span>
-                    )}
-
                   </div>
                   <span className={cn(
                     'text-[10px] font-cairo mt-0.5 transition-all duration-200',
