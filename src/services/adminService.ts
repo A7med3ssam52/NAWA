@@ -9,7 +9,7 @@ import {
   notifications as initialNotifications,
   addresses as initialAddresses,
 } from '@/data';
-import type { Product, Category, Brand, Coupon, Order, Review, Notification } from '@/types';
+import type { Product, Category, Brand, Coupon, Order, Review, Notification, AnnouncementConfig } from '@/types';
 
 let products: Product[] = JSON.parse(JSON.stringify(initialProducts));
 let categories: Category[] = JSON.parse(JSON.stringify(initialCategories));
@@ -341,5 +341,21 @@ export const adminService = {
       pendingOrders,
       lowStockProducts: lowStock,
     };
+  },
+
+  // ─── Announcement Bar ──────────────────────────────
+  _announcement: {
+    text: 'توصيل مجاني للطلبات فوق 500 ج.م',
+    enabled: true,
+    dismissible: true,
+  } as AnnouncementConfig,
+
+  getAnnouncement(): AnnouncementConfig {
+    return { ...this._announcement };
+  },
+
+  updateAnnouncement(config: Partial<AnnouncementConfig>): AnnouncementConfig {
+    this._announcement = { ...this._announcement, ...config };
+    return { ...this._announcement };
   },
 };

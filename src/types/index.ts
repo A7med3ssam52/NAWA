@@ -174,6 +174,12 @@ export interface FilterState {
   pageSize: number;
 }
 
+export interface AnnouncementConfig {
+  text: string;
+  enabled: boolean;
+  dismissible: boolean;
+}
+
 export interface SearchSuggestion {
   text: string;
   type: 'product' | 'category' | 'brand';

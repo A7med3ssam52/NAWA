@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Store, Truck, Phone, Palette, Save } from 'lucide-react';
+import { Store, Truck, Megaphone, Phone, Palette, Save } from 'lucide-react';
 import { cn } from '@/utils';
 import { Card, Button, Input, Textarea } from '@/components/ui';
 import { SITE_NAME, SITE_DESCRIPTION, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from '@/constants';
+import { adminService } from '@/services';
 import { toast } from '@/components/ui';
 
 export function AdminSettingsPage() {
@@ -14,6 +15,13 @@ export function AdminSettingsPage() {
     taxRate: (TAX_RATE * 100).toString(),
   });
   const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@zahi.store', address: 'القاهرة، مصر' });
+  const [announcement, setAnnouncement] = useState(() => adminService.getAnnouncement());
+
+  function handleSaveAnnouncement() {
+    adminService.updateAnnouncement(announcement);
+    window.dispatchEvent(new CustomEvent('announcement-update'));
+    toast.success('تم حفظ إعلان الشريط العلوي بنجاح');
+  }
 
   function handleSaveStore() {
     toast.success('تم حفظ معلومات المتجر بنجاح');
@@ -60,6 +68,64 @@ export function AdminSettingsPage() {
           <Input label="الشحن المجاني للطلبات فوق (ج.م)" type="number" value={shipping.freeThreshold} onChange={(e) => setShipping({ ...shipping, freeThreshold: e.target.value })} />
           <Input label="نسبة الضريبة (%)" type="number" value={shipping.taxRate} onChange={(e) => setShipping({ ...shipping, taxRate: e.target.value })} />
           <Button onClick={handleSaveShipping}><Save className="w-4 h-4" /> حفظ</Button>
+        </div>
+      </Card>
+
+      <Card padding="lg">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2.5 rounded-xl bg-secondary/10 text-secondary">
+            <Megaphone className="w-5 h-5" />
+          </div>
+          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">شريط الإعلانات</h2>
+        </div>
+        <div className="space-y-4 max-w-xl">
+          <Textarea
+            label="نص الإعلان"
+            placeholder="توصيل مجاني للطلبات فوق 500 ج.م"
+            value={announcement.text}
+            onChange={(e) => setAnnouncement({ ...announcement, text: e.target.value })}
+          />
+          <div className="flex items-center gap-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={announcement.enabled}
+                onClick={() => setAnnouncement({ ...announcement, enabled: !announcement.enabled })}
+                className={cn(
+                  'relative w-10 h-6 rounded-full transition-colors duration-200',
+                  announcement.enabled ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                )}
+              >
+                <span className={cn(
+                  'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200',
+                  announcement.enabled && 'translate-x-4'
+                )} />
+              </button>
+              <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted">تفعيل الإعلان</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={announcement.dismissible}
+                onClick={() => setAnnouncement({ ...announcement, dismissible: !announcement.dismissible })}
+                className={cn(
+                  'relative w-10 h-6 rounded-full transition-colors duration-200',
+                  announcement.dismissible ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                )}
+              >
+                <span className={cn(
+                  'absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200',
+                  announcement.dismissible && 'translate-x-4'
+                )} />
+              </button>
+              <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted">قابل للإغلاق</span>
+            </label>
+          </div>
+          <Button onClick={handleSaveAnnouncement}>
+            <Save className="w-4 h-4" /> حفظ الإعلان
+          </Button>
         </div>
       </Card>
 
