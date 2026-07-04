@@ -87,6 +87,7 @@ const AdminUsersPage = lazyAdmin('AdminUsersPage', 'AdminUsersPage');
 const AdminReviewsPage = lazyAdmin('AdminReviewsPage', 'AdminReviewsPage');
 const AdminNotificationsPage = lazyAdmin('AdminNotificationsPage', 'AdminNotificationsPage');
 const AdminSettingsPage = lazyAdmin('AdminSettingsPage', 'AdminSettingsPage');
+const AdminSpinPrizesPage = lazyAdmin('AdminSpinPrizesPage', 'AdminSpinPrizesPage');
 
 function PageLoading() {
   return (
@@ -150,6 +151,7 @@ const router = createBrowserRouter([
       { path: 'reviews', element: <SuspenseWrapper><AdminReviewsPage /></SuspenseWrapper> },
       { path: 'notifications', element: <SuspenseWrapper><AdminNotificationsPage /></SuspenseWrapper> },
       { path: 'settings', element: <SuspenseWrapper><AdminSettingsPage /></SuspenseWrapper> },
+      { path: 'spin-prizes', element: <SuspenseWrapper><AdminSpinPrizesPage /></SuspenseWrapper> },
     ],
   },
   {

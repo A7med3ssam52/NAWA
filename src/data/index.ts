@@ -8,6 +8,7 @@ import notifications from './notifications.json';
 import coupons from './coupons.json';
 import addresses from './addresses.json';
 import testimonials from './testimonials.json';
+import spinPrizes from './spin-prizes.json';
 
 export {
   products,
@@ -20,6 +21,7 @@ export {
   coupons,
   addresses,
   testimonials,
+  spinPrizes,
 };
 
 export const getProductById = (id: string) =>

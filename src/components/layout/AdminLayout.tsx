@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, ShoppingCart, Grid3X3, Tag, Users,
   Star, Bell, Settings, ChevronDown, Menu, X, Percent, LogOut,
-  Store, Home, ChevronLeft, ChevronRight,
+  Store, Home, ChevronLeft, ChevronRight, Gift,
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
@@ -26,6 +26,7 @@ const navItems: NavItem[] = [
   { label: 'المستخدمين', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
   { label: 'التقييمات', href: '/admin/reviews', icon: <Star className="w-5 h-5" /> },
   { label: 'الإشعارات', href: '/admin/notifications', icon: <Bell className="w-5 h-5" /> },
+  { label: 'عجلة الحظ', href: '/admin/spin-prizes', icon: <Gift className="w-5 h-5" /> },
   { label: 'الإعدادات', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
 ];
 

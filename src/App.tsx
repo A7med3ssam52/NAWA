@@ -4,6 +4,7 @@ import { CartProvider } from '@/contexts/CartContext';
 import { WishlistProvider } from '@/contexts/WishlistContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CompareProvider } from '@/contexts/CompareContext';
+import { SpinProvider } from '@/contexts/SpinContext';
 import { Toaster } from '@/components/ui/Toast';
 import { AppRouter } from '@/routes';
 
@@ -26,8 +27,10 @@ export default function App() {
             <CartProvider>
               <WishlistProvider>
                 <CompareProvider>
-                  <AppRouter />
-                  <Toaster />
+                  <SpinProvider>
+                    <AppRouter />
+                    <Toaster />
+                  </SpinProvider>
                 </CompareProvider>
               </WishlistProvider>
             </CartProvider>

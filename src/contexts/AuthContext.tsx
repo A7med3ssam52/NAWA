@@ -42,9 +42,9 @@ const AuthContext = createContext<AuthContextType | null>(null);
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'LOGIN':
-      return { user: action.payload, isAuthenticated: true };
+      return { ...state, user: action.payload, isAuthenticated: true };
     case 'LOGOUT':
-      return { user: null, isAuthenticated: false };
+      return { ...state, user: null, isAuthenticated: false };
     case 'UPDATE_PROFILE':
       return state.user
         ? { ...state, user: { ...state.user, ...action.payload } }

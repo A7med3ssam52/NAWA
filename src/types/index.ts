@@ -185,3 +185,33 @@ export interface SearchSuggestion {
   type: 'product' | 'category' | 'brand';
   id?: string;
 }
+
+export type SpinPrizeType = 'percentage' | 'fixed' | 'freeShipping' | 'tryAgain';
+
+export interface SpinPrize {
+  id: string;
+  label: string;
+  type: SpinPrizeType;
+  value?: number;
+  couponCode?: string;
+  color: string;
+  weight: number;
+  isActive: boolean;
+}
+
+export interface SpinHistoryEntry {
+  id: string;
+  userId?: string;
+  prizeId: string;
+  prizeLabel: string;
+  type: SpinPrizeType;
+  value?: number;
+  couponCode?: string;
+  claimed: boolean;
+  spunAt: string;
+}
+
+export interface DailySpinState {
+  lastSpinDate: string | null;
+  spinsRemainingToday: number;
+}

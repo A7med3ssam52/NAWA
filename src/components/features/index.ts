@@ -14,3 +14,6 @@ export { ProductGallery } from './ProductGallery';
 export { FilterSidebar } from './FilterSidebar';
 export { NotificationPopover } from './NotificationPopover';
 export { MobileSearchOverlay } from './MobileSearchOverlay';
+export { SpinWheel } from './SpinWheel';
+export { SpinResultModal } from './SpinResultModal';
+export { SpinEntryButton } from './SpinEntryButton';

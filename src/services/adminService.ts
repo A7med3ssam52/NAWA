@@ -8,8 +8,9 @@ import {
   users as initialUsers,
   notifications as initialNotifications,
   addresses as initialAddresses,
+  spinPrizes as initialSpinPrizes,
 } from '@/data';
-import type { Product, Category, Brand, Coupon, Order, Review, Notification, AnnouncementConfig } from '@/types';
+import type { Product, Category, Brand, Coupon, Order, Review, Notification, AnnouncementConfig, SpinPrize } from '@/types';
 
 let products: Product[] = JSON.parse(JSON.stringify(initialProducts));
 let categories: Category[] = JSON.parse(JSON.stringify(initialCategories));
@@ -19,6 +20,7 @@ let orders: Order[] = JSON.parse(JSON.stringify(initialOrders));
 let reviews: Review[] = JSON.parse(JSON.stringify(initialReviews));
 let notifications: Notification[] = JSON.parse(JSON.stringify(initialNotifications));
 let mutableUsers: import('@/types').User[] = JSON.parse(JSON.stringify(initialUsers));
+let spinPrizes: SpinPrize[] = JSON.parse(JSON.stringify(initialSpinPrizes));
 
 function genId(prefix: string) {
   const num = crypto.randomUUID().slice(0, 8);
@@ -342,6 +344,43 @@ export const adminService = {
       pendingOrders,
       lowStockProducts: lowStock,
     };
+  },
+
+  // ─── Spin Prizes ────────────────────────────────────
+  getSpinPrizes() {
+    return [...spinPrizes];
+  },
+
+  getSpinPrize(id: string) {
+    return spinPrizes.find((p) => p.id === id);
+  },
+
+  createSpinPrize(data: Partial<SpinPrize>): SpinPrize {
+    const prize: SpinPrize = {
+      id: genId('spin'),
+      label: data.label || '',
+      type: data.type || 'tryAgain',
+      value: data.value,
+      color: data.color || '#2563EB',
+      weight: data.weight || 1,
+      isActive: data.isActive ?? true,
+    };
+    spinPrizes.push(prize);
+    return prize;
+  },
+
+  updateSpinPrize(id: string, data: Partial<SpinPrize>): SpinPrize | null {
+    const idx = spinPrizes.findIndex((p) => p.id === id);
+    if (idx === -1) return null;
+    spinPrizes[idx] = { ...spinPrizes[idx], ...data, id };
+    return spinPrizes[idx];
+  },
+
+  deleteSpinPrize(id: string): boolean {
+    const idx = spinPrizes.findIndex((p) => p.id === id);
+    if (idx === -1) return false;
+    spinPrizes.splice(idx, 1);
+    return true;
   },
 
   // ─── Announcement Bar ──────────────────────────────
