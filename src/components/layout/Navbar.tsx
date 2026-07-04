@@ -175,7 +175,7 @@ export const Navbar = memo(function Navbar() {
             {/* Mobile Search Button */}
             <button
               onClick={() => setMobileSearchOpen(true)}
-              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90 ml-auto sm:ml-0"
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-90"
               aria-label="بحث"
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5" />
