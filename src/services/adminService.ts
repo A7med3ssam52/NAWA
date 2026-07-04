@@ -351,7 +351,7 @@ export const adminService = {
   } as AnnouncementConfig,
 
   getAnnouncement(): AnnouncementConfig {
-    return { ...this._announcement };
+    return this._announcement;
   },
 
   updateAnnouncement(config: Partial<AnnouncementConfig>): AnnouncementConfig {
