@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, X, Sparkles } from 'lucide-react';
-import { useAuth, useSpin } from '@/contexts';
+import { useSpin } from '@/contexts';
 import { SpinWheel } from './SpinWheel';
 import { SpinResultModal } from './SpinResultModal';
 import { cn } from '@/utils';
 
 export function SpinEntryButton() {
-  const { user, isAuthenticated } = useAuth();
   const {
     prizes,
     isSpinning,
@@ -21,8 +20,6 @@ export function SpinEntryButton() {
   } = useSpin();
 
   const [isOpen, setIsOpen] = useState(false);
-
-  if (!isAuthenticated || !user) return null;
 
   const canSpin = spinsRemainingToday > 0;
 
