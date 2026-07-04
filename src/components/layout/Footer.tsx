@@ -1,0 +1,252 @@
+import { useState, memo } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Music2,
+  Youtube,
+  Send,
+  Mail,
+  MapPin,
+  Phone,
+} from 'lucide-react';
+import { cn } from '@/utils';
+import { categories } from '@/data';
+import { PAGES, SITE_NAME, SITE_DESCRIPTION } from '@/constants';
+import { Button, Input } from '@/components/ui';
+import toast from 'react-hot-toast';
+
+const quickLinks = [
+  { label: 'من نحن', href: PAGES.ABOUT },
+  { label: 'اتصل بنا', href: PAGES.CONTACT },
+  { label: 'الأسئلة الشائعة', href: PAGES.FAQ },
+  { label: 'سياسة الخصوصية', href: PAGES.PRIVACY },
+  { label: 'الشروط والأحكام', href: PAGES.TERMS },
+];
+
+const customerServiceLinks = [
+  { label: 'المساعدة', href: PAGES.FAQ },
+  { label: 'الشحن والتوصيل', href: '/shipping' },
+  { label: 'الإرجاع والاستبدال', href: '/returns' },
+  { label: 'طرق الدفع', href: '/payment' },
+];
+
+const socialLinks = [
+  { icon: Facebook, href: '#', label: 'فيسبوك' },
+  { icon: Instagram, href: '#', label: 'انستجرام' },
+  { icon: Twitter, href: '#', label: 'تويتر' },
+  { icon: Music2, href: '#', label: 'تيك توك' },
+  { icon: Youtube, href: '#', label: 'يوتيوب' },
+];
+
+const paymentMethods = [
+  { name: 'فيزا', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/visa.svg' },
+  { name: 'ماستركارد', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mastercard.svg' },
+  { name: 'مدى', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mada.svg' },
+  { name: 'فودافون كاش', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vodafone.svg' },
+  { name: 'فوري', src: '' },
+  { name: 'انستا باي', src: '' },
+  { name: 'ValU', src: '' },
+];
+
+export const Footer = memo(function Footer() {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 800));
+    const existing = JSON.parse(localStorage.getItem('newsletter_emails') || '[]');
+    if (existing.includes(email.trim())) {
+      toast.error('هذا البريد مسجل بالفعل');
+    } else {
+      existing.push(email.trim());
+      localStorage.setItem('newsletter_emails', JSON.stringify(existing));
+      toast.success('تم الاشتراك في النشرة البريدية بنجاح!');
+    }
+    setEmail('');
+    setLoading(false);
+  };
+
+  return (
+    <footer dir="rtl" className="bg-gray-50 dark:bg-dark-bg border-t border-gray-100 dark:border-dark-border">
+      {/* Newsletter */}
+      <div className="bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 dark:from-secondary/5 dark:via-accent/5 dark:to-secondary/5 border-b border-gray-100 dark:border-dark-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="text-center lg:text-right">
+              <h3 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-1.5">
+                اشترك في النشرة البريدية
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">
+                احصل على أحدث العروض والتخفيضات أولاً بأول
+              </p>
+            </div>
+            <form onSubmit={handleNewsletterSubmit} className="flex items-center gap-2 w-full lg:w-auto">
+              <div className="flex-1 lg:w-80">
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="أدخل بريدك الإلكتروني"
+                  dir="rtl"
+                />
+              </div>
+              <Button type="submit" variant="primary" size="md" loading={loading} rounded="xl">
+                <Send className="w-4 h-4" />
+                اشتراك
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          {/* Logo & Description */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link to={PAGES.HOME} className="inline-block mb-3">
+              <span className="text-2xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">
+                {SITE_NAME}
+              </span>
+            </Link>
+            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo leading-relaxed mb-4">
+              {SITE_DESCRIPTION}
+            </p>
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+                <MapPin className="w-4 h-4 shrink-0 text-secondary" />
+                <span>القاهرة، مصر</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+                <Phone className="w-4 h-4 shrink-0 text-secondary" />
+                <span dir="ltr">+20 100 123 4567</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+                <Mail className="w-4 h-4 shrink-0 text-secondary" />
+                <span>info@zahi.store</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+              روابط سريعة
+            </h4>
+            <ul className="space-y-2.5">
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    to={link.href}
+                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+              الأقسام
+            </h4>
+            <ul className="space-y-2.5">
+              {categories.slice(0, 6).map((cat) => (
+                <li key={cat.id}>
+                  <Link
+                    to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Customer Service */}
+          <div>
+            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+              خدمة العملاء
+            </h4>
+            <ul className="space-y-2.5">
+              {customerServiceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    to={link.href}
+                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-100 dark:border-dark-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+            {/* Copyright */}
+            <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo text-center lg:text-right">
+              © {new Date().getFullYear()} {SITE_NAME}. جميع الحقوق محفوظة.
+            </p>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-2">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted hover:bg-secondary hover:text-white dark:hover:bg-secondary transition-all duration-200"
+                    aria-label={social.label}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* Payment Methods */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {paymentMethods.map((method) => (
+                <div
+                  key={method.name}
+                  className="w-10 h-7 flex items-center justify-center bg-white dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border px-1.5"
+                  title={method.name}
+                >
+                  {method.src ? (
+                    <img
+                      src={method.src}
+                      alt={method.name}
+                      className="w-full h-full object-contain"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="text-[6px] font-bold font-cairo text-gray-500 dark:text-dark-muted leading-tight text-center">
+                      {method.name}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+});

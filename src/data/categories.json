@@ -1,0 +1,66 @@
+[
+  {
+    "id": "cat-1",
+    "name": "ملابس رجالي",
+    "slug": "mens-clothing",
+    "image": "https://picsum.photos/seed/men/400/400",
+    "icon": "Shirt",
+    "productsCount": 28
+  },
+  {
+    "id": "cat-2",
+    "name": "ملابس حريمي",
+    "slug": "womens-clothing",
+    "image": "https://picsum.photos/seed/women/400/400",
+    "icon": "Dress",
+    "productsCount": 35
+  },
+  {
+    "id": "cat-3",
+    "name": "أحذية",
+    "slug": "shoes",
+    "image": "https://picsum.photos/seed/shoes/400/400",
+    "icon": "Footprints",
+    "productsCount": 22
+  },
+  {
+    "id": "cat-4",
+    "name": "حقائب وإكسسوارات",
+    "slug": "bags-accessories",
+    "image": "https://picsum.photos/seed/bags/400/400",
+    "icon": "Baggage",
+    "productsCount": 18
+  },
+  {
+    "id": "cat-5",
+    "name": "ملابس رياضية",
+    "slug": "sportswear",
+    "image": "https://picsum.photos/seed/sportswear/400/400",
+    "icon": "Activity",
+    "productsCount": 16
+  },
+  {
+    "id": "cat-6",
+    "name": "ملابس أطفال",
+    "slug": "kids",
+    "image": "https://picsum.photos/seed/kids/400/400",
+    "icon": "Baby",
+    "productsCount": 14
+  },
+  {
+    "id": "cat-7",
+    "name": "ساعات",
+    "slug": "watches",
+    "image": "https://picsum.photos/seed/watches/400/400",
+    "icon": "Clock",
+    "productsCount": 12
+  },
+  {
+    "id": "cat-8",
+    "name": "عطور",
+    "slug": "perfumes",
+    "image": "https://picsum.photos/seed/perfumes/400/400",
+    "icon": "Sparkles",
+    "productsCount": 10
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "brand-1",
+    "name": "زارا",
+    "slug": "zara",
+    "logo": "https://picsum.photos/seed/zara/200/100",
+    "productsCount": 20
+  },
+  {
+    "id": "brand-2",
+    "name": "اتش آند إم",
+    "slug": "hm",
+    "logo": "https://picsum.photos/seed/hm/200/100",
+    "productsCount": 18
+  },
+  {
+    "id": "brand-3",
+    "name": "نايك",
+    "slug": "nike",
+    "logo": "https://picsum.photos/seed/nike/200/100",
+    "productsCount": 15
+  },
+  {
+    "id": "brand-4",
+    "name": "اديداس",
+    "slug": "adidas",
+    "logo": "https://picsum.photos/seed/adidas/200/100",
+    "productsCount": 12
+  },
+  {
+    "id": "brand-5",
+    "name": "لويس فيتون",
+    "slug": "louis-vuitton",
+    "logo": "https://picsum.photos/seed/lv/200/100",
+    "productsCount": 8
+  },
+  {
+    "id": "brand-6",
+    "name": "جوتشي",
+    "slug": "gucci",
+    "logo": "https://picsum.photos/seed/gucci/200/100",
+    "productsCount": 10
+  },
+  {
+    "id": "brand-7",
+    "name": "سواتش",
+    "slug": "swatch",
+    "logo": "https://picsum.photos/seed/swatch/200/100",
+    "productsCount": 7
+  },
+  {
+    "id": "brand-8",
+    "name": "مايكل كورس",
+    "slug": "michael-kors",
+    "logo": "https://picsum.photos/seed/mk/200/100",
+    "productsCount": 9
+  }
+]

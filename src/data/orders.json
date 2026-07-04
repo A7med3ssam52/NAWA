@@ -1,0 +1,146 @@
+[
+  {
+    "id": "ord-1",
+    "orderNumber": "ZAH-2026-0001",
+    "status": "delivered",
+    "items": [
+      {
+        "productId": "prod-1",
+        "productName": "بدلة رجالي كلاسيكية",
+        "productImage": "https://picsum.photos/seed/suit/200/200",
+        "quantity": 1,
+        "price": 4599
+      }
+    ],
+    "total": 4599,
+    "subtotal": 4599,
+    "shipping": 0,
+    "tax": 643.86,
+    "discount": 0,
+    "shippingAddress": {
+      "id": "addr-1",
+      "label": "المنزل",
+      "fullName": "أحمد حسن",
+      "phone": "+201234567890",
+      "street": "شارع النيل، عمارة 15، شقة 5",
+      "city": "القاهرة",
+      "state": "القاهرة",
+      "zipCode": "11511",
+      "isDefault": true
+    },
+    "paymentMethod": "بطاقة ائتمان",
+    "notes": "يرجاء الاتصال قبل التوصيل",
+    "createdAt": "2026-05-15T10:30:00Z",
+    "updatedAt": "2026-05-25T14:00:00Z",
+    "tracking": [
+      { "status": "pending", "date": "2026-05-15T10:30:00Z", "description": "تم استلام الطلب", "completed": true },
+      { "status": "confirmed", "date": "2026-05-15T14:00:00Z", "description": "تم تأكيد الطلب", "completed": true },
+      { "status": "processing", "date": "2026-05-16T09:00:00Z", "description": "جاري تجهيز الطلب", "completed": true },
+      { "status": "shipped", "date": "2026-05-17T11:00:00Z", "description": "تم شحن الطلب", "completed": true },
+      { "status": "delivered", "date": "2026-05-19T15:30:00Z", "description": "تم توصيل الطلب بنجاح", "completed": true }
+    ]
+  },
+  {
+    "id": "ord-2",
+    "orderNumber": "ZAH-2026-0002",
+    "status": "shipped",
+    "items": [
+      {
+        "productId": "prod-5",
+        "productName": "حقيبة يد لويس فيتون مونوغرام",
+        "productImage": "https://picsum.photos/seed/lvbag1/200/200",
+        "quantity": 1,
+        "price": 28999
+      },
+      {
+        "productId": "prod-6",
+        "productName": "عطر جوتشي بلوم",
+        "productImage": "https://picsum.photos/seed/guccip1/200/200",
+        "quantity": 1,
+        "price": 4599
+      }
+    ],
+    "total": 31798,
+    "subtotal": 33598,
+    "shipping": 0,
+    "tax": 4703.72,
+    "discount": 1800,
+    "couponCode": "WELCOME10",
+    "shippingAddress": {
+      "id": "addr-3",
+      "label": "المنزل",
+      "fullName": "سارة محمد",
+      "phone": "+201098765432",
+      "street": "شارع جامعة الدول، فيلا 22",
+      "city": "الجيزة",
+      "state": "الجيزة",
+      "zipCode": "12511",
+      "isDefault": true
+    },
+    "paymentMethod": "الدفع عند الاستلام",
+    "createdAt": "2026-06-20T12:00:00Z",
+    "updatedAt": "2026-06-22T10:00:00Z",
+    "tracking": [
+      { "status": "pending", "date": "2026-06-20T12:00:00Z", "description": "تم استلام الطلب", "completed": true },
+      { "status": "confirmed", "date": "2026-06-20T15:00:00Z", "description": "تم تأكيد الطلب", "completed": true },
+      { "status": "processing", "date": "2026-06-21T09:00:00Z", "description": "جاري تجهيز الطلب", "completed": true },
+      { "status": "shipped", "date": "2026-06-22T10:00:00Z", "description": "تم شحن الطلب", "completed": true },
+      { "status": "delivered", "date": "", "description": "في انتظار التوصيل", "completed": false }
+    ]
+  },
+  {
+    "id": "ord-3",
+    "orderNumber": "ZAH-2026-0003",
+    "status": "processing",
+    "items": [
+      {
+        "productId": "prod-3",
+        "productName": "حذاء رياضي نايك اير ماكس",
+        "productImage": "https://picsum.photos/seed/nike1/200/200",
+        "quantity": 1,
+        "price": 3299
+      },
+      {
+        "productId": "prod-8",
+        "productName": "بنطلون جينز رجالي",
+        "productImage": "https://picsum.photos/seed/jeans1/200/200",
+        "quantity": 2,
+        "price": 1299
+      },
+      {
+        "productId": "prod-4",
+        "productName": "تيشيرت قطن رجالي",
+        "productImage": "https://picsum.photos/seed/tshirt1/200/200",
+        "quantity": 3,
+        "price": 399
+      }
+    ],
+    "total": 7498.86,
+    "subtotal": 8094,
+    "shipping": 30,
+    "tax": 1133.16,
+    "discount": 625.14,
+    "couponCode": "SUMMER20",
+    "shippingAddress": {
+      "id": "addr-1",
+      "label": "المنزل",
+      "fullName": "أحمد حسن",
+      "phone": "+201234567890",
+      "street": "شارع النيل، عمارة 15، شقة 5",
+      "city": "القاهرة",
+      "state": "القاهرة",
+      "zipCode": "11511",
+      "isDefault": true
+    },
+    "paymentMethod": "محفظة إلكترونية",
+    "createdAt": "2026-06-28T16:00:00Z",
+    "updatedAt": "2026-06-29T11:00:00Z",
+    "tracking": [
+      { "status": "pending", "date": "2026-06-28T16:00:00Z", "description": "تم استلام الطلب", "completed": true },
+      { "status": "confirmed", "date": "2026-06-29T11:00:00Z", "description": "تم تأكيد الطلب", "completed": true },
+      { "status": "processing", "date": "2026-06-29T11:00:00Z", "description": "جاري تجهيز الطلب", "completed": true },
+      { "status": "shipped", "date": "", "description": "في انتظار الشحن", "completed": false },
+      { "status": "delivered", "date": "", "description": "في انتظار التوصيل", "completed": false }
+    ]
+  }
+]
