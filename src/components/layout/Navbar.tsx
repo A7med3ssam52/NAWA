@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   Heart,
-  ShoppingCart,
   Sun,
   Moon,
   Menu,
@@ -34,6 +33,8 @@ import { PAGES, SITE_NAME } from '@/constants';
 import { Button, Badge } from '@/components/ui';
 import { Sidebar } from './Sidebar';
 import { SearchSuggestions, NotificationPopover, MobileSearchOverlay } from '@/components/features';
+import { AnnouncementBar } from './AnnouncementBar';
+import { CartPreview } from './CartPreview';
 
 const NAV_LINKS = [
   { label: 'الرئيسية', href: PAGES.HOME, icon: Home },
@@ -72,12 +73,25 @@ export const Navbar = memo(function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const [showCategories, setShowCategories] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const [announcementDismissed, setAnnouncementDismissed] = useState(() => {
+    try { return localStorage.getItem('announcement-dismissed') === 'true'; }
+    catch { return false; }
+  });
+
+  const handleDismissAnnouncement = () => {
+    setAnnouncementDismissed(true);
+    try { localStorage.setItem('announcement-dismissed', 'true'); }
+    catch {}
+  };
 
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -93,8 +107,8 @@ export const Navbar = memo(function Navbar() {
     const onScroll = () => {
       const currentY = window.scrollY;
       const isScrollingDown = currentY > lastScrollY.current;
-      el.classList.toggle('shadow-lg', currentY > 20);
-      if (currentY > 60) {
+      el.classList.toggle('shadow-lg', currentY > 10);
+      if (currentY > 40) {
         setHideHeader(isScrollingDown);
       } else {
         setHideHeader(false);
@@ -120,6 +134,26 @@ export const Navbar = memo(function Navbar() {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && !searchFocused && !mobileSearchOpen) {
+        const tag = (e.target as HTMLElement).tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+          e.preventDefault();
+          searchInputRef.current?.focus();
+        }
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [searchFocused, mobileSearchOpen]);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery('');
+    setShowSearchSuggestions(false);
+    searchInputRef.current?.focus();
   }, []);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
@@ -151,12 +185,15 @@ export const Navbar = memo(function Navbar() {
 
   return (
     <>
+      {/* Announcement Bar */}
+      {!announcementDismissed && <AnnouncementBar onDismiss={handleDismissAnnouncement} />}
+
       {/* Desktop Navbar */}
       <header
         ref={headerRef}
         dir="rtl"
         className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-transform duration-500 ease-in-out',
+          'fixed left-0 right-0 z-40 transition-[top,transform] duration-500 ease-in-out',
           hideHeader && '-translate-y-full',
           isDark
             ? 'ios-dark-nav-bar'
@@ -174,7 +211,7 @@ export const Navbar = memo(function Navbar() {
               : 'bg-dark-bg/80 backdrop-blur-md border-transparent'
           ),
         )}
-        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+        style={{ top: announcementDismissed ? '0' : '36px', paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
@@ -211,19 +248,34 @@ export const Navbar = memo(function Navbar() {
 
               {/* Desktop Navigation */}
               <nav className="hidden lg:flex items-center gap-1">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className="px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {NAV_LINKS.map((link) => {
+                  const isActive = link.href === PAGES.HOME
+                    ? location.pathname === PAGES.HOME
+                    : location.pathname.startsWith(link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      className={cn(
+                        'px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                        isActive
+                          ? 'bg-secondary/10 text-secondary font-bold dark:bg-secondary/20'
+                          : 'text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary hover:bg-gray-100 dark:hover:bg-dark-border/50'
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
                 <div ref={categoriesRef} className="relative">
                   <button
                     onClick={() => setShowCategories(!showCategories)}
-                    className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-all duration-200"
+                    className={cn(
+                      'flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                      showCategories
+                        ? 'bg-secondary/10 text-secondary font-bold'
+                        : 'text-gray-700 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary hover:bg-gray-100 dark:hover:bg-dark-border/50'
+                    )}
                     aria-expanded={showCategories}
                     aria-haspopup="true"
                   >
@@ -235,50 +287,104 @@ export const Navbar = memo(function Navbar() {
                       )}
                     />
                   </button>
-                  {showCategories && (
-                    <div className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden animate-fade-in">
-                      <div className="p-2">
-                        {categories.map((cat) => (
+                  <AnimatePresence>
+                    {showCategories && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute top-full right-0 mt-2 w-[500px] lg:w-[600px] bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50"
+                      >
+                        <div className="p-3">
+                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                            {categories.map((cat) => (
+                              <Link
+                                key={cat.id}
+                                to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                                onClick={() => setShowCategories(false)}
+                                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-all group"
+                              >
+                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary/10 to-accent/10 dark:from-secondary/20 dark:to-accent/10 overflow-hidden shrink-0">
+                                  <img
+                                    src={cat.image}
+                                    alt={cat.name}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                    loading="lazy"
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-sm font-cairo font-medium text-gray-900 dark:text-dark-text group-hover:text-secondary transition-colors block truncate">
+                                    {cat.name}
+                                  </span>
+                                  <span className="text-[11px] text-gray-400 dark:text-dark-muted font-cairo">
+                                    {cat.productsCount} منتج
+                                  </span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-3 bg-gray-50/50 dark:bg-dark-border/20 border-t border-gray-100 dark:border-dark-border">
                           <Link
-                            key={cat.id}
-                            to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                            to={PAGES.CATEGORIES}
                             onClick={() => setShowCategories(false)}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                            className="flex items-center justify-center gap-1.5 py-2 text-sm font-medium font-cairo text-secondary hover:text-secondary/80 transition-colors rounded-xl hover:bg-gray-100 dark:hover:bg-dark-border/50"
                           >
-                            <span className="text-sm font-cairo text-gray-900 dark:text-dark-text">
-                              {cat.name}
-                            </span>
-                            <span className="mr-auto text-xs text-gray-400 dark:text-dark-muted">
-                              {cat.productsCount}
-                            </span>
+                            عرض جميع الأقسام
+                            <ChevronDown className="w-3.5 h-3.5 rotate-[-90deg]" />
                           </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </nav>
 
               {/* Search Bar - Desktop */}
-              <div ref={searchRef} className="hidden lg:flex flex-1 max-w-md relative">
-                <form onSubmit={handleSearchSubmit} className="w-full">
-                  <div className="relative">
-                    <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-dark-muted pointer-events-none" />
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value);
-                        setShowSearchSuggestions(true);
-                      }}
-                      onFocus={() => setShowSearchSuggestions(true)}
-                      placeholder="ابحث عن منتجات..."
-                      className="w-full py-2.5 pr-10 pl-4 text-sm font-cairo bg-gray-100 dark:bg-dark-border/50 border border-transparent focus:border-secondary/30 rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
-                      dir="rtl"
-                    />
-                  </div>
-                </form>
+              <div ref={searchContainerRef} className={cn(
+                'hidden lg:flex flex-1 relative transition-all duration-300',
+                searchFocused ? 'max-w-xl' : 'max-w-md'
+              )}>
+                <div ref={searchRef} className="w-full">
+                  <form onSubmit={handleSearchSubmit} className="w-full">
+                    <div className="relative">
+                      <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-gray-400 dark:text-dark-muted pointer-events-none" />
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setShowSearchSuggestions(true);
+                        }}
+                        onFocus={() => {
+                          setSearchFocused(true);
+                          setShowSearchSuggestions(true);
+                        }}
+                        onBlur={() => setSearchFocused(false)}
+                        placeholder="ابحث عن منتجات..."
+                        className="w-full py-2.5 pr-10 pl-12 text-sm font-cairo bg-gray-100 dark:bg-dark-border/50 border border-transparent focus:border-secondary/30 rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
+                        dir="rtl"
+                      />
+                      {searchQuery ? (
+                        <button
+                          type="button"
+                          onClick={handleClearSearch}
+                          className="absolute left-1.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-border transition-colors"
+                          aria-label="مسح البحث"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      ) : (
+                        !searchFocused && (
+                          <kbd className="absolute left-2 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-md text-[10px] font-medium text-gray-400 dark:text-dark-muted bg-gray-200 dark:bg-dark-border border border-gray-300 dark:border-dark-border leading-none pointer-events-none">
+                            /
+                          </kbd>
+                        )
+                      )}
+                    </div>
+                  </form>
                   {showSearchSuggestions && (searchQuery || debouncedSearch) && (
                     <SearchSuggestions
                       query={debouncedSearch}
@@ -286,6 +392,7 @@ export const Navbar = memo(function Navbar() {
                       onClose={() => setShowSearchSuggestions(false)}
                     />
                   )}
+                </div>
               </div>
 
               {/* Actions */}
@@ -326,23 +433,8 @@ export const Navbar = memo(function Navbar() {
                 <BarChart3 className="w-5 h-5" />
               </Link>
 
-              {/* Cart */}
-              <Link
-                to={PAGES.CART}
-                className="relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
-                aria-label="سلة التسوق"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {itemsCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    size="sm"
-                    className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1 bg-secondary text-white"
-                  >
-                    {itemsCount > 99 ? '99+' : itemsCount}
-                  </Badge>
-                )}
-              </Link>
+              {/* Cart with Preview */}
+              <CartPreview />
 
               {/* Notifications - Desktop only */}
               <div className="hidden lg:block">
@@ -453,7 +545,7 @@ export const Navbar = memo(function Navbar() {
       </header>
 
       {/* Spacer for fixed header */}
-      <div className="h-16 lg:h-20" />
+      <div className={cn(announcementDismissed ? 'h-16 lg:h-20' : 'h-[100px] lg:h-[116px]')} />
 
       {/* Premium Bottom Navigation for Mobile */}
       <nav className={cn(

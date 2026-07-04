@@ -1,14 +1,51 @@
-import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { lazy, Suspense, useCallback } from 'react';
+import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
 import { Layout, AdminLayout } from '@/components/layout';
-import { Spinner } from '@/components/ui';
+import { Button, Spinner } from '@/components/ui';
+
+function lazyWithRetry<T extends React.ComponentType>(
+  importFn: () => Promise<{ default: T }>
+) {
+  return lazy(() =>
+    importFn().catch(() => {
+      window.location.reload();
+      return new Promise<never>(() => {});
+    })
+  );
+}
 
 function lazyPage(path: string, name: string) {
-  return lazy(() => import(`@/pages/${path}.tsx`).then((m) => ({ default: m[name as keyof typeof m] as unknown as React.ComponentType })));
+  return lazyWithRetry(() =>
+    import(`@/pages/${path}.tsx`).then((m) => ({ default: m[name as keyof typeof m] as unknown as React.ComponentType }))
+  );
 }
 
 function lazyAdmin(path: string, name: string) {
-  return lazy(() => import(`@/pages/admin/${path}.tsx`).then((m) => ({ default: m[name as keyof typeof m] as unknown as React.ComponentType })));
+  return lazyWithRetry(() =>
+    import(`@/pages/admin/${path}.tsx`).then((m) => ({ default: m[name as keyof typeof m] as unknown as React.ComponentType }))
+  );
+}
+
+function RouteErrorBoundary() {
+  const error = useRouteError();
+  const isChunkError = error instanceof TypeError && `${error}`.includes('dynamically imported');
+  const reload = useCallback(() => window.location.reload(), []);
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4 text-center">
+      <div className="text-5xl">⚠️</div>
+      <h2 className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+        {isChunkError ? 'حدث خطأ في تحميل الصفحة' : 'حدث خطأ غير متوقع'}
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo max-w-md">
+        {isChunkError
+          ? 'تم تحديث التطبيق مؤخراً. يرجى إعادة تحميل الصفحة.'
+          : 'يرجى المحاولة مرة أخرى.'}
+      </p>
+      <Button variant="primary" onClick={reload}>
+        إعادة تحميل الصفحة
+      </Button>
+    </div>
+  );
 }
 
 const HomePage = lazyPage('HomePage', 'HomePage');
@@ -67,6 +104,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <SuspenseWrapper><HomePage /></SuspenseWrapper> },
       { path: 'products', element: <SuspenseWrapper><ProductsPage /></SuspenseWrapper> },
@@ -100,6 +138,7 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminLayout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper> },
       { path: 'products', element: <SuspenseWrapper><AdminProductsPage /></SuspenseWrapper> },
@@ -116,6 +155,7 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <SuspenseWrapper><LoginPage /></SuspenseWrapper>,
+    errorElement: <RouteErrorBoundary />,
   },
 ]);
 

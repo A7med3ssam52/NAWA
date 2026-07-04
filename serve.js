@@ -24,7 +24,9 @@ createServer((req, res) => {
     const ext = extname(file);
     const content = readFileSync(file);
     const headers = { 'Content-Type': mimes[ext] || 'application/octet-stream' };
-    if (cacheExts.has(ext)) {
+    if (ext === '.html') {
+      headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    } else if (cacheExts.has(ext)) {
       headers['Cache-Control'] = 'public, max-age=31536000, immutable';
     }
     const accept = req.headers['accept-encoding'] || '';
