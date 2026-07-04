@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useMemo, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Gift, Ticket, Truck, Frown, Sparkles } from 'lucide-react';
-import { Modal, Button } from '@/components/ui';
 import type { SpinPrize } from '@/types';
 
 interface SpinResultModalProps {
@@ -14,22 +13,22 @@ interface SpinResultModalProps {
 
 const prizeConfig: Record<string, { icon: React.ReactNode; title: string; desc: string }> = {
   percentage: {
-    icon: <Gift className="w-8 h-8" />,
+    icon: <Gift className="w-6 h-6 sm:w-8 sm:h-8" />,
     title: 'مبروك!',
     desc: 'لقد ربحت خصماً',
   },
   fixed: {
-    icon: <Ticket className="w-8 h-8" />,
+    icon: <Ticket className="w-6 h-6 sm:w-8 sm:h-8" />,
     title: 'مبروك!',
     desc: 'لقد ربحت كود خصم',
   },
   freeShipping: {
-    icon: <Truck className="w-8 h-8" />,
+    icon: <Truck className="w-6 h-6 sm:w-8 sm:h-8" />,
     title: 'مبروك!',
     desc: 'لقد ربحت شحناً مجانياً',
   },
   tryAgain: {
-    icon: <Frown className="w-8 h-8" />,
+    icon: <Frown className="w-6 h-6 sm:w-8 sm:h-8" />,
     title: 'حظ أوفر!',
     desc: 'ربما في المرة القادمة',
   },
@@ -39,14 +38,14 @@ const confettiColors = ['#2563EB', '#22C55E', '#F59E0B', '#EF4444', '#A855F7', '
 
 function ConfettiParticles() {
   const particles = useMemo(() =>
-    Array.from({ length: 30 }).map((_, i) => ({
+    Array.from({ length: 20 }).map((_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: -10 - Math.random() * 20,
       color: confettiColors[i % confettiColors.length],
-      size: 4 + Math.random() * 8,
+      size: 3 + Math.random() * 6,
       delay: Math.random() * 0.5,
-      drift: (Math.random() - 0.5) * 30,
+      drift: (Math.random() - 0.5) * 25,
     })),
   []);
 
@@ -70,7 +69,7 @@ function ConfettiParticles() {
             opacity: [1, 1, 0],
           }}
           transition={{
-            duration: 2.5 + Math.random(),
+            duration: 2 + Math.random(),
             delay: p.delay,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
@@ -81,137 +80,176 @@ function ConfettiParticles() {
 }
 
 export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }: SpinResultModalProps) {
-  if (!prize) return null;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 480);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  if (!prize || !isOpen) return null;
 
   const config = prizeConfig[prize.type] || prizeConfig.tryAgain;
   const isWin = prize.type !== 'tryAgain';
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="sm" hideClose>
-      <div className="relative text-center space-y-5 py-4 overflow-hidden">
-        {isWin && <ConfettiParticles />}
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm overflow-y-auto"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      role="dialog"
+      aria-modal="true"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 30 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+        className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-sm mx-auto bg-white dark:bg-dark-card rounded-3xl shadow-2xl border border-gray-100 dark:border-dark-border overflow-hidden"
+        dir="rtl"
+      >
+        <div className="relative text-center px-4 sm:px-6 pt-6 sm:pt-8 pb-4 sm:pb-6 overflow-hidden">
+          {isWin && <ConfettiParticles />}
 
-        <div className="relative">
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-            className={cn(
-              'w-20 h-20 mx-auto rounded-2xl flex items-center justify-center',
-              isWin
-                ? 'bg-gradient-to-br from-secondary/10 to-blue-500/10 text-secondary'
-                : 'bg-gray-100 text-gray-400',
+          <div className="relative">
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+              className={`w-14 h-14 sm:w-20 sm:h-20 mx-auto rounded-2xl flex items-center justify-center ${
+                isWin
+                  ? 'bg-gradient-to-br from-secondary/10 to-blue-500/10 text-secondary'
+                  : 'bg-gray-100 text-gray-400'
+              }`}
+            >
+              {config.icon}
+            </motion.div>
+
+            {isWin && (
+              <>
+                <motion.div
+                  className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-accent" />
+                </motion.div>
+                <motion.div
+                  className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-accent" />
+                </motion.div>
+              </>
             )}
-          >
-            {config.icon}
-          </motion.div>
+          </div>
 
-          {/* Sparkles around the icon */}
-          {isWin && (
-            <>
-              <motion.div
-                className="absolute -top-1 -right-1"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Sparkles className="w-5 h-5 text-accent" />
-              </motion.div>
-              <motion.div
-                className="absolute -bottom-1 -left-1"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Sparkles className="w-4 h-4 text-accent" />
-              </motion.div>
-            </>
-          )}
-        </div>
+          <div className="space-y-1.5 sm:space-y-2 relative mt-3 sm:mt-4">
+            <motion.h3
+              className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              {config.title}
+            </motion.h3>
+            <motion.p
+              className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              {config.desc}
+            </motion.p>
+          </div>
 
-        <div className="space-y-2 relative">
-          <motion.h3
-            className="text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {config.title}
-          </motion.h3>
-          <motion.p
-            className="text-sm text-gray-500 dark:text-dark-muted font-cairo"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            {config.desc}
-          </motion.p>
-        </div>
-
-        <motion.div
-          className="relative"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          {prize.type === 'percentage' && (
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
-              <span className="text-3xl font-bold font-cairo">{prize.value}%</span>
-              <span className="text-sm font-cairo opacity-90">خصم</span>
-            </div>
-          )}
-          {prize.type === 'fixed' && (
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
-              <span className="text-3xl font-bold font-cairo">{prize.value?.toLocaleString('ar-EG')}</span>
-              <span className="text-sm font-cairo opacity-90">ج.م</span>
-            </div>
-          )}
-          {prize.type === 'freeShipping' && (
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-l from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25">
-              <Truck className="w-6 h-6" />
-              <span className="text-xl font-bold font-cairo">شحن مجاني</span>
-            </div>
-          )}
-          {prize.type === 'tryAgain' && (
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted">
-              <span className="text-lg font-bold font-cairo">حظ أوفر في المرة القادمة!</span>
-            </div>
-          )}
-        </motion.div>
-
-        {couponCode && isWin && (
           <motion.div
-            className="relative bg-gray-50 dark:bg-dark-border/50 rounded-2xl p-3 border border-dashed border-gray-200 dark:border-gray-600"
+            className="relative mt-3 sm:mt-4"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            {prize.type === 'percentage' && (
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
+                <span className="text-2xl sm:text-3xl font-bold font-cairo">{prize.value}%</span>
+                <span className="text-[11px] sm:text-sm font-cairo opacity-90">خصم</span>
+              </div>
+            )}
+            {prize.type === 'fixed' && (
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
+                <span className="text-2xl sm:text-3xl font-bold font-cairo">{prize.value?.toLocaleString('ar-EG')}</span>
+                <span className="text-[11px] sm:text-sm font-cairo opacity-90">ج.م</span>
+              </div>
+            )}
+            {prize.type === 'freeShipping' && (
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25">
+                <Truck className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="text-base sm:text-xl font-bold font-cairo">شحن مجاني</span>
+              </div>
+            )}
+            {prize.type === 'tryAgain' && (
+              <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted">
+                <span className="text-sm sm:text-lg font-bold font-cairo">حظ أوفر في المرة القادمة!</span>
+              </div>
+            )}
+          </motion.div>
+
+          {couponCode && isWin && (
+            <motion.div
+              className="relative bg-gray-50 dark:bg-dark-border/50 rounded-2xl p-2.5 sm:p-3 mt-3 sm:mt-4 border border-dashed border-gray-200 dark:border-gray-600"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-dark-muted font-cairo mb-0.5 sm:mb-1">كود الخصم</p>
+              <p className="text-base sm:text-lg font-bold font-cairo text-secondary tracking-wider break-all" dir="ltr">{couponCode}</p>
+              <p className="text-[9px] sm:text-[10px] text-gray-400 dark:text-dark-muted font-cairo mt-0.5 sm:mt-1">صالح لمدة 7 أيام</p>
+            </motion.div>
+          )}
+
+          <motion.div
+            className="relative flex items-center gap-2 sm:gap-3 pt-3 sm:pt-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.6 }}
           >
-            <p className="text-[11px] text-gray-400 dark:text-dark-muted font-cairo mb-1">كود الخصم</p>
-            <p className="text-lg font-bold font-cairo text-secondary tracking-wider">{couponCode}</p>
-            <p className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo mt-1">صالح لمدة 7 أيام</p>
+            {isWin ? (
+              <>
+                <button
+                  onClick={onClose}
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-gray-500 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-95"
+                >
+                  لاحقاً
+                </button>
+                <button
+                  onClick={onClaim}
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  احصل عليه
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={onClose}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                حسناً
+              </button>
+            )}
           </motion.div>
-        )}
-
-        <motion.div
-          className="relative flex items-center gap-3 pt-2"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
-          {isWin ? (
-            <>
-              <Button variant="ghost" className="flex-1" onClick={onClose}>لاحقاً</Button>
-              <Button className="flex-1" onClick={onClaim}>احصل عليه</Button>
-            </>
-          ) : (
-            <Button className="w-full" onClick={onClose}>حسناً</Button>
-          )}
-        </motion.div>
-      </div>
-    </Modal>
+        </div>
+      </motion.div>
+    </div>
   );
-}
-
-function cn(...classes: (string | boolean | undefined | null)[]) {
-  return classes.filter(Boolean).join(' ');
 }
