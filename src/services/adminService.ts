@@ -18,6 +18,7 @@ let coupons: Coupon[] = JSON.parse(JSON.stringify(initialCoupons));
 let orders: Order[] = JSON.parse(JSON.stringify(initialOrders));
 let reviews: Review[] = JSON.parse(JSON.stringify(initialReviews));
 let notifications: Notification[] = JSON.parse(JSON.stringify(initialNotifications));
+let mutableUsers: import('@/types').User[] = JSON.parse(JSON.stringify(initialUsers));
 
 function genId(prefix: string) {
   const num = crypto.randomUUID().slice(0, 8);
@@ -314,7 +315,7 @@ export const adminService = {
 
   // ─── Users ─────────────────────────────────────────
   getUsers(search?: string) {
-    let result = [...initialUsers];
+    let result = [...mutableUsers];
     if (search) {
       const q = search.toLowerCase();
       result = result.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
@@ -334,7 +335,7 @@ export const adminService = {
       totalProducts: products.length,
       totalOrders: orders.length,
       totalRevenue,
-      totalUsers: initialUsers.length,
+      totalUsers: mutableUsers.length,
       totalCategories: categories.length,
       totalBrands: brands.length,
       totalCoupons: coupons.length,

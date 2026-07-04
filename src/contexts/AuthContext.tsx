@@ -2,9 +2,20 @@ import { createContext, useContext, useReducer, useEffect, useMemo, useCallback,
 import type { User, Address } from '@/types';
 import { users, getUserAddresses } from '@/data';
 
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+  return 'h_' + Math.abs(hash).toString(36);
+}
+
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
+  defaultAddressId: string | null;
 }
 
 type AuthAction =
@@ -59,14 +70,14 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
           }
         : state;
     case 'SET_DEFAULT_ADDRESS':
-      return state;
+      return { ...state, defaultAddressId: action.payload };
     default:
       return state;
   }
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(authReducer, { user: null, isAuthenticated: false }, (initial) => {
+  const [state, dispatch] = useReducer(authReducer, { user: null, isAuthenticated: false, defaultAddressId: null }, (initial) => {
     try {
       const saved = localStorage.getItem('auth');
       if (saved) return JSON.parse(saved);
@@ -87,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const registeredUser = registered.find((u) => u.email === email);
     if (registeredUser) {
-      if (registeredUser.password !== password) {
+      if (registeredUser.password !== password && simpleHash(password) !== registeredUser.password) {
         return { success: false, error: 'كلمة المرور غير صحيحة' };
       }
       const existingUser = users.find((u) => u.email === email);
@@ -95,6 +106,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         dispatch({ type: 'LOGIN', payload: existingUser });
         return { success: true };
       }
+      const newUser: User = {
+        id: `user-${Date.now()}`,
+        name: registeredUser.name,
+        email: registeredUser.email,
+        phone: '',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(registeredUser.name)}&background=2563EB&color=fff`,
+        addresses: [],
+        orders: [],
+        wishlist: [],
+        notifications: [],
+      };
+      dispatch({ type: 'LOGIN', payload: newUser });
+      return { success: true };
     }
 
     const user = users.find((u) => u.email === email);
@@ -113,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { success: false, error: 'البريد الإلكتروني مسجل بالفعل' };
     }
 
-    registered.push({ name, email, password });
+    registered.push({ name, email, password: simpleHash(password) });
     localStorage.setItem('registeredUsers', JSON.stringify(registered));
 
     const newUser: User = {
@@ -152,6 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({
     ...state,
+    defaultAddressId: state.defaultAddressId,
     login,
     register,
     logout,

@@ -1,0 +1,15 @@
+{
+  "name": "زاهي - متجر إلكتروني",
+  "short_name": "زاهي",
+  "description": "زاهي - أناقة تزهو بك",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0F172A",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

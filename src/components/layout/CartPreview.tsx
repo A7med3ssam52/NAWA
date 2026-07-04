@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
 import { cn } from '@/utils';
 import { useCart } from '@/contexts';
@@ -49,17 +48,12 @@ export function CartPreview() {
       </Link>
 
       {/* Dropdown */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.96 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50"
-            onMouseEnter={show}
-            onMouseLeave={hide}
-          >
+      {open && (
+        <div
+          className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50 animate-fade-in-up"
+          onMouseEnter={show}
+          onMouseLeave={hide}
+        >
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
@@ -163,9 +157,8 @@ export function CartPreview() {
                 </>
               )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { Search, Clock, TrendingUp, Package, Grid3X3, X } from 'lucide-react';
 import { cn } from '@/utils';
 import { products, categories, brands } from '@/data';
@@ -97,13 +96,10 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
   }, [showRecent, showPopular, showSuggestions, recentSearches, productSuggestions, categorySuggestions, selectedIndex, handleSelect]);
 
   return (
-    <motion.div
+    <div
       ref={listRef}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 8 }}
-      transition={{ duration: 0.15 }}
       className={cn(
+        'animate-fade-in-up',
         standalone
           ? 'bg-transparent'
           : 'absolute top-full right-0 left-0 mt-2 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50'
@@ -236,6 +232,6 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
           لا توجد نتائج لـ &quot;{query}&quot;
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

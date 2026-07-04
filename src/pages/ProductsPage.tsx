@@ -71,15 +71,10 @@ export function ProductsPage() {
         </div>
       </div>
 
-      <div className="flex gap-6 lg:gap-8">
-        <div className="hidden lg:block">
-          <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
-        </div>
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+        <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
 
         <div className="flex-1 min-w-0">
-          <div className="lg:hidden mb-4">
-            <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
-          </div>
 
           {data && (
             <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mb-4">

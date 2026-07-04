@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell,
   Package,
@@ -74,16 +73,11 @@ export function NotificationPopover() {
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.96 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute left-0 top-full mt-2 w-[360px] sm:w-96 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-white/5 overflow-hidden z-50"
-            dir="rtl"
-          >
+      {open && (
+        <div
+          className="absolute left-0 top-full mt-2 w-[360px] sm:w-96 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 animate-fade-in-up"
+          dir="rtl"
+        >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 dark:border-white/5 bg-gradient-to-l from-secondary/5 to-transparent">
               <div className="flex items-center gap-2">
@@ -179,9 +173,8 @@ export function NotificationPopover() {
                 <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
               </Link>
             )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { ShoppingCart, CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Ta
 import { useCart } from '@/contexts';
 import { getCouponByCode } from '@/data';
 import { formatPrice, cn } from '@/utils';
-import { PAGES, TAX_RATE, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, SHIPPING_COST as SHIPPING } from '@/constants';
+import { PAGES, TAX_RATE, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { Button, Input, Textarea, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 
@@ -41,8 +41,17 @@ export function CheckoutPage() {
     resolver: zodResolver(shippingSchema),
   });
 
-  const tax = subtotal * TAX_RATE;
-  const actualShipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING;
+  useEffect(() => {
+    if (items.length === 0) navigate(PAGES.CART);
+  }, [items.length, navigate]);
+
+  const tax = useMemo(() => subtotal * TAX_RATE, [subtotal]);
+  const actualShipping = useMemo(() => subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST, [subtotal]);
+  const isGuest = useMemo(() => {
+    try {
+      return !JSON.parse(localStorage.getItem('auth') || '{}')?.isAuthenticated;
+    } catch { return true; }
+  }, []);
 
   const handleShippingSubmit = () => {
     setCurrentStep(2);
@@ -63,13 +72,6 @@ export function CheckoutPage() {
     clearCart();
     navigate(PAGES.ORDER_SUCCESS.replace(':orderId', orderId));
   };
-
-  if (items.length === 0) {
-    navigate(PAGES.CART);
-    return null;
-  }
-
-  const isGuest = !JSON.parse(localStorage.getItem('auth') || '{}')?.isAuthenticated;
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center gap-2 mb-8" dir="rtl">

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   Heart,
@@ -287,15 +286,8 @@ export const Navbar = memo(function Navbar() {
                       )}
                     />
                   </button>
-                  <AnimatePresence>
-                    {showCategories && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute top-full right-0 mt-2 w-[500px] lg:w-[600px] bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50"
-                      >
+                  {showCategories && (
+                      <div className="absolute top-full right-0 mt-2 w-[500px] lg:w-[600px] bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50 animate-fade-in-up">
                         <div className="p-3">
                           <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
                             {categories.map((cat) => (
@@ -335,9 +327,8 @@ export const Navbar = memo(function Navbar() {
                             <ChevronDown className="w-3.5 h-3.5 rotate-[-90deg]" />
                           </Link>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
-                  </AnimatePresence>
                 </div>
               </nav>
 
@@ -591,11 +582,7 @@ export const Navbar = memo(function Navbar() {
                     {tab.label}
                   </span>
                   {isActive && (
-                    <motion.div
-                      layoutId="bottomTab"
-                      className="absolute -bottom-0.5 w-6 h-0.5 rounded-full bg-secondary"
-                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                    />
+                    <div className="absolute -bottom-0.5 w-6 h-0.5 rounded-full bg-secondary animate-fade-in" />
                   )}
                 </button>
               );
