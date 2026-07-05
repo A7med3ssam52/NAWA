@@ -1,12 +1,27 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, X, Sparkles } from 'lucide-react';
-import { useSpin } from '@/contexts';
+import { Gift, X, Sparkles, Phone, CheckCircle, AlertCircle } from 'lucide-react';
+import { useAuth, useSpin } from '@/contexts';
 import { SpinWheel } from './SpinWheel';
 import { SpinResultModal } from './SpinResultModal';
 import { cn } from '@/utils';
 
+const PHONE_STORAGE_KEY = 'spin_guest_phone';
+
+function isValidEgyptianPhone(phone: string): boolean {
+  return /^01[0-9]{9}$/.test(phone.replace(/\s/g, ''));
+}
+
+function getStoredPhone(): string | null {
+  try { return localStorage.getItem(PHONE_STORAGE_KEY); } catch { return null; }
+}
+
+function storePhone(phone: string) {
+  try { localStorage.setItem(PHONE_STORAGE_KEY, phone); } catch {}
+}
+
 export function SpinEntryButton() {
+  const { isAuthenticated } = useAuth();
   const {
     prizes,
     isSpinning,
@@ -21,6 +36,9 @@ export function SpinEntryButton() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [phoneVerified, setPhoneVerified] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 640);
@@ -28,6 +46,20 @@ export function SpinEntryButton() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      const stored = getStoredPhone();
+      if (stored) {
+        setPhone(stored);
+        setPhoneVerified(true);
+      } else {
+        setPhone('');
+        setPhoneVerified(false);
+      }
+      setPhoneError('');
+    }
+  }, [isOpen]);
 
   const canSpin = spinsRemainingToday > 0;
 
@@ -42,6 +74,25 @@ export function SpinEntryButton() {
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) setIsOpen(false);
   }, []);
+
+  const handlePhoneSubmit = useCallback(() => {
+    const cleaned = phone.replace(/\s/g, '');
+    if (!isValidEgyptianPhone(cleaned)) {
+      setPhoneError('يرجى إدخال رقم مصري صحيح مكون من 11 رقم');
+      return;
+    }
+    storePhone(cleaned);
+    setPhoneVerified(true);
+    setPhoneError('');
+  }, [phone]);
+
+  const handlePhoneInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^0-9\s]/g, '').slice(0, 11);
+    setPhone(val);
+    if (phoneError) setPhoneError('');
+  }, [phoneError]);
+
+  const needsPhone = !isAuthenticated && !phoneVerified;
 
   return (
     <>
@@ -105,6 +156,7 @@ export function SpinEntryButton() {
             onClick={handleBackdropClick}
           >
             <motion.div
+              key={needsPhone ? 'phone' : 'wheel'}
               initial={{ scale: 0.8, opacity: 0, y: 40 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 40 }}
@@ -120,52 +172,115 @@ export function SpinEntryButton() {
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              <div className="text-center mb-4 sm:mb-6">
-                <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-gradient-to-l from-secondary/10 to-blue-500/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
-                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-                  فرصة يومية
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
-                  عجلة الحظ
-                </h2>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">
-                  {canSpin
-                    ? `لديك ${spinsRemainingToday} فرصة للفوز اليوم`
-                    : 'لقد استنفذت فرصك اليوم، عد غداً!'}
-                </p>
-              </div>
+              {needsPhone ? (
+                <>
+                  <div className="text-center mb-6 sm:mb-8">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-br from-secondary/10 to-blue-500/10 flex items-center justify-center mb-4">
+                      <Phone className="w-8 h-8 sm:w-10 sm:h-10 text-secondary" />
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+                      أدخل رقم هاتفك
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo mt-2 max-w-xs mx-auto">
+                      للمشاركة في عجلة الحظ، يرجى إدخال رقم هاتفك المصري
+                    </p>
+                  </div>
 
-              <SpinWheel
-                prizes={prizes}
-                spinning={isSpinning}
-                onSpinEnd={completeSpin}
-                onStartSpin={handleStartSpin}
-                disabled={!canSpin || isSpinning}
-              />
+                  <div className="space-y-4">
+                    <div>
+                      <div className="relative">
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm sm:text-base font-cairo text-gray-400">
+                          +
+                        </span>
+                        <input
+                          type="tel"
+                          value={phone}
+                          onChange={handlePhoneInput}
+                          placeholder="20XXXXXXXXX"
+                          className={cn(
+                            'w-full text-left dir-ltr px-4 pr-8 py-3 sm:py-3.5 text-base sm:text-lg font-cairo tracking-wider',
+                            'bg-gray-50 dark:bg-dark-border/50 border-2 rounded-2xl transition-all',
+                            'text-gray-900 dark:text-dark-text placeholder-gray-400',
+                            'focus:outline-none focus:border-secondary focus:bg-white dark:focus:bg-dark-border',
+                            phoneError ? 'border-danger' : 'border-gray-200 dark:border-dark-border',
+                          )}
+                          autoFocus
+                        />
+                      </div>
+                      {phoneError && (
+                        <div className="flex items-center gap-1.5 mt-2 text-xs text-danger font-cairo">
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                          {phoneError}
+                        </div>
+                      )}
+                    </div>
 
-              <div className="mt-4 sm:mt-6 space-y-1.5">
-                <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 dark:text-dark-muted font-cairo text-center mb-2">
-                  الجوائز
-                </p>
-                <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5">
-                  {prizes.filter((p) => p.isActive).map((prize) => (
-                    <span
-                      key={prize.id}
-                      className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold font-cairo"
-                      style={{
-                        backgroundColor: prize.color + '20',
-                        color: prize.color,
-                      }}
+                    <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-500/10 rounded-2xl border border-amber-200 dark:border-amber-500/20">
+                      <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
+                      <p className="text-[11px] text-amber-700 dark:text-amber-400 font-cairo">
+                        رقم الهاتف سيُستخدم مرة واحدة فقط ولن يتم تخزينه بشكل دائم
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={handlePhoneSubmit}
+                      disabled={phone.length < 10}
+                      className="w-full py-3 sm:py-3.5 rounded-2xl text-sm sm:text-base font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-secondary/25"
                     >
-                      <span
-                        className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full"
-                        style={{ backgroundColor: prize.color }}
-                      />
-                      {prize.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                      استمر
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-center mb-4 sm:mb-6">
+                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-gradient-to-l from-secondary/10 to-blue-500/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
+                      <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                      فرصة يومية
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+                      عجلة الحظ
+                    </h2>
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">
+                      {canSpin
+                        ? `لديك ${spinsRemainingToday} فرصة للفوز اليوم`
+                        : 'لقد استنفذت فرصك اليوم، عد غداً!'}
+                    </p>
+                  </div>
+
+                  <SpinWheel
+                    prizes={prizes}
+                    spinning={isSpinning}
+                    onSpinEnd={completeSpin}
+                    onStartSpin={handleStartSpin}
+                    disabled={!canSpin || isSpinning}
+                  />
+
+                  <div className="mt-4 sm:mt-6 space-y-1.5">
+                    <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 dark:text-dark-muted font-cairo text-center mb-2">
+                      الجوائز
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5">
+                      {prizes.filter((p) => p.isActive).map((prize) => (
+                        <span
+                          key={prize.id}
+                          className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold font-cairo"
+                          style={{
+                            backgroundColor: prize.color + '20',
+                            color: prize.color,
+                          }}
+                        >
+                          <span
+                            className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full"
+                            style={{ backgroundColor: prize.color }}
+                          />
+                          {prize.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}
