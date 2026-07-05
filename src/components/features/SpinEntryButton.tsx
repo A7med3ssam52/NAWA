@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gift, X, Sparkles, Phone, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Phone, AlertCircle, RefreshCw } from 'lucide-react';
 import { useAuth, useSpin } from '@/contexts';
 import { SpinWheel } from './SpinWheel';
 import { SpinResultModal } from './SpinResultModal';
@@ -119,16 +119,12 @@ export function SpinEntryButton() {
               paddingBottom: isMobile ? 'calc(0.625rem + env(safe-area-inset-bottom, 0px))' : undefined,
             }}
           >
-            {canSpin ? (
-              <motion.span
-                animate={{ rotate: [0, 15, -15, 0] }}
-                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-              >
-                <Gift className={isMobile ? 'w-4 h-4' : 'w-5 h-5'} />
-              </motion.span>
-            ) : (
-              <Sparkles className={isMobile ? 'w-4 h-4' : 'w-5 h-5'} />
-            )}
+            <motion.span
+              animate={{ rotate: canSpin ? [0, 360] : [0, 0] }}
+              transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
+            >
+              <RefreshCw className={isMobile ? 'w-4 h-4' : 'w-5 h-5'} />
+            </motion.span>
             <span>{isMobile ? 'حظ' : 'عجلة الحظ'}</span>
             {canSpin && (
               <motion.span
@@ -235,7 +231,7 @@ export function SpinEntryButton() {
                 <>
                   <div className="text-center mb-4 sm:mb-6">
                     <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-gradient-to-l from-secondary/10 to-blue-500/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
-                      <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                       فرصة يومية
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
