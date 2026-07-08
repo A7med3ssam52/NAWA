@@ -6,7 +6,7 @@ import {
   ChevronLeft, Clock, CheckCircle, X, Tag, Edit3, CreditCard,
   Map, Home, Briefcase, MoreHorizontal, AlertCircle, Eye,
   EyeOff, Star as StarIcon, MessageSquare, RefreshCw, Filter,
-  Check, XCircle, Search, Hash, Download, Calendar, FileText,
+  Check, XCircle, Search, Download, Calendar, FileText,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth, useWishlist } from '@/contexts';
@@ -179,7 +179,6 @@ function AddressFormModal({
   const [street, setStreet] = useState(editAddress?.street || '');
   const [city, setCity] = useState(editAddress?.city || '');
   const [state, setState] = useState(editAddress?.state || '');
-  const [zipCode, setZipCode] = useState(editAddress?.zipCode || '');
   const [isDefault, setIsDefault] = useState(editAddress?.isDefault || false);
 
   const labelOptions = [
@@ -200,7 +199,6 @@ function AddressFormModal({
       street,
       city,
       state,
-      zipCode,
       isDefault,
     });
     onClose();
@@ -223,7 +221,6 @@ function AddressFormModal({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Input label="المدينة" value={city} onChange={(e) => setCity(e.target.value)} />
           <Input label="المنطقة / المحافظة" value={state} onChange={(e) => setState(e.target.value)} />
-          <Input label="الرمز البريدي" value={zipCode} onChange={(e) => setZipCode(e.target.value)} dir="ltr" />
         </div>
         <label className="flex items-center gap-3 cursor-pointer">
           <input
@@ -608,7 +605,7 @@ export function ProfilePage() {
                       <p className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /> {addr.fullName}</p>
                       <p className="flex items-center gap-1.5" dir="ltr"><Phone className="w-3.5 h-3.5" /> {addr.phone}</p>
                       <p className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {addr.street}، {addr.city}، {addr.state}</p>
-                      {addr.zipCode && <p className="flex items-center gap-1.5"><Hash className="w-3.5 h-3.5" /> {addr.zipCode}</p>}
+
                     </div>
                     <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
                       <Button

@@ -1,5 +1,6 @@
 import { useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -29,14 +30,14 @@ interface SidebarProps {
 }
 
 const navLinks = [
-  { label: 'الرئيسية', href: PAGES.HOME, icon: Home },
-  { label: 'المنتجات', href: PAGES.PRODUCTS, icon: Package },
-  { label: 'الأقسام', href: PAGES.CATEGORIES, icon: Grid3X3 },
-  { label: 'العروض', href: PAGES.OFFERS, icon: Percent },
+  { label: 'nav.home', href: PAGES.HOME, icon: Home },
+  { label: 'nav.products', href: PAGES.PRODUCTS, icon: Package },
+  { label: 'nav.categories', href: PAGES.CATEGORIES, icon: Grid3X3 },
+  { label: 'nav.offers', href: PAGES.OFFERS, icon: Percent },
 ];
 
 const contactItems = [
-  { icon: MapPin, text: 'القاهرة، مصر' },
+  { icon: MapPin, tKey: 'nav.location' as const },
   { icon: Phone, text: '+20 100 123 4567', dir: 'ltr' as const },
   { icon: Mail, text: 'info@zahi.store' },
 ];
@@ -64,6 +65,7 @@ const itemVariants = {
 };
 
 export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { t, i18n } = useTranslation();
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="القائمة الجانبية">
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={t('nav.sidebarLabel')}>
           {/* Backdrop with gradient blur */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/50 to-transparent backdrop-blur-sm"
@@ -103,7 +105,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
             initial={{ x: '100%' }}
             animate={{ x: 0, transition: { type: 'spring', damping: 30, stiffness: 300 } }}
             exit={{ x: '100%', transition: { duration: 0.25, ease: 'easeIn' } }}
-            dir="rtl"
+            dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
           >
             {/* Decorative blobs */}
             <div className="absolute -top-32 -right-32 w-64 h-64 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
@@ -130,7 +132,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                       <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-success rounded-full border-2 border-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold font-cairo text-gray-900">مرحباً، {user.name}</p>
+                      <p className="text-sm font-bold font-cairo text-gray-900">{t('nav.welcomeUser', { name: user.name })}</p>
                       <p className="text-xs text-gray-500 font-cairo">{user.email}</p>
                     </div>
                   </motion.div>
@@ -145,15 +147,15 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                       <User className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold font-cairo text-gray-900">مرحباً بك</p>
-                      <p className="text-xs text-gray-500 font-cairo">تسوق واستمتع بأفضل العروض</p>
+                      <p className="text-sm font-bold font-cairo text-gray-900">{t('nav.welcome')}</p>
+                      <p className="text-xs text-gray-500 font-cairo">{t('nav.welcomeDesc')}</p>
                     </div>
                   </motion.div>
                 )}
                 <button
                   onClick={onClose}
                   className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-white/50 transition-colors"
-                  aria-label="إغلاق"
+                  aria-label={t('common.close')}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -167,7 +169,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     onClick={onClose}
                     className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white text-sm font-bold font-cairo shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/30 transition-all"
                   >
-                    <span>تسجيل الدخول أو إنشاء حساب</span>
+                    <span>{t('nav.loginOrRegister')}</span>
                     <ArrowLeft className="w-4 h-4" />
                   </Link>
                 </div>
@@ -195,7 +197,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                         <span className="p-2 rounded-xl bg-gray-100 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
                           <Icon className="w-5 h-5" />
                         </span>
-                        {link.label}
+                        {t(link.label)}
                       </Link>
                     </motion.div>
                   );
@@ -212,20 +214,20 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
               {/* User Links */}
               <motion.div className="space-y-0.5 mb-6" variants={itemVariants}>
                 <div className="px-3.5 mb-2">
-                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">حسابي</span>
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('nav.myAccount')}</span>
                 </div>
                 {[
-                  { label: 'المفضلة', href: PAGES.WISHLIST, icon: Heart },
-                  { label: 'سلة التسوق', href: PAGES.CART, icon: ShoppingCart },
+                  { label: 'nav.wishlist', href: PAGES.WISHLIST, icon: Heart },
+                  { label: 'nav.cart', href: PAGES.CART, icon: ShoppingCart },
                   ...(isAuthenticated
-                    ? [{ label: 'الملف الشخصي', href: PAGES.PROFILE, icon: User }]
-                    : [{ label: 'تسجيل الدخول', href: '/login', icon: LogIn }]
+                    ? [{ label: 'nav.profile', href: PAGES.PROFILE, icon: User }]
+                    : [{ label: 'nav.login', href: '/login', icon: LogIn }]
                   ),
                 ].map((link) => {
                   const Icon = link.icon;
                   return (
                     <Link
-                      key={link.label}
+                      key={t(link.label)}
                       to={link.href}
                       onClick={onClose}
                       className="flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-700 hover:bg-secondary/5 hover:text-secondary transition-all duration-200 group"
@@ -233,7 +235,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                       <span className="p-1.5 rounded-xl bg-gray-100 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
                         <Icon className="w-4 h-4" />
                       </span>
-                      {link.label}
+                      {t(link.label)}
                     </Link>
                   );
                 })}
@@ -249,7 +251,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
               {/* More */}
               <motion.div className="space-y-0.5 mb-6" variants={itemVariants}>
                 <div className="px-3.5 mb-2">
-                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">المزيد</span>
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('nav.more')}</span>
                 </div>
                 <Link
                   to={PAGES.NOTIFICATIONS}
@@ -259,7 +261,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <span className="p-1.5 rounded-xl bg-gray-100 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
                     <Bell className="w-4 h-4" />
                   </span>
-                  الإشعارات
+                  {t('nav.notifications')}
                 </Link>
                 <Link
                   to={PAGES.COMPARE}
@@ -269,7 +271,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <span className="p-1.5 rounded-xl bg-gray-100 text-gray-400 group-hover:bg-secondary/10 group-hover:text-secondary transition-all duration-200">
                     <BarChart3 className="w-4 h-4" />
                   </span>
-                  المقارنة
+                  {t('nav.compare')}
                 </Link>
 
               </motion.div>
@@ -284,7 +286,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
               {/* Categories */}
               <motion.div className="mb-6" variants={itemVariants}>
                 <div className="px-3.5 mb-3">
-                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">الأقسام</span>
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('nav.categories')}</span>
                 </div>
                 <div className="space-y-0.5">
                   {categories.map((cat, idx) => (
@@ -317,17 +319,17 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
               {/* Contact Info */}
               <motion.div className="mb-4" variants={itemVariants}>
                 <div className="px-3.5 mb-3">
-                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">تواصل معنا</span>
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('nav.contactUs')}</span>
                 </div>
                 <div className="space-y-2 px-3.5">
                   {contactItems.map((item) => {
                     const Icon = item.icon;
                     return (
-                      <div key={item.text} className="flex items-center gap-3 text-sm text-gray-500 font-cairo">
+                      <div key={item.text || item.tKey} className="flex items-center gap-3 text-sm text-gray-500 font-cairo">
                         <span className="p-1.5 rounded-xl bg-secondary/5 text-secondary shrink-0">
                           <Icon className="w-3.5 h-3.5" />
                         </span>
-                        <span dir={item.dir}>{item.text}</span>
+                        <span dir={item.dir}>{item.tKey ? t(item.tKey) : item.text}</span>
                       </div>
                     );
                   })}
@@ -336,7 +338,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
 
               {/* Footer branding */}
               <div className="text-center pt-2 pb-1">
-                <p className="text-[10px] text-gray-400 font-cairo">© زاهي 2026 - جميع الحقوق محفوظة</p>
+                <p className="text-[10px] text-gray-400 font-cairo">{t('nav.copyright')}</p>
               </div>
             </motion.div>
           </motion.div>

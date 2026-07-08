@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '@/api';
 import { SORT_OPTIONS, PAGE_SIZE } from '@/constants';
@@ -22,6 +23,7 @@ const defaultFilters: FilterState = {
 };
 
 export function ProductsPage() {
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(() => ({
     ...defaultFilters,
@@ -56,11 +58,11 @@ export function ProductsPage() {
   const totalPages = data?.totalPages || 1;
 
   return (
-    <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"
     >
       <div className="flex items-center justify-between mb-6 lg:mb-8">
         <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
-          جميع المنتجات
+          {t('products.title')}
         </h1>
         <div className="w-48">
           <Select
@@ -78,7 +80,7 @@ export function ProductsPage() {
 
           {data && (
             <p className="text-sm text-gray-500 font-cairo mb-4">
-              {data.total} منتج
+              {t('categories.productsCount', { count: data.total })}
             </p>
           )}
 

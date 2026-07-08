@@ -15,7 +15,6 @@
     "total": 4599,
     "subtotal": 4599,
     "shipping": 0,
-    "tax": 643.86,
     "discount": 0,
     "shippingAddress": {
       "id": "addr-1",
@@ -25,7 +24,6 @@
       "street": "شارع النيل، عمارة 15، شقة 5",
       "city": "القاهرة",
       "state": "القاهرة",
-      "zipCode": "11511",
       "isDefault": true
     },
     "paymentMethod": "بطاقة ائتمان",
@@ -63,7 +61,6 @@
     "total": 31798,
     "subtotal": 33598,
     "shipping": 0,
-    "tax": 4703.72,
     "discount": 1800,
     "couponCode": "WELCOME10",
     "shippingAddress": {
@@ -74,7 +71,6 @@
       "street": "شارع جامعة الدول، فيلا 22",
       "city": "الجيزة",
       "state": "الجيزة",
-      "zipCode": "12511",
       "isDefault": true
     },
     "paymentMethod": "الدفع عند الاستلام",
@@ -118,7 +114,6 @@
     "total": 7498.86,
     "subtotal": 8094,
     "shipping": 30,
-    "tax": 1133.16,
     "discount": 625.14,
     "couponCode": "SUMMER20",
     "shippingAddress": {
@@ -129,7 +124,6 @@
       "street": "شارع النيل، عمارة 15، شقة 5",
       "city": "القاهرة",
       "state": "القاهرة",
-      "zipCode": "11511",
       "isDefault": true
     },
     "paymentMethod": "محفظة إلكترونية",

@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Share2, Check, Truck, Package, Bell, Star, MessageSquare, BarChart3 } from 'lucide-react';
 import { useProduct, useRelatedProducts } from '@/api';
@@ -16,19 +17,20 @@ import toast from 'react-hot-toast';
 import type { Tab } from '@/components/ui/Tabs';
 
 const COLORS_OPTIONS = [
-  { name: 'أسود', hex: '#000000' },
-  { name: 'أبيض', hex: '#FFFFFF' },
-  { name: 'أحمر', hex: '#EF4444' },
-  { name: 'أزرق', hex: '#3B82F6' },
-  { name: 'أخضر', hex: '#22C55E' },
-  { name: 'بيج', hex: '#F5E6D3' },
-  { name: 'رمادي', hex: '#6B7280' },
-  { name: 'نبيتي', hex: '#7C1D4E' },
+  { name: 'أسود', nameKey: 'black', hex: '#000000' },
+  { name: 'أبيض', nameKey: 'white', hex: '#FFFFFF' },
+  { name: 'أحمر', nameKey: 'red', hex: '#EF4444' },
+  { name: 'أزرق', nameKey: 'blue', hex: '#3B82F6' },
+  { name: 'أخضر', nameKey: 'green', hex: '#22C55E' },
+  { name: 'بيج', nameKey: 'beige', hex: '#F5E6D3' },
+  { name: 'رمادي', nameKey: 'gray', hex: '#6B7280' },
+  { name: 'نبيتي', nameKey: 'wine', hex: '#7C1D4E' },
 ];
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 function BackInStockForm({ productId, productName, onClose }: { productId: string; productName: string; onClose: () => void }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -39,7 +41,7 @@ function BackInStockForm({ productId, productName, onClose }: { productId: strin
     existing.push({ productId, email: email.trim(), createdAt: new Date().toISOString() });
     localStorage.setItem('back_in_stock', JSON.stringify(existing));
     setSubmitted(true);
-    toast.success('سيتم إشعارك عند توفر المنتج');
+    toast.success(t('products.willNotify'));
     setTimeout(onClose, 1500);
   };
 
@@ -47,21 +49,22 @@ function BackInStockForm({ productId, productName, onClose }: { productId: strin
     return (
       <div className="text-center py-6">
         <Check className="w-12 h-12 text-success mx-auto mb-3" />
-        <p className="text-sm font-cairo text-gray-600">تم تسجيل طلبك، سنخبرك عند توفر {productName}</p>
+        <p className="text-sm font-cairo text-gray-600">{t('products.notifyRegistered', { productName })}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <p className="text-sm font-cairo text-gray-600">أدخل بريدك الإلكتروني ليتم إشعارك عند توفر هذا المنتج</p>
-      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="بريدك الإلكتروني" required dir="rtl" />
-      <Button type="submit" variant="secondary" size="md" fullWidth rounded="xl">إشعرني عند التوفر</Button>
+      <p className="text-sm font-cairo text-gray-600">{t('products.notifyEmailPrompt')}</p>
+      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('products.yourEmail')} required dir="rtl" />
+      <Button type="submit" variant="secondary" size="md" fullWidth rounded="xl">{t('products.notifyButton')}</Button>
     </form>
   );
 }
 
 function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () => void }) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
@@ -74,13 +77,14 @@ function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () =
     if (rating === 0 || !comment.trim()) return;
     setSubmitting(true);
     await new Promise((r) => setTimeout(r, 500));
+    const siteName = t('common.siteName');
     const existing = JSON.parse(localStorage.getItem('product_reviews') || '[]');
     existing.unshift({
       id: `review-${Date.now()}`,
       productId,
       userId: 'guest',
-      userName: name.trim() || 'مستخدم زاهي',
-      userAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim() || 'مستخدم زاهي')}&background=2563EB&color=fff`,
+      userName: name.trim() || siteName,
+      userAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim() || siteName)}&background=2563EB&color=fff`,
       rating,
       title: title.trim(),
       comment: comment.trim(),
@@ -89,27 +93,27 @@ function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () =
     });
     localStorage.setItem('product_reviews', JSON.stringify(existing));
     setSubmitting(false);
-    toast.success('تم إضافة تقييمك بنجاح');
+    toast.success(t('products.reviewSubmitted'));
     onSubmit();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 rounded-xl p-4">
-      <h4 className="text-sm font-bold font-cairo text-gray-900">أضف تقييمك</h4>
+      <h4 className="text-sm font-bold font-cairo text-gray-900">{t('products.addReview')}</h4>
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button key={star} type="button" onMouseEnter={() => setHoverRating(star)} onMouseLeave={() => setHoverRating(0)} onClick={() => setRating(star)}>
             <Star className={`w-6 h-6 transition-colors ${star <= (hoverRating || rating) ? 'fill-accent text-accent' : 'text-gray-300'}`} />
           </button>
         ))}
-        <span className="text-xs text-gray-400 font-cairo mr-2">{rating > 0 ? `${rating} من 5` : 'اختر تقييمك'}</span>
+        <span className="text-xs text-gray-400 font-cairo mr-2">{rating > 0 ? t('products.ratingOutOf5', { rating }) : t('products.selectRating')}</span>
       </div>
-      <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="عنوان التقييم (اختياري)" dir="rtl" />
-      <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="اكتب تقييمك هنا..." rows={3} required />
-      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسمك (اختياري)" dir="rtl" />
+      <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t('products.reviewTitlePlaceholder')} dir="rtl" />
+      <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('products.reviewPlaceholder')} rows={3} required />
+      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('products.yourNamePlaceholder')} dir="rtl" />
       <div className="flex justify-end gap-2">
         <Button type="submit" variant="secondary" size="md" rounded="xl" loading={submitting} disabled={rating === 0 || !comment.trim()}>
-          <MessageSquare className="w-4 h-4" /> إرسال التقييم
+          <MessageSquare className="w-4 h-4" /> {t('products.submitReview')}
         </Button>
       </div>
     </form>
@@ -117,6 +121,7 @@ function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () =
 }
 
 export function ProductDetailsPage() {
+  const { t, i18n } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading, error, refetch } = useProduct(slug || '');
@@ -132,7 +137,7 @@ export function ProductDetailsPage() {
   const [showStockModal, setShowStockModal] = useState(false);
   const [reviewKey, setReviewKey] = useState(0);
 
-  useEffect(() => { if (product) document.title = `${product.name} | زاهي`; }, [product]);
+  useEffect(() => { if (product) document.title = `${product.name} | ${t('common.siteName')}`; }, [product, t]);
   useEffect(() => { if (product) addRecentlyViewed(product); }, [product?.id]);
 
   const reviews = useMemo(() => {
@@ -173,15 +178,15 @@ export function ProductDetailsPage() {
   const cartItem = items.find((i) => i.product.id === product.id);
 
   const breadcrumbItems = [
-    { label: 'الرئيسية', href: PAGES.HOME },
-    { label: 'المنتجات', href: PAGES.PRODUCTS },
+    { label: t('nav.home'), href: PAGES.HOME },
+    { label: t('nav.products'), href: PAGES.PRODUCTS },
     { label: product.name },
   ];
 
   const tabs: Tab[] = [
-    { id: 'description', label: 'الوصف' },
-    { id: 'specifications', label: 'المواصفات' },
-    { id: 'reviews', label: `التقييمات (${reviews.length})` },
+    { id: 'description', label: t('products.description') },
+    { id: 'specifications', label: t('products.specifications') },
+    { id: 'reviews', label: t('products.reviews', { count: reviews.length }) },
   ];
 
   const handleAddToCart = () => {
@@ -212,7 +217,7 @@ export function ProductDetailsPage() {
   };
 
   return (
-    <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       <Breadcrumb items={breadcrumbItems} className="mb-4 sm:mb-6" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-6 sm:mb-12">
@@ -224,13 +229,13 @@ export function ProductDetailsPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               {product.isNew && (
-                <Badge variant="success" size="sm">جديد</Badge>
+                <Badge variant="success" size="sm">{t('products.new')}</Badge>
               )}
               {product.discount && product.discount > 0 && (
                 <Badge variant="danger" size="sm">{product.discount}%-</Badge>
               )}
               {isOutOfStock && (
-                <Badge variant="secondary" size="sm">نفد من المخزون</Badge>
+                <Badge variant="secondary" size="sm">{t('products.outOfStock')}</Badge>
               )}
             </div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
@@ -239,7 +244,7 @@ export function ProductDetailsPage() {
             <div className="flex items-center gap-3 mt-2">
               <Rating value={product.rating} count={product.reviewsCount} size="md" />
               <span className="text-xs text-gray-400 font-cairo">
-                | كود المنتج: {product.sku}
+                | {t('products.productCode')} {product.sku}
               </span>
             </div>
           </div>
@@ -265,22 +270,22 @@ export function ProductDetailsPage() {
           <div className="flex items-center gap-4 text-sm text-gray-500 font-cairo">
             <div className="flex items-center gap-1.5">
               <Truck className="w-4 h-4" />
-              {product.price >= FREE_SHIPPING_THRESHOLD ? 'توصيل مجاني' : `توصيل ${formatPrice(SHIPPING_COST)}`}
+              {product.price >= FREE_SHIPPING_THRESHOLD ? t('cart.freeShipping') : t('products.shippingCost', { cost: formatPrice(SHIPPING_COST) })}
             </div>
             <div className="flex items-center gap-1.5">
               <Package className="w-4 h-4" />
-              المخزون: {product.stock} قطعة
+              {t('products.stock')} {product.stock}
             </div>
           </div>
 
           {selectedColor && (
             <div className="text-sm font-cairo text-gray-500">
-              اللون: <span className="font-semibold text-gray-900">{COLORS_OPTIONS.find((c) => c.hex === selectedColor)?.name}</span>
+              {t('cart.color')} <span className="font-semibold text-gray-900">{t(`products.colors.${COLORS_OPTIONS.find((c) => c.hex === selectedColor)?.nameKey}`)}</span>
             </div>
           )}
 
           <div>
-            <p className="text-xs font-cairo text-gray-500 mb-2">الألوان المتاحة:</p>
+            <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableColors')}:</p>
             <div className="flex items-center gap-2 flex-wrap">
               {COLORS_OPTIONS.map((color) => (
                 <button
@@ -291,7 +296,7 @@ export function ProductDetailsPage() {
                     selectedColor === color.hex ? 'border-secondary scale-110 shadow-md' : 'border-gray-200 hover:border-gray-300'
                   )}
                   style={{ backgroundColor: color.hex }}
-                  title={color.name}
+                  title={t(`products.colors.${color.nameKey}`)}
                 >
                   {selectedColor === color.hex && (
                     <span className="flex items-center justify-center">
@@ -304,7 +309,7 @@ export function ProductDetailsPage() {
           </div>
 
           <div>
-            <p className="text-xs font-cairo text-gray-500 mb-2">المقاسات المتاحة:</p>
+            <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableSizes')}:</p>
             <div className="flex items-center gap-2 flex-wrap">
               {SIZES.map((size) => (
                 <button
@@ -326,25 +331,25 @@ export function ProductDetailsPage() {
           <div className="flex items-center gap-4">
             <QuantitySelector value={quantity} onChange={setQuantity} max={product.stock} disabled={isOutOfStock} />
             <div className="text-sm text-gray-500 font-cairo">
-              الإجمالي: <span className="font-bold text-gray-900">{formatPrice(product.price * quantity)}</span>
+              {t('cart.total')}: <span className="font-bold text-gray-900">{formatPrice(product.price * quantity)}</span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Button variant="secondary" size="lg" rounded="xl" fullWidth onClick={handleAddToCart} disabled={isOutOfStock}>
               <ShoppingCart className="w-5 h-5" />
-              أضف إلى السلة
+              {t('products.addToCart')}
             </Button>
             <Button variant="accent" size="lg" rounded="xl" fullWidth onClick={handleBuyNow} disabled={isOutOfStock}>
               <Check className="w-5 h-5" />
-              اشتري الآن
+              {t('products.buyNow')}
             </Button>
             <Button variant="outline" size="lg" rounded="xl" onClick={handleWishlistToggle} className="!px-4">
               <Heart className={`w-5 h-5 ${inWishlist ? 'fill-danger text-danger' : ''}`} />
             </Button>
             <Button variant="outline" size="lg" rounded="xl" onClick={() => isInCompare(product.id) ? removeCompare(product.id) : addCompare(product)} className={cn(isInCompare(product.id) && 'text-secondary border-secondary')}>
               <BarChart3 className="w-5 h-5" />
-              {isInCompare(product.id) ? 'إزالة من المقارنة' : 'أضف للمقارنة'}
+              {isInCompare(product.id) ? t('products.removeFromCompare') : t('products.addToCompare')}
             </Button>
             <Button variant="ghost" size="lg" rounded="xl" onClick={handleShare} className="!px-4">
               <Share2 className="w-5 h-5" />

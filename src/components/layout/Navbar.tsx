@@ -377,7 +377,7 @@ export const Navbar = memo(function Navbar() {
               <Link
                 to={PAGES.WISHLIST}
                 className="hidden lg:flex relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label="المفضلة"
+                aria-label={t('nav.wishlistLabel')}
               >
                 <Heart className="w-5 h-5" />
                 {wishlistCount > 0 && (
@@ -395,7 +395,7 @@ export const Navbar = memo(function Navbar() {
               <Link
                 to={PAGES.COMPARE}
                 className="hidden lg:flex relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label="مقارنة"
+                aria-label={t('nav.compareLabel')}
               >
                 <BarChart3 className="w-5 h-5" />
               </Link>
@@ -448,7 +448,7 @@ export const Navbar = memo(function Navbar() {
                             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             <User className="w-4 h-4" />
-                            الملف الشخصي
+                            {t('nav.profile')}
                           </Link>
                           <Link
                             to={PAGES.MY_ORDERS}
@@ -456,7 +456,7 @@ export const Navbar = memo(function Navbar() {
                             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             <Package className="w-4 h-4" />
-                            طلباتي
+                            {t('nav.myOrders')}
                           </Link>
                           <Link
                             to={PAGES.SETTINGS}
@@ -464,7 +464,7 @@ export const Navbar = memo(function Navbar() {
                             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             <Settings className="w-4 h-4" />
-                            الإعدادات
+                            {t('nav.settings')}
                           </Link>
                           <Link
                             to={PAGES.FAQ}
@@ -472,7 +472,7 @@ export const Navbar = memo(function Navbar() {
                             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                           >
                             <HelpCircle className="w-4 h-4" />
-                            المساعدة
+                            {t('nav.help')}
                           </Link>
                           <hr className="my-1 border-gray-100" />
                           <button
@@ -480,7 +480,7 @@ export const Navbar = memo(function Navbar() {
                             className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-danger hover:bg-danger/5 transition-colors"
                           >
                             <LogOut className="w-4 h-4" />
-                            تسجيل الخروج
+                            {t('nav.logout')}
                           </button>
                         </div>
                       </div>
@@ -491,13 +491,13 @@ export const Navbar = memo(function Navbar() {
                     <Link
                       to="/login"
                       className="lg:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-                      aria-label="تسجيل الدخول"
+                      aria-label={t('nav.loginLabel')}
                     >
                       <UserCircle className="w-5 h-5" />
                     </Link>
                     <Link to="/login" className="hidden lg:block">
                       <Button variant="primary" size="sm" rounded="full" className="shadow-none hover:shadow-none">
-                        تسجيل الدخول
+                        {t('nav.login')}
                       </Button>
                     </Link>
                   </>
@@ -555,7 +555,7 @@ export const Navbar = memo(function Navbar() {
                       ? 'text-secondary font-bold'
                       : 'text-gray-400'
                   )}>
-                    {tab.label}
+                    {t(tab.label)}
                   </span>
                   {isActive && (
                     <div className="absolute -bottom-0.5 w-6 h-0.5 rounded-full bg-secondary animate-fade-in" />

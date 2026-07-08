@@ -8,7 +8,7 @@ import { ShoppingCart, CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Ta
 import { useCart } from '@/contexts';
 import { getCouponByCode } from '@/data';
 import { formatPrice, cn } from '@/utils';
-import { PAGES, TAX_RATE, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
+import { PAGES, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { Button, Input, Textarea, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 
@@ -18,7 +18,6 @@ const shippingSchema = z.object({
   street: z.string().min(5, 'العنوان يجب أن يكون 5 أحرف على الأقل'),
   city: z.string().min(2, 'المدينة مطلوبة'),
   state: z.string().min(2, 'المحافظة مطلوبة'),
-  zipCode: z.string().optional(),
 });
 
 type ShippingData = z.infer<typeof shippingSchema>;
@@ -45,7 +44,6 @@ export function CheckoutPage() {
     if (items.length === 0) navigate(PAGES.CART);
   }, [items.length, navigate]);
 
-  const tax = useMemo(() => subtotal * TAX_RATE, [subtotal]);
   const actualShipping = useMemo(() => subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST, [subtotal]);
   const isGuest = useMemo(() => {
     try {
@@ -132,7 +130,6 @@ export function CheckoutPage() {
                   </div>
                   <Input label="المدينة" placeholder="القاهرة" error={errors.city?.message} {...register('city')} />
                   <Input label="المحافظة" placeholder="القاهرة" error={errors.state?.message} {...register('state')} />
-                  <Input label="الرمز البريدي" placeholder="١١٥١١" {...register('zipCode')} />
                 </div>
                 <div className="flex justify-start pt-2">
                   <Button type="submit" variant="secondary" size="lg" rounded="xl" className="w-full sm:w-auto">التالي <ChevronLeft className="w-4 h-4" /></Button>
@@ -207,7 +204,6 @@ export function CheckoutPage() {
           <div className="space-y-1.5 sm:space-y-2 text-sm font-cairo">
             <div className="flex justify-between"><span className="text-gray-500">المجموع الفرعي</span><span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span></div>
             <div className="flex justify-between"><span className="text-gray-500">الشحن</span><span className={actualShipping === 0 ? 'text-success font-semibold' : 'text-gray-900 font-semibold'}>{actualShipping === 0 ? 'مجاني' : formatPrice(actualShipping)}</span></div>
-            <div className="flex justify-between"><span className="text-gray-500">الضريبة</span><span className="text-gray-900 font-semibold">{formatPrice(tax)}</span></div>
             {discount > 0 && <div className="flex justify-between"><span className="text-success">الخصم</span><span className="text-success font-semibold">-{formatPrice(discount)}</span></div>}
             <Divider />
             <div className="flex justify-between"><span className="text-base font-bold text-gray-900">الإجمالي</span><span className="text-lg sm:text-lg font-bold text-gray-900">{formatPrice(total)}</span></div>

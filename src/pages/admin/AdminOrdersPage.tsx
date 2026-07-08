@@ -530,7 +530,6 @@ function OrderDetailContent({
         {[
           { label: 'المجموع الفرعي', value: formatPrice(order.subtotal), color: '' },
           { label: 'الشحن', value: order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping), color: '' },
-          { label: 'الضريبة', value: formatPrice(order.tax), color: '' },
           ...(order.discount > 0 ? [{ label: 'الخصم', value: `-${formatPrice(order.discount)}`, color: 'text-success' }] : []),
         ].map((row) => (
           <div key={row.label} className="flex justify-between items-center">

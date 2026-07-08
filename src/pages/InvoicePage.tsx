@@ -73,7 +73,6 @@ export function InvoicePage() {
         <div className="space-y-1 text-sm border-t border-gray-100 pt-3">
           <div className="flex justify-between"><span className="text-gray-500 font-cairo">المجموع الفرعي</span><span className="font-semibold font-cairo text-gray-900">{formatPrice(order.subtotal)}</span></div>
           <div className="flex justify-between"><span className="text-gray-500 font-cairo">الشحن</span><span className="font-semibold font-cairo text-gray-900">{order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping)}</span></div>
-          <div className="flex justify-between"><span className="text-gray-500 font-cairo">الضريبة</span><span className="font-semibold font-cairo text-gray-900">{formatPrice(order.tax)}</span></div>
           {order.discount > 0 && <div className="flex justify-between"><span className="text-success font-cairo">الخصم</span><span className="text-success font-semibold font-cairo">-{formatPrice(order.discount)}</span></div>}
           <div className="flex justify-between text-base pt-2 border-t border-gray-100"><span className="font-bold font-cairo text-gray-900">الإجمالي</span><span className="font-bold font-cairo text-gray-900">{formatPrice(order.total)}</span></div>
         </div>

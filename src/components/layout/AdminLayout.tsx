@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
+import { useTranslation } from 'react-i18next';
 
 interface NavItem {
   label: string;
@@ -17,20 +18,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'لوحة التحكم', href: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { label: 'المنتجات', href: '/admin/products', icon: <Package className="w-5 h-5" /> },
-  { label: 'الطلبات', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" />, badge: 12 },
-  { label: 'التصنيفات', href: '/admin/categories', icon: <Grid3X3 className="w-5 h-5" /> },
-  { label: 'الماركات', href: '/admin/brands', icon: <Tag className="w-5 h-5" /> },
-  { label: 'الكوبونات', href: '/admin/coupons', icon: <Percent className="w-5 h-5" /> },
-  { label: 'المستخدمين', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
-  { label: 'التقييمات', href: '/admin/reviews', icon: <Star className="w-5 h-5" /> },
-  { label: 'الإشعارات', href: '/admin/notifications', icon: <Bell className="w-5 h-5" /> },
-  { label: 'عجلة الحظ', href: '/admin/spin-prizes', icon: <Gift className="w-5 h-5" /> },
-  { label: 'الإعدادات', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
+  { label: 'admin.dashboard', href: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { label: 'admin.products', href: '/admin/products', icon: <Package className="w-5 h-5" /> },
+  { label: 'admin.orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" />, badge: 12 },
+  { label: 'admin.categories', href: '/admin/categories', icon: <Grid3X3 className="w-5 h-5" /> },
+  { label: 'admin.brands', href: '/admin/brands', icon: <Tag className="w-5 h-5" /> },
+  { label: 'admin.coupons', href: '/admin/coupons', icon: <Percent className="w-5 h-5" /> },
+  { label: 'admin.users', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
+  { label: 'admin.reviews', href: '/admin/reviews', icon: <Star className="w-5 h-5" /> },
+  { label: 'admin.notifications', href: '/admin/notifications', icon: <Bell className="w-5 h-5" /> },
+  { label: 'admin.spinWheel', href: '/admin/spin-prizes', icon: <Gift className="w-5 h-5" /> },
+  { label: 'admin.settings', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
 ];
 
-const SITE_NAME = 'زاهي';
+const SITE_NAME = 'Zahi';
 const bottomNavItems = navItems.filter((_, i) => [0, 1, 2, 3, 9].includes(i));
 
 const itemVariants = {
@@ -66,7 +67,7 @@ function NavLink({ item, isActive, collapsed, onClick }: {
         {item.icon}
       </span>
       {!collapsed && (
-        <span className="relative z-10 truncate">{item.label}</span>
+        <span className="relative z-10 truncate">{t(item.label)}</span>
       )}
       {!collapsed && item.badge !== undefined && item.badge > 0 && (
         <span className={cn(
@@ -91,6 +92,7 @@ const sidebarVariants = {
 };
 
 export function AdminLayout() {
+  const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
@@ -160,7 +162,7 @@ export function AdminLayout() {
   const currentPage = navItems.find((n) => isActive(n.href));
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* ─── Desktop Sidebar ─── */}
       <motion.aside
         ref={sidebarRef}
@@ -189,14 +191,14 @@ export function AdminLayout() {
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <span className="block font-bold text-base font-cairo text-gray-900 truncate">لوحة التحكم</span>
-                  <span className="block text-[10px] text-gray-500 font-cairo truncate">إدارة المتجر</span>
+                  <span className="block font-bold text-base font-cairo text-gray-900 truncate">{t('admin.dashboard')}</span>
+                  <span className="block text-[10px] text-gray-500 font-cairo truncate">{t('admin.storeManagement')}</span>
                 </div>
               </Link>
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label="تصغير"
+                aria-label={t('admin.minimize')}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -205,7 +207,7 @@ export function AdminLayout() {
             <button
               onClick={() => setSidebarOpen(true)}
               className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-              aria-label="تكبير"
+              aria-label={t('admin.maximize')}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -243,14 +245,14 @@ export function AdminLayout() {
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  user?.name?.charAt(0) || 'أ'
+                  user?.name?.charAt(0) || t('admin.admin').charAt(0)
                 )}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white" />
           </div>
             {sidebarOpen && (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || 'المدير'}</p>
+                <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || t('admin.admin')}</p>
                 <p className="text-[11px] text-gray-500 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
               </div>
             )}
@@ -265,10 +267,10 @@ export function AdminLayout() {
                 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
                 sidebarOpen ? 'px-3.5 py-2.5' : 'justify-center p-2.5',
               )}
-              title={!sidebarOpen ? 'العودة للمتجر' : undefined}
-            >
-              <Home className="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
-              {sidebarOpen && <span className="truncate">العودة للمتجر</span>}
+              title={!sidebarOpen ? t('admin.backToStore') : undefined}
+             >
+               <Home className="w-5 h-5 shrink-0 transition-transform group-hover:scale-110" />
+               {sidebarOpen && <span className="truncate">{t('admin.backToStore')}</span>}
             </Link>
           </div>
         </div>
@@ -300,14 +302,14 @@ export function AdminLayout() {
                     <Store className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <span className="block font-bold text-base font-cairo text-gray-900">لوحة التحكم</span>
-                    <span className="block text-[10px] text-gray-500 font-cairo">إدارة المتجر</span>
+                    <span className="block font-bold text-base font-cairo text-gray-900">{t('admin.dashboard')}</span>
+                    <span className="block text-[10px] text-gray-500 font-cairo">{t('admin.storeManagement')}</span>
                   </div>
                 </Link>
                 <button
                   onClick={closeMobile}
                   className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-                  aria-label="إغلاق"
+                  aria-label={t('common.close')}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -483,7 +485,7 @@ export function AdminLayout() {
                       ? 'text-secondary font-bold'
                       : 'text-gray-400'
                   )}>
-                    {item.label}
+                    {t(item.label)}
                   </span>
                 </Link>
               );

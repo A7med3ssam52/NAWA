@@ -78,7 +78,6 @@ export interface Address {
   street: string;
   city: string;
   state: string;
-  zipCode: string;
   isDefault: boolean;
 }
 
@@ -90,7 +89,6 @@ export interface Order {
   total: number;
   subtotal: number;
   shipping: number;
-  tax: number;
   discount: number;
   couponCode?: string;
   shippingAddress: Address;

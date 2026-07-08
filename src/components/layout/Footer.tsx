@@ -1,5 +1,6 @@
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Facebook,
   Instagram,
@@ -18,26 +19,26 @@ import { Button, Input } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 const quickLinks = [
-  { label: 'من نحن', href: PAGES.ABOUT },
-  { label: 'اتصل بنا', href: PAGES.CONTACT },
-  { label: 'الأسئلة الشائعة', href: PAGES.FAQ },
-  { label: 'سياسة الخصوصية', href: PAGES.PRIVACY },
-  { label: 'الشروط والأحكام', href: PAGES.TERMS },
+  { label: 'footer.about', href: PAGES.ABOUT },
+  { label: 'footer.contact', href: PAGES.CONTACT },
+  { label: 'footer.faq', href: PAGES.FAQ },
+  { label: 'footer.privacy', href: PAGES.PRIVACY },
+  { label: 'footer.terms', href: PAGES.TERMS },
 ];
 
 const customerServiceLinks = [
-  { label: 'المساعدة', href: PAGES.FAQ },
-  { label: 'الشحن والتوصيل', href: '/shipping' },
-  { label: 'الإرجاع والاستبدال', href: '/returns' },
-  { label: 'طرق الدفع', href: '/payment' },
+  { label: 'footer.help', href: PAGES.FAQ },
+  { label: 'footer.shipping', href: '/shipping' },
+  { label: 'footer.returns', href: '/returns' },
+  { label: 'footer.payment', href: '/payment' },
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: '#', label: 'فيسبوك' },
-  { icon: Instagram, href: '#', label: 'انستجرام' },
-  { icon: Twitter, href: '#', label: 'تويتر' },
-  { icon: Music2, href: '#', label: 'تيك توك' },
-  { icon: Youtube, href: '#', label: 'يوتيوب' },
+  { icon: Facebook, href: '#', label: 'footer.facebook' },
+  { icon: Instagram, href: '#', label: 'footer.instagram' },
+  { icon: Twitter, href: '#', label: 'footer.twitter' },
+  { icon: Music2, href: '#', label: 'footer.tiktok' },
+  { icon: Youtube, href: '#', label: 'footer.youtube' },
 ];
 
 const paymentMethods = [
@@ -51,6 +52,7 @@ const paymentMethods = [
 ];
 
 export const Footer = memo(function Footer() {
+  const { t, i18n } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -61,28 +63,28 @@ export const Footer = memo(function Footer() {
     await new Promise((r) => setTimeout(r, 800));
     const existing = JSON.parse(localStorage.getItem('newsletter_emails') || '[]');
     if (existing.includes(email.trim())) {
-      toast.error('هذا البريد مسجل بالفعل');
+      toast.error(t('common.warning'));
     } else {
       existing.push(email.trim());
       localStorage.setItem('newsletter_emails', JSON.stringify(existing));
-      toast.success('تم الاشتراك في النشرة البريدية بنجاح!');
+      toast.success(t('nav.newsletterSuccess'));
     }
     setEmail('');
     setLoading(false);
   };
 
   return (
-    <footer dir="rtl" className="bg-gray-50 border-t border-gray-100">
+    <footer dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="bg-gray-50 border-t border-gray-100">
       {/* Newsletter */}
       <div className="bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-right">
               <h3 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 mb-1.5">
-                اشترك في النشرة البريدية
+                {t('nav.newsletter')}
               </h3>
               <p className="text-sm text-gray-500 font-cairo">
-                احصل على أحدث العروض والتخفيضات أولاً بأول
+                {t('nav.newsletterDesc')}
               </p>
             </div>
             <form onSubmit={handleNewsletterSubmit} className="flex items-center gap-2 w-full lg:w-auto">
@@ -91,13 +93,13 @@ export const Footer = memo(function Footer() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="أدخل بريدك الإلكتروني"
+                  placeholder={t('nav.newsletterPlaceholder')}
                   dir="rtl"
                 />
               </div>
               <Button type="submit" variant="primary" size="md" loading={loading} rounded="xl">
                 <Send className="w-4 h-4" />
-                اشتراك
+                {t('nav.subscribe')}
               </Button>
             </form>
           </div>
@@ -118,7 +120,7 @@ export const Footer = memo(function Footer() {
             <div className="space-y-2.5">
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <MapPin className="w-4 h-4 shrink-0 text-secondary" />
-                <span>القاهرة، مصر</span>
+                <span>{t('nav.location')}</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Phone className="w-4 h-4 shrink-0 text-secondary" />
@@ -134,7 +136,7 @@ export const Footer = memo(function Footer() {
           {/* Quick Links */}
           <div>
             <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
-              روابط سريعة
+              {t('footer.quickLinks')}
             </h4>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
@@ -143,7 +145,7 @@ export const Footer = memo(function Footer() {
                     to={link.href}
                     className="text-sm font-cairo text-gray-500 hover:text-secondary transition-colors"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -153,7 +155,7 @@ export const Footer = memo(function Footer() {
           {/* Categories */}
           <div>
             <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
-              الأقسام
+              {t('nav.categories')}
             </h4>
             <ul className="space-y-2.5">
               {categories.slice(0, 6).map((cat) => (
@@ -172,7 +174,7 @@ export const Footer = memo(function Footer() {
           {/* Customer Service */}
           <div>
             <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
-              خدمة العملاء
+              {t('footer.customerService')}
             </h4>
             <ul className="space-y-2.5">
               {customerServiceLinks.map((link) => (
@@ -181,7 +183,7 @@ export const Footer = memo(function Footer() {
                     to={link.href}
                     className="text-sm font-cairo text-gray-500 hover:text-secondary transition-colors"
                   >
-                    {link.label}
+                    {t(link.label)}
                   </Link>
                 </li>
               ))}
@@ -196,7 +198,7 @@ export const Footer = memo(function Footer() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-sm text-gray-400 font-cairo text-center lg:text-right">
-              © {new Date().getFullYear()} {SITE_NAME}. جميع الحقوق محفوظة.
+              {t('nav.copyright')}
             </p>
 
             {/* Social Icons */}
@@ -210,7 +212,7 @@ export const Footer = memo(function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-secondary hover:text-white transition-all duration-200"
-                    aria-label={social.label}
+                    aria-label={t(social.label)}
                   >
                     <Icon className="w-4 h-4" />
                   </a>

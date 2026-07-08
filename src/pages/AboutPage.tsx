@@ -2,20 +2,6 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Target, Eye, Users, ShoppingBag, Package, HeadphonesIcon, Award } from 'lucide-react';
 
-const stats = [
-  { icon: Users, value: '٥٠,٠٠٠+', label: 'عميل سعيد' },
-  { icon: ShoppingBag, value: '١٠٠,٠٠٠+', label: 'منتج مباع' },
-  { icon: Package, value: '١٠,٠٠٠+', label: 'منتج متوفر' },
-  { icon: Award, value: '٩٨%', label: 'رضا العملاء' },
-];
-
-const team = [
-  { name: 'أحمد محمد', role: 'المؤسس والرئيس التنفيذي', avatar: 'A' },
-  { name: 'سارة خالد', role: 'مديرة التسويق', avatar: 'S' },
-  { name: 'محمد علي', role: 'مدير التكنولوجيا', avatar: 'M' },
-  { name: 'نورة أحمد', role: 'مديرة خدمة العملاء', avatar: 'N' },
-];
-
 export function AboutPage() {
   const { t, i18n } = useTranslation();
 

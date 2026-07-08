@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { CartItem, Product, Coupon } from '@/types';
-import { SHIPPING_COST, TAX_RATE, FREE_SHIPPING_THRESHOLD } from '@/constants';
+import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
 
 interface CartState {
   items: CartItem[];
@@ -135,8 +135,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_COST,
     [subtotal]
   );
-  const tax = useMemo(() => subtotal * TAX_RATE, [subtotal]);
-  const total = useMemo(() => subtotal + shippingCost + tax - state.discount, [subtotal, shippingCost, tax, state.discount]);
+  const total = useMemo(() => subtotal + shippingCost - state.discount, [subtotal, shippingCost, state.discount]);
   const itemsCount = useMemo(() => state.items.reduce((sum, item) => sum + item.quantity, 0), [state.items]);
 
   const value = useMemo(() => ({

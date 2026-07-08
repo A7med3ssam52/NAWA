@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm, type UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,24 +12,6 @@ import {
 } from 'lucide-react';
 import { SITE_NAME } from '@/constants';
 import { cn } from '@/utils';
-
-const loginSchema = z.object({
-  email: z.string().min(1, 'البريد الإلكتروني مطلوب').email('البريد الإلكتروني غير صالح'),
-  password: z.string().min(1, 'كلمة المرور مطلوبة').min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(1, 'الاسم مطلوب').min(2, 'الاسم يجب أن يكون حرفين على الأقل'),
-  email: z.string().min(1, 'البريد الإلكتروني مطلوب').email('البريد الإلكتروني غير صالح'),
-  password: z.string().min(1, 'كلمة المرور مطلوبة').min(6, 'كلمة المرور يجب أن تكون 6 أحرف على الأقل'),
-  confirmPassword: z.string().min(1, 'تأكيد كلمة المرور مطلوب'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'كلمة المرور غير متطابقة',
-  path: ['confirmPassword'],
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
-type RegisterForm = z.infer<typeof registerSchema>;
 
 function FloatingInput({ label, type, icon, error, register, name, showToggle, onToggle, value }: {
   label: string;
@@ -115,6 +98,7 @@ const itemVariants = {
 };
 
 export function LoginPage() {
+  const { t, i18n } = useTranslation();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -124,6 +108,24 @@ export function LoginPage() {
   const { login, register: registerUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const loginSchema = useMemo(() => z.object({
+    email: z.string().min(1, t('auth.emailRequired')).email(t('auth.emailInvalid')),
+    password: z.string().min(1, t('auth.passwordRequired')).min(6, t('auth.passwordMin')),
+  }), [t]);
+
+  const registerSchema = useMemo(() => z.object({
+    name: z.string().min(1, t('auth.nameRequired')).min(2, t('auth.nameMin')),
+    email: z.string().min(1, t('auth.emailRequired')).email(t('auth.emailInvalid')),
+    password: z.string().min(1, t('auth.passwordRequired')).min(6, t('auth.passwordMin')),
+    confirmPassword: z.string().min(1, t('auth.confirmPasswordRequired')),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('auth.passwordMismatch'),
+    path: ['confirmPassword'],
+  }), [t]);
+
+  type LoginForm = z.infer<typeof loginSchema>;
+  type RegisterForm = z.infer<typeof registerSchema>;
 
   const from = (location.state as { from?: string })?.from || '/';
 
@@ -153,9 +155,9 @@ export function LoginPage() {
     if (result.success) {
       navigate(from, { replace: true });
     } else {
-      setError(result.error || 'فشل تسجيل الدخول');
+      setError(result.error || t('auth.loginFailed'));
     }
-  }, [login, navigate, from]);
+  }, [login, navigate, from, t]);
 
   const onRegister = useCallback(async (data: RegisterForm) => {
     setLoading(true);
@@ -165,9 +167,9 @@ export function LoginPage() {
     if (result.success) {
       navigate(from, { replace: true });
     } else {
-      setError(result.error || 'فشل إنشاء الحساب');
+      setError(result.error || t('auth.registerFailed'));
     }
-  }, [registerUser, navigate, from]);
+  }, [registerUser, navigate, from, t]);
 
   const switchMode = useCallback(() => {
     setIsRegister((prev) => !prev);
@@ -184,7 +186,7 @@ export function LoginPage() {
   const registerConfirm = registerForm.watch('confirmPassword');
 
   return (
-    <div dir="rtl" className="ios-font-smooth min-h-screen flex flex-col lg:flex-row">
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="ios-font-smooth min-h-screen flex flex-col lg:flex-row">
       {/* Left Brand Panel - Desktop */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-secondary via-[#e85d00] to-accent overflow-hidden items-center justify-center">
         <div className="absolute inset-0">
@@ -206,22 +208,22 @@ export function LoginPage() {
               {SITE_NAME}
             </h1>
             <p className="text-xl text-white/80 font-cairo mb-8 leading-relaxed">
-              أناقة تزهو بك — تسوق أرقى الماركات العالمية بأفضل الأسعار
+              {t('auth.brandSubtitle')}
             </p>
             <div className="flex items-center justify-center gap-8">
               <div className="text-center">
                 <p className="text-3xl font-bold text-white">10K+</p>
-                <p className="text-sm text-white/70 font-cairo mt-1">منتج</p>
+                <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.productLabel')}</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div className="text-center">
                 <p className="text-3xl font-bold text-white">50K+</p>
-                <p className="text-sm text-white/70 font-cairo mt-1">عميل</p>
+                <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.customerLabel')}</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div className="text-center">
                 <p className="text-3xl font-bold text-white">4.9</p>
-                <p className="text-sm text-white/70 font-cairo mt-1">تقييم</p>
+                <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.ratingLabel')}</p>
               </div>
             </div>
           </motion.div>
@@ -262,10 +264,10 @@ export function LoginPage() {
               {/* Header */}
               <motion.div variants={itemVariants}>
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
-                  {isRegister ? 'إنشاء حساب' : 'تسجيل الدخول'}
+                  {isRegister ? t('auth.registerTitle') : t('auth.loginTitle')}
                 </h2>
                 <p className="text-sm text-gray-500 font-cairo mt-1">
-                  {isRegister ? 'أهلاً بك! أدخل بياناتك لبدء التسوق' : 'مرحباً بعودتك! أدخل بيانات حسابك'}
+                  {isRegister ? t('auth.registerSubtitle') : t('auth.loginSubtitle')}
                 </p>
               </motion.div>
 
@@ -289,7 +291,7 @@ export function LoginPage() {
               {!isRegister && (
                 <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
                   <FloatingInput
-                    label="البريد الإلكتروني"
+                    label={t('auth.emailLabel')}
                     type="email"
                     icon={<Mail className="w-4.5 h-4.5" />}
                     error={loginForm.formState.errors.email?.message}
@@ -298,7 +300,7 @@ export function LoginPage() {
                     value={loginEmail}
                   />
                   <FloatingInput
-                    label="كلمة المرور"
+                    label={t('auth.passwordLabel')}
                     type={showPassword ? 'text' : 'password'}
                     icon={<Lock className="w-4.5 h-4.5" />}
                     error={loginForm.formState.errors.password?.message}
@@ -315,7 +317,7 @@ export function LoginPage() {
                       onClick={() => {}}
                       className="text-xs font-cairo text-secondary hover:text-secondary/80 transition-colors"
                     >
-                      نسيت كلمة المرور؟
+                      {t('auth.forgotPassword')}
                     </button>
                   </div>
 
@@ -352,7 +354,7 @@ export function LoginPage() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          تسجيل الدخول
+                          {t('auth.loginButton')}
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -364,7 +366,7 @@ export function LoginPage() {
               {isRegister && (
                 <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
                   <FloatingInput
-                    label="الاسم الكامل"
+                    label={t('auth.nameLabel')}
                     type="text"
                     icon={<User className="w-4.5 h-4.5" />}
                     error={registerForm.formState.errors.name?.message}
@@ -373,7 +375,7 @@ export function LoginPage() {
                     value={registerName}
                   />
                   <FloatingInput
-                    label="البريد الإلكتروني"
+                    label={t('auth.emailLabel')}
                     type="email"
                     icon={<Mail className="w-4.5 h-4.5" />}
                     error={registerForm.formState.errors.email?.message}
@@ -382,7 +384,7 @@ export function LoginPage() {
                     value={registerEmail}
                   />
                   <FloatingInput
-                    label="كلمة المرور"
+                    label={t('auth.passwordLabel')}
                     type={showPassword ? 'text' : 'password'}
                     icon={<Lock className="w-4.5 h-4.5" />}
                     error={registerForm.formState.errors.password?.message}
@@ -393,7 +395,7 @@ export function LoginPage() {
                     value={registerPassword}
                   />
                   <FloatingInput
-                    label="تأكيد كلمة المرور"
+                    label={t('auth.confirmPasswordLabel')}
                     type={showConfirmPassword ? 'text' : 'password'}
                     icon={<Lock className="w-4.5 h-4.5" />}
                     error={registerForm.formState.errors.confirmPassword?.message}
@@ -437,7 +439,7 @@ export function LoginPage() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          إنشاء حساب
+                          {t('auth.registerButton')}
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -448,7 +450,7 @@ export function LoginPage() {
               {/* Divider */}
               <motion.div variants={itemVariants} className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-gray-100" />
-                <span className="text-xs text-gray-400 font-cairo shrink-0">أو</span>
+                <span className="text-xs text-gray-400 font-cairo shrink-0">{t('common.or')}</span>
                 <div className="flex-1 h-px bg-gray-100" />
               </motion.div>
 
@@ -480,13 +482,13 @@ export function LoginPage() {
               {/* Toggle mode */}
               <motion.div variants={itemVariants} className="text-center">
                 <p className="text-sm text-gray-500 font-cairo">
-                  {isRegister ? 'لديك حساب بالفعل؟' : 'ليس لديك حساب؟'}{' '}
+                  {isRegister ? t('auth.hasAccount') : t('auth.noAccount')}{' '}
                   <button
                     type="button"
                     onClick={switchMode}
                     className="text-secondary font-bold hover:text-secondary/80 transition-colors"
                   >
-                    {isRegister ? 'تسجيل الدخول' : 'إنشاء حساب'}
+                    {isRegister ? t('auth.loginTitle') : t('auth.registerTitle')}
                   </button>
                 </p>
               </motion.div>
@@ -507,7 +509,7 @@ export function LoginPage() {
               className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 font-cairo transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              العودة إلى المتجر
+              {t('nav.backToStore')}
             </button>
           </motion.div>
         </div>

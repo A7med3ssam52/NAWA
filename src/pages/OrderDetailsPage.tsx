@@ -79,7 +79,6 @@ export function OrderDetailsPage() {
             <h3 className="text-base font-bold font-cairo text-gray-900">ملخص الطلب</h3>
             <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">المجموع الفرعي</span><span className="text-gray-900 font-semibold">{formatPrice(order.subtotal)}</span></div>
             <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">الشحن</span><span className="text-gray-900 font-semibold">{order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping)}</span></div>
-            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">الضريبة</span><span className="text-gray-900 font-semibold">{formatPrice(order.tax)}</span></div>
             {order.discount > 0 && <div className="flex justify-between text-sm font-cairo"><span className="text-success">الخصم</span><span className="text-success font-semibold">-{formatPrice(order.discount)}</span></div>}
             <Divider />
             <div className="flex justify-between"><span className="text-base font-bold text-gray-900">الإجمالي</span><span className="text-lg font-bold text-gray-900">{formatPrice(order.total)}</span></div>

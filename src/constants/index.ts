@@ -57,7 +57,7 @@ export const PAGE_SIZE = 12;
 export const CURRENCY = 'ج.م';
 export const FREE_SHIPPING_THRESHOLD = 500;
 export const SHIPPING_COST = 30;
-export const TAX_RATE = 0.14;
+
 
 export const COLORS = {
   primary: '#0F172A',

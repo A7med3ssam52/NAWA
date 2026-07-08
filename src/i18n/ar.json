@@ -143,7 +143,14 @@
     "nameRequired": "الاسم مطلوب",
     "nameMin": "الاسم يجب أن يكون حرفين على الأقل",
     "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
-    "passwordMismatch": "كلمة المرور غير متطابقة"
+    "passwordMismatch": "كلمة المرور غير متطابقة",
+    "loginFailed": "فشل تسجيل الدخول",
+    "registerFailed": "فشل إنشاء الحساب",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "brandSubtitle": "أناقة تزهو بك — تسوق أرقى الماركات العالمية بأفضل الأسعار",
+    "productLabel": "منتج",
+    "customerLabel": "عميل",
+    "ratingLabel": "تقييم"
   },
   "home": {
     "title": "زاهي - أناقة تزهو بك",
@@ -161,7 +168,8 @@
     "heroSlide2Cta": "استكشف العروض",
     "heroSlide3Title": "توصيل مجاني للطلبات",
     "heroSlide3Sub": "أول 500 جنيه توصيل مجاني",
-    "heroSlide3Cta": "تسوق الآن"
+    "heroSlide3Cta": "تسوق الآن",
+    "testimonials": "ماذا يقول عملاؤنا"
   },
   "cart": {
     "title": "سلة التسوق",
@@ -179,7 +187,7 @@
     "orderSummary": "ملخص الطلب",
     "subtotal": "المجموع الفرعي",
     "shipping": "الشحن",
-    "tax": "الضريبة (14%)",
+    "tax": "الضريبة",
     "discount": "الخصم",
     "total": "الإجمالي",
     "checkout": "إتمام الطلب",
@@ -211,8 +219,8 @@
     "cityPlaceholder": "القاهرة",
     "state": "المحافظة",
     "statePlaceholder": "القاهرة",
-    "zipCode": "الرمز البريدي",
-    "zipCodePlaceholder": "١١٥١١",
+
+
     "fullNameRequired": "الاسم ثلاثي أحرف على الأقل",
     "phoneInvalid": "رقم الهاتف غير صحيح",
     "streetRequired": "العنوان يجب أن يكون 5 أحرف على الأقل",
@@ -273,7 +281,9 @@
     "totalCount": "إجمالي {count} طلب",
     "deleteConfirm": "هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.",
     "statusUpdated": "تم تحديث الحالة إلى {status}",
-    "orderDeleted": "تم حذف الطلب بنجاح"
+    "orderDeleted": "تم حذف الطلب بنجاح",
+    "followOrder": "متابعة الطلب",
+    "continueShopping": "متابعة التسوق"
   },
   "products": {
     "title": "المنتجات",
@@ -296,7 +306,44 @@
     "sortRating": "التقييم",
     "sortPopular": "الأكثر مبيعاً",
     "sortDiscount": "أعلى خصم",
-    "filterMinDiscount": "{value}% أو أكثر"
+    "filterMinDiscount": "{value}% أو أكثر",
+    "description": "الوصف",
+    "specifications": "المواصفات",
+    "reviews": "التقييمات ({count})",
+    "productCode": "كود المنتج:",
+    "stock": "المخزون:",
+    "availableColors": "الألوان المتاحة:",
+    "availableSizes": "المقاسات المتاحة:",
+    "buyNow": "اشتري الآن",
+    "notifyMe": "نبهني عند التوفر",
+    "category": "القسم:",
+    "relatedProducts": "منتجات ذات صلة",
+    "willNotify": "سيتم إشعارك عند توفر المنتج",
+    "notifyRegistered": "تم تسجيل طلبك، سنخبرك عند توفر {productName}",
+    "notifyEmailPrompt": "أدخل بريدك الإلكتروني ليتم إشعارك عند توفر هذا المنتج",
+    "yourEmail": "بريدك الإلكتروني",
+    "notifyButton": "إشعرني عند التوفر",
+    "addReview": "أضف تقييمك",
+    "ratingOutOf5": "{rating} من 5",
+    "selectRating": "اختر تقييمك",
+    "reviewTitlePlaceholder": "عنوان التقييم (اختياري)",
+    "reviewPlaceholder": "اكتب تقييمك هنا...",
+    "yourNamePlaceholder": "اسمك (اختياري)",
+    "submitReview": "إرسال التقييم",
+    "reviewSubmitted": "تم إضافة تقييمك بنجاح",
+    "linkCopied": "تم نسخ الرابط",
+    "noReviewsYet": "لا توجد تقييمات بعد",
+    "shippingCost": "توصيل {cost}",
+    "colors": {
+      "black": "أسود",
+      "white": "أبيض",
+      "red": "أحمر",
+      "blue": "أزرق",
+      "green": "أخضر",
+      "beige": "بيج",
+      "gray": "رمادي",
+      "wine": "نبيتي"
+    }
   },
   "wishlist": {
     "title": "المفضلة",

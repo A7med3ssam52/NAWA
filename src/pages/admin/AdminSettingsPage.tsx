@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Store, Truck, Megaphone, Phone, Palette, Save } from 'lucide-react';
 import { cn } from '@/utils';
 import { Card, Button, Input, Textarea } from '@/components/ui';
-import { SITE_NAME, SITE_DESCRIPTION, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from '@/constants';
+import { SITE_NAME, SITE_DESCRIPTION, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { adminService } from '@/services';
 import { toast } from '@/components/ui';
 
@@ -12,7 +12,8 @@ export function AdminSettingsPage() {
   const [shipping, setShipping] = useState({
     cost: SHIPPING_COST.toString(),
     freeThreshold: FREE_SHIPPING_THRESHOLD.toString(),
-    taxRate: (TAX_RATE * 100).toString(),
+
+
   });
   const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@zahi.store', address: 'القاهرة، مصر' });
   const [announcement, setAnnouncement] = useState(() => adminService.getAnnouncement());
@@ -66,7 +67,6 @@ export function AdminSettingsPage() {
         <div className="space-y-4 max-w-lg">
           <Input label="تكلفة الشحن (ج.م)" type="number" value={shipping.cost} onChange={(e) => setShipping({ ...shipping, cost: e.target.value })} />
           <Input label="الشحن المجاني للطلبات فوق (ج.م)" type="number" value={shipping.freeThreshold} onChange={(e) => setShipping({ ...shipping, freeThreshold: e.target.value })} />
-          <Input label="نسبة الضريبة (%)" type="number" value={shipping.taxRate} onChange={(e) => setShipping({ ...shipping, taxRate: e.target.value })} />
           <Button onClick={handleSaveShipping}><Save className="w-4 h-4" /> حفظ</Button>
         </div>
       </Card>

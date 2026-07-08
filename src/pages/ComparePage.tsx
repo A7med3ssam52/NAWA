@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { X, ShoppingCart, BarChart3 } from 'lucide-react';
 import { useCompare } from '@/contexts/CompareContext';
 import { useCart } from '@/contexts';
@@ -9,19 +10,20 @@ import { Button, EmptyState, Rating } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export function ComparePage() {
+  const { t, i18n } = useTranslation();
   const { items, removeItem, clearAll } = useCompare();
   const { addItem } = useCart();
 
   if (items.length === 0) {
     return (
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-        dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+        dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
       >
         <EmptyState
           icon={<BarChart3 className="w-16 h-16" />}
-          title="لا توجد منتجات للمقارنة"
-          description="أضف منتجات إلى المقارنة لترى الفروقات بينها"
-          action={{ label: 'تصفح المنتجات', onClick: () => window.location.href = PAGES.PRODUCTS }}
+          title={t('compare.emptyTitle')}
+          description={t('compare.emptyDesc')}
+          action={{ label: t('nav.home'), onClick: () => window.location.href = PAGES.PRODUCTS }}
         />
       </motion.div>
     );
@@ -32,13 +34,13 @@ export function ComparePage() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
-      dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">
-          مقارنة المنتجات <span className="text-base font-medium text-gray-400">({items.length})</span>
+          {t('compare.title')} <span className="text-base font-medium text-gray-400">({items.length})</span>
         </h1>
-        <Button variant="ghost" size="sm" rounded="xl" onClick={clearAll}>مسح الكل</Button>
+        <Button variant="ghost" size="sm" rounded="xl" onClick={clearAll}>{t('compare.clearAll')}</Button>
       </div>
 
       <div className="overflow-x-auto pb-4">
@@ -67,8 +69,8 @@ export function ComparePage() {
                         <span className="text-xs text-gray-400 line-through font-cairo mr-1">{formatPrice(product.oldPrice)}</span>
                       )}
                     </div>
-                    <Button variant="secondary" size="sm" rounded="xl" className="mt-2 w-full" onClick={() => { addItem(product, 1); toast.success('تمت إضافة المنتج إلى السلة'); }}>
-                      <ShoppingCart className="w-3 h-3" /> أضف للسلة
+                    <Button variant="secondary" size="sm" rounded="xl" className="mt-2 w-full" onClick={() => { addItem(product, 1); toast.success(t('products.addedToCart')); }}>
+                      <ShoppingCart className="w-3 h-3" /> {t('products.addToCart')}
                     </Button>
                   </div>
                 </th>
@@ -77,27 +79,27 @@ export function ComparePage() {
           </thead>
           <tbody>
             <tr className="border-t border-gray-100">
-              <td className="p-3 text-sm font-bold font-cairo text-gray-900">السعر</td>
+              <td className="p-3 text-sm font-bold font-cairo text-gray-900">{t('compare.price')}</td>
               {items.map((p) => (
                 <td key={p.id} className="p-3 text-center text-sm font-cairo text-gray-900">{formatPrice(p.price)}</td>
               ))}
             </tr>
             <tr className="border-t border-gray-100">
-              <td className="p-3 text-sm font-bold font-cairo text-gray-900">التقييم</td>
+              <td className="p-3 text-sm font-bold font-cairo text-gray-900">{t('compare.rating')}</td>
               {items.map((p) => (
                 <td key={p.id} className="p-3 text-center"><Rating value={p.rating} size="sm" /></td>
               ))}
             </tr>
             <tr className="border-t border-gray-100">
-              <td className="p-3 text-sm font-bold font-cairo text-gray-900">الخصم</td>
+              <td className="p-3 text-sm font-bold font-cairo text-gray-900">{t('cart.discount')}</td>
               {items.map((p) => (
                 <td key={p.id} className="p-3 text-center text-sm font-cairo">{p.discount ? `${p.discount}%` : '-'}</td>
               ))}
             </tr>
             <tr className="border-t border-gray-100">
-              <td className="p-3 text-sm font-bold font-cairo text-gray-900">المخزون</td>
+              <td className="p-3 text-sm font-bold font-cairo text-gray-900">{t('compare.availability')}</td>
               {items.map((p) => (
-                <td key={p.id} className={cn('p-3 text-center text-sm font-cairo', p.stock > 0 ? 'text-success' : 'text-danger')}>{p.stock > 0 ? 'متوفر' : 'نفد'}</td>
+                <td key={p.id} className={cn('p-3 text-center text-sm font-cairo', p.stock > 0 ? 'text-success' : 'text-danger')}>{p.stock > 0 ? t('compare.inStock') : t('compare.outOfStock')}</td>
               ))}
             </tr>
             {allSpecs.map((spec) => (
