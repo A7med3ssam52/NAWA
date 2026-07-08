@@ -36,6 +36,10 @@
     "currency": "EGP",
     "free": "Free",
     "notAvailable": "Not Available",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "mada": "Mada",
+    "valu": "ValU",
     "noResults": "No Results",
     "searchPlaceholder": "Search for products...",
     "confirmDeleteQuestion": "Are you sure you want to delete {item}?",
@@ -119,7 +123,13 @@
     "shipping": "Shipping & Delivery",
     "returns": "Returns & Exchanges",
     "payment": "Payment Methods",
-    "facebook": "Facebook"
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "twitter": "Twitter",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "quickLinks": "Quick Links",
+    "customerService": "Customer Service"
   },
   "auth": {
     "loginTitle": "Login",

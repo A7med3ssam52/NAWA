@@ -66,9 +66,9 @@
   {
     "id": "cat-9",
     "name": "كابلز",
-    "slug": "cables",
-    "image": "https://picsum.photos/seed/cables/400/400",
-    "icon": "Zap",
+    "slug": "couples",
+    "image": "https://picsum.photos/seed/couples/400/400",
+    "icon": "Heart",
     "productsCount": 6
   }
 ]

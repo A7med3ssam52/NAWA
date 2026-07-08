@@ -36,6 +36,10 @@
     "currency": "ج.م",
     "free": "مجاني",
     "notAvailable": "غير متاح",
+    "visa": "فيزا",
+    "mastercard": "ماستركارد",
+    "mada": "مدى",
+    "valu": "ValU",
     "noResults": "لا توجد نتائج",
     "searchPlaceholder": "ابحث عن منتجات...",
     "confirmDeleteQuestion": "هل أنت متأكد من حذف {item}؟",
@@ -119,7 +123,13 @@
     "shipping": "الشحن والتوصيل",
     "returns": "الإرجاع والاستبدال",
     "payment": "طرق الدفع",
-    "facebook": "فيسبوك"
+    "facebook": "فيسبوك",
+    "instagram": "انستجرام",
+    "twitter": "تويتر",
+    "tiktok": "تيك توك",
+    "youtube": "يوتيوب",
+    "quickLinks": "روابط سريعة",
+    "customerService": "خدمة العملاء"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول",

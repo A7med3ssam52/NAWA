@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Heart, ShoppingCart, Trash2, Share2 } from 'lucide-react';
 import { useWishlist, useCart } from '@/contexts';
 import { formatPrice } from '@/utils';
 import { EmptyState, Button } from '@/components/ui';
 import { Link } from 'react-router-dom';
-import { PAGES, SITE_URL, SITE_NAME } from '@/constants';
+import { PAGES, SITE_URL } from '@/constants';
 import toast from 'react-hot-toast';
 
 export function WishlistPage() {
+  const { t, i18n } = useTranslation();
   const { items, removeItem } = useWishlist();
   const { addItem } = useCart();
 
@@ -17,14 +19,14 @@ export function WishlistPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        dir="rtl"
+        dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
       >
         <EmptyState
           icon={<Heart className="w-16 h-16" />}
-          title="المفضلة فارغة"
-          description="قم بإضافة المنتجات التي تعجبك إلى المفضلة لمشاهدتها لاحقاً"
-          action={{ label: 'تسوق الآن', onClick: () => window.location.href = PAGES.PRODUCTS }}
+          title={t('wishlist.emptyTitle')}
+          description={t('wishlist.emptyDesc')}
+          action={{ label: t('wishlist.shopNow'), onClick: () => window.location.href = PAGES.PRODUCTS }}
         />
       </motion.div>
     );
@@ -32,7 +34,7 @@ export function WishlistPage() {
 
   const handleAddToCart = (product: any) => {
     addItem(product, 1);
-    toast.success('تمت إضافة المنتج إلى السلة');
+    toast.success(t('wishlist.addToCart'));
   };
 
   return (
@@ -41,24 +43,24 @@ export function WishlistPage() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
-          المفضلة
+          {t('wishlist.title')}
           <span className="text-base font-medium text-gray-400 mr-2">({items.length})</span>
         </h1>
         <Button variant="ghost" size="sm" rounded="xl" onClick={async () => {
-          const text = `تسوق معي هذه المنتجات من ${SITE_NAME}: ${items.map((p) => `${p.name} - ${SITE_URL}/products/${p.slug}`).join('\n')}`;
+          const text = `${t('wishlist.shareTitle')}: ${items.map((p) => `${p.name} - ${SITE_URL}/products/${p.slug}`).join('\n')}`;
           if (navigator.share) {
-            await navigator.share({ title: 'مفضلتي في زاهي', text });
+            await navigator.share({ title: t('wishlist.shareTitle'), text });
           } else {
             await navigator.clipboard.writeText(text);
-            toast.success('تم نسخ رابط المفضلة');
+            toast.success(t('wishlist.shareCopied'));
           }
         }}>
-          <Share2 className="w-4 h-4" /> مشاركة
+          <Share2 className="w-4 h-4" /> {t('common.share')}
         </Button>
       </div>
 
@@ -84,7 +86,7 @@ export function WishlistPage() {
               <Button variant="secondary" size="sm" rounded="xl" onClick={() => handleAddToCart(product)}>
                 <ShoppingCart className="w-4 h-4" />
               </Button>
-              <button onClick={() => { removeItem(product.id); toast.success('تمت إزالة المنتج من المفضلة'); }} className="p-2 rounded-xl text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors" aria-label="إزالة من المفضلة">
+              <button onClick={() => { removeItem(product.id); toast.success(t('wishlist.removedFromWishlist')); }} className="p-2 rounded-xl text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors" aria-label={t('products.removeFromWishlist')}>
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>

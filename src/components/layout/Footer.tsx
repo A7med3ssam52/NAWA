@@ -42,13 +42,13 @@ const socialLinks = [
 ];
 
 const paymentMethods = [
-  { name: 'فيزا', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/visa.svg' },
-  { name: 'ماستركارد', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mastercard.svg' },
-  { name: 'مدى', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mada.svg' },
-  { name: 'فودافون كاش', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vodafone.svg' },
-  { name: 'فوري', src: '' },
-  { name: 'انستا باي', src: '' },
-  { name: 'ValU', src: '' },
+  { name: 'common.visa', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/visa.svg' },
+  { name: 'common.mastercard', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mastercard.svg' },
+  { name: 'common.mada', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mada.svg' },
+  { name: 'utils.paymentMethods.vodafoneCash', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vodafone.svg' },
+  { name: 'utils.paymentMethods.fawry', src: '' },
+  { name: 'utils.paymentMethods.instapay', src: '' },
+  { name: 'common.valu', src: '' },
 ];
 
 export const Footer = memo(function Footer() {
@@ -226,18 +226,18 @@ export const Footer = memo(function Footer() {
                 <div
                   key={method.name}
                   className="w-10 h-7 flex items-center justify-center bg-white rounded-lg border border-gray-100 px-1.5"
-                  title={method.name}
+                  title={t(method.name)}
                 >
                   {method.src ? (
                     <img
                       src={method.src}
-                      alt={method.name}
+                      alt={t(method.name)}
                       className="w-full h-full object-contain"
                       loading="lazy"
                     />
                   ) : (
                     <span className="text-[6px] font-bold font-cairo text-gray-500 leading-tight text-center">
-                      {method.name}
+                      {t(method.name)}
                     </span>
                   )}
                 </div>

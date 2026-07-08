@@ -1,11 +1,13 @@
 import { useState, useRef, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils';
 import { useCart } from '@/contexts';
 import { PAGES, CURRENCY } from '@/constants';
 
 export function CartPreview() {
+  const { t } = useTranslation();
   const { items, itemsCount, subtotal, removeItem, updateQuantity } = useCart();
   const [open, setOpen] = useState(false);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -32,7 +34,7 @@ export function CartPreview() {
       <Link
         to={PAGES.CART}
         className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-        aria-label="سلة التسوق"
+        aria-label={t('nav.cartLabel')}
       >
         <ShoppingCart className="w-5 h-5" />
         {itemsCount > 0 && (
@@ -57,16 +59,16 @@ export function CartPreview() {
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-bold font-cairo text-gray-900">
-                  سلة التسوق
+                  {t('cart.title')}
                 </span>
                 <span className="text-xs text-gray-400 font-cairo">
-                  {itemsCount} منتج{itemsCount !== 1 ? 'ات' : ''}
+                  {t('nav.cartItems', { count: itemsCount })}
                 </span>
               </div>
 
               {items.length === 0 ? (
                 <div className="py-6 text-center text-sm text-gray-400 font-cairo">
-                  سلة التسوق فارغة
+                  {t('nav.cartEmpty')}
                 </div>
               ) : (
                 <div className="space-y-2 max-h-72 overflow-y-auto">
@@ -99,7 +101,7 @@ export function CartPreview() {
                                 }
                               }}
                               className="p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
-                              aria-label="تقليل الكمية"
+                              aria-label={t('cart.decreaseQty')}
                             >
                               <Minus className="w-3 h-3" />
                             </button>
@@ -112,7 +114,7 @@ export function CartPreview() {
                                 updateQuantity(item.id, item.quantity + 1);
                               }}
                               className="p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
-                              aria-label="زيادة الكمية"
+                              aria-label={t('cart.increaseQty')}
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -128,7 +130,7 @@ export function CartPreview() {
                           removeItem(item.id);
                         }}
                         className="p-1 rounded-lg text-gray-300 hover:text-danger hover:bg-danger/5 transition-colors opacity-0 group-hover:opacity-100"
-                        aria-label={`حذف ${item.product.name}`}
+                        aria-label={t('cart.deleteProduct', { name: item.product.name })}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -141,7 +143,7 @@ export function CartPreview() {
                 <>
                   <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100">
                     <span className="text-sm font-bold font-cairo text-gray-900">
-                      المجموع
+                      {t('cart.total')}
                     </span>
                     <span className="text-sm font-bold text-secondary">
                       {subtotal.toLocaleString('ar-EG')} {CURRENCY}
@@ -152,7 +154,7 @@ export function CartPreview() {
                     onClick={() => setOpen(false)}
                     className="flex items-center justify-center w-full mt-3 py-2.5 rounded-xl bg-secondary text-white text-sm font-bold font-cairo hover:bg-secondary/90 transition-colors active:scale-[0.98]"
                   >
-                    عرض السلة
+                    {t('nav.viewCart')}
                   </Link>
                 </>
               )}

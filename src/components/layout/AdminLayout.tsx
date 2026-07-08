@@ -44,6 +44,7 @@ const itemVariants = {
 function NavLink({ item, isActive, collapsed, onClick }: {
   item: NavItem; isActive: boolean; collapsed: boolean; onClick?: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <Link
       to={item.href}
@@ -335,11 +336,11 @@ export function AdminLayout() {
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      user?.name?.charAt(0) || 'أ'
+                      user?.name?.charAt(0) || t('admin.admin').charAt(0)
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || 'المدير'}</p>
+                    <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || t('admin.admin')}</p>
                     <p className="text-[11px] text-gray-500 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
                   </div>
                 </Link>
@@ -347,7 +348,7 @@ export function AdminLayout() {
                   className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <Home className="w-5 h-5" />
-                  <span>العودة للمتجر</span>
+                  <span>{t('admin.backToStore')}</span>
                 </Link>
               </div>
             </motion.aside>
@@ -368,16 +369,16 @@ export function AdminLayout() {
               <button
                 onClick={() => setMobileOpen(true)}
                 className="lg:hidden p-2 -mr-1 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors active:scale-95"
-                aria-label="فتح القائمة"
+                aria-label={t('admin.openMenu')}
               >
                 <Menu className="w-5 h-5" />
               </button>
               <div className="min-w-0">
                 <h1 className="text-sm lg:text-base font-bold font-cairo text-gray-900 truncate">
-                  {currentPage?.label || 'لوحة التحكم'}
+                  {currentPage?.label ? t(currentPage.label) : t('admin.dashboard')}
                 </h1>
                 <p className="hidden sm:block text-[11px] text-gray-400 font-cairo truncate">
-                  {SITE_NAME}
+                  {t('common.siteName')}
                 </p>
               </div>
             </div>
@@ -399,11 +400,11 @@ export function AdminLayout() {
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      user?.name?.charAt(0) || 'أ'
+                      user?.name?.charAt(0) || t('admin.admin').charAt(0)
                     )}
                   </div>
                   <span className="hidden md:block text-sm font-medium font-cairo text-gray-700 max-w-[100px] truncate">
-                    {user?.name || 'المدير'}
+                    {user?.name || t('admin.admin')}
                   </span>
                   <ChevronDown className={cn(
                     'hidden md:block w-3.5 h-3.5 text-gray-400 transition-transform duration-200',
@@ -423,7 +424,7 @@ export function AdminLayout() {
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         <Home className="w-4 h-4" />
-                        زيارة المتجر
+                        {t('admin.viewStore')}
                       </Link>
                       <div className="h-px bg-gray-100 mx-3 my-1" />
                       <button
@@ -431,7 +432,7 @@ export function AdminLayout() {
                         className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-cairo text-danger hover:bg-red-50 transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
-                        تسجيل الخروج
+                        {t('nav.logout')}
                       </button>
                     </motion.div>
                   )}

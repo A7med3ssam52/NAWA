@@ -17,14 +17,14 @@ import toast from 'react-hot-toast';
 import type { Tab } from '@/components/ui/Tabs';
 
 const COLORS_OPTIONS = [
-  { name: 'أسود', nameKey: 'black', hex: '#000000' },
-  { name: 'أبيض', nameKey: 'white', hex: '#FFFFFF' },
-  { name: 'أحمر', nameKey: 'red', hex: '#EF4444' },
-  { name: 'أزرق', nameKey: 'blue', hex: '#3B82F6' },
-  { name: 'أخضر', nameKey: 'green', hex: '#22C55E' },
-  { name: 'بيج', nameKey: 'beige', hex: '#F5E6D3' },
-  { name: 'رمادي', nameKey: 'gray', hex: '#6B7280' },
-  { name: 'نبيتي', nameKey: 'wine', hex: '#7C1D4E' },
+  { nameKey: 'black', hex: '#000000' },
+  { nameKey: 'white', hex: '#FFFFFF' },
+  { nameKey: 'red', hex: '#EF4444' },
+  { nameKey: 'blue', hex: '#3B82F6' },
+  { nameKey: 'green', hex: '#22C55E' },
+  { nameKey: 'beige', hex: '#F5E6D3' },
+  { nameKey: 'gray', hex: '#6B7280' },
+  { nameKey: 'wine', hex: '#7C1D4E' },
 ];
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -192,7 +192,7 @@ export function ProductDetailsPage() {
   const handleAddToCart = () => {
     if (isOutOfStock) return;
     addItem(product, quantity);
-    toast.success('تمت إضافة المنتج إلى السلة');
+    toast.success(t('products.addedToCart'));
   };
 
   const handleBuyNow = () => {
@@ -207,13 +207,13 @@ export function ProductDetailsPage() {
       await navigator.share({ title: product.name, url });
     } else {
       await navigator.clipboard.writeText(url);
-      toast.success('تم نسخ الرابط');
+      toast.success(t('products.linkCopied'));
     }
   };
 
   const handleWishlistToggle = () => {
     toggleItem(product);
-    toast.success(inWishlist ? 'تمت إزالة المنتج من المفضلة' : 'تمت إضافة المنتج إلى المفضلة');
+    toast.success(inWishlist ? t('products.removedFromWishlist') : t('products.addedToWishlist'));
   };
 
   return (
@@ -358,13 +358,13 @@ export function ProductDetailsPage() {
 
           {isOutOfStock && (
             <Button variant="outline" size="md" rounded="xl" fullWidth onClick={() => setShowStockModal(true)}>
-              <Bell className="w-4 h-4" /> نبهني عند التوفر
+              <Bell className="w-4 h-4" /> {t('products.notifyMe')}
             </Button>
           )}
 
           {product.category && (
             <div className="text-sm text-gray-500 font-cairo">
-              القسم: <span className="text-gray-900 font-semibold">{categories.find((c) => c.id === product.category)?.name}</span>
+              {t('products.category')} <span className="text-gray-900 font-semibold">{categories.find((c) => c.id === product.category)?.name}</span>
             </div>
           )}
         </div>
@@ -395,7 +395,7 @@ export function ProductDetailsPage() {
               {reviews.length > 0 ? reviews.map((r, i) => (
                 <ReviewCard key={r.id || i} review={r} index={i} />
               )) : (
-                <p className="text-sm text-gray-400 font-cairo text-center py-4">لا توجد تقييمات بعد</p>
+                <p className="text-sm text-gray-400 font-cairo text-center py-4">{t('products.noReviewsYet')}</p>
               )}
             </div>
           )}
@@ -404,12 +404,12 @@ export function ProductDetailsPage() {
 
       {related && related.length > 0 && (
         <section>
-          <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 mb-4 sm:mb-6">منتجات ذات صلة</h2>
+          <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 mb-4 sm:mb-6">{t('products.relatedProducts')}</h2>
           <ProductGrid items={related} />
         </section>
       )}
 
-      <Modal isOpen={showStockModal} onClose={() => setShowStockModal(false)} title="نبهني عند التوفر">
+      <Modal isOpen={showStockModal} onClose={() => setShowStockModal(false)} title={t('products.notifyMe')}>
         <BackInStockForm productId={product.id} productName={product.name} onClose={() => setShowStockModal(false)} />
       </Modal>
     </div>
