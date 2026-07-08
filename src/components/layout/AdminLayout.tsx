@@ -52,7 +52,7 @@ function NavLink({ item, isActive, collapsed, onClick }: {
         collapsed ? 'justify-center p-3' : 'px-3.5 py-3',
         isActive
           ? 'text-white shadow-lg shadow-secondary/25'
-          : 'text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text',
+          : 'text-gray-500 hover:text-gray-700',
       )}
     >
       {isActive && (
@@ -160,7 +160,7 @@ export function AdminLayout() {
   const currentPage = navItems.find((n) => isActive(n.href));
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-50 dark:bg-dark-bg flex flex-col lg:flex-row">
+    <div dir="rtl" className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
       {/* ─── Desktop Sidebar ─── */}
       <motion.aside
         ref={sidebarRef}
@@ -168,8 +168,8 @@ export function AdminLayout() {
         animate={sidebarOpen ? 'open' : 'closed'}
         className={cn(
           'hidden lg:flex flex-col fixed inset-y-0 right-0 z-30',
-          'bg-white dark:bg-dark-bg',
-          'border-l border-gray-200 dark:border-white/5 shadow-sm',
+          'bg-white',
+          'border-l border-gray-200 shadow-sm',
           'overflow-hidden',
         )}
       >
@@ -179,7 +179,7 @@ export function AdminLayout() {
 
         {/* Logo */}
         <div className={cn(
-          'relative flex items-center h-16 lg:h-18 border-b border-gray-100 dark:border-white/5 transition-all duration-300',
+          'relative flex items-center h-16 lg:h-18 border-b border-gray-100 transition-all duration-300',
           sidebarOpen ? 'justify-between px-4' : 'justify-center px-2',
         )}>
           {sidebarOpen ? (
@@ -189,13 +189,13 @@ export function AdminLayout() {
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <span className="block font-bold text-base font-cairo text-gray-900 dark:text-dark-text truncate">لوحة التحكم</span>
-                  <span className="block text-[10px] text-gray-500 dark:text-dark-muted/60 font-cairo truncate">إدارة المتجر</span>
+                  <span className="block font-bold text-base font-cairo text-gray-900 truncate">لوحة التحكم</span>
+                  <span className="block text-[10px] text-gray-500 font-cairo truncate">إدارة المتجر</span>
                 </div>
               </Link>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                 aria-label="تصغير"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -204,7 +204,7 @@ export function AdminLayout() {
           ) : (
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+              className="p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
               aria-label="تكبير"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -228,14 +228,14 @@ export function AdminLayout() {
         </nav>
 
         {/* Bottom Section */}
-        <div className="relative p-3 border-t border-gray-100 dark:border-white/5">
+        <div className="relative p-3 border-t border-gray-100">
           {/* User Avatar Mini */}
           <Link
             to="/admin/settings"
             className={cn(
               'flex items-center gap-3 rounded-2xl transition-all duration-300 group',
               sidebarOpen ? 'px-3.5 py-3' : 'justify-center p-2.5',
-              'hover:bg-gray-50 dark:hover:bg-white/5',
+              'hover:bg-gray-50',
             )}
           >
             <div className="relative shrink-0">
@@ -246,12 +246,12 @@ export function AdminLayout() {
                   user?.name?.charAt(0) || 'أ'
                 )}
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white dark:border-dark-bg" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-success rounded-full border-2 border-white" />
           </div>
             {sidebarOpen && (
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium font-cairo text-gray-900 dark:text-dark-text truncate">{user?.name || 'المدير'}</p>
-                <p className="text-[11px] text-gray-500 dark:text-dark-muted/60 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
+                <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || 'المدير'}</p>
+                <p className="text-[11px] text-gray-500 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
               </div>
             )}
           </Link>
@@ -262,7 +262,7 @@ export function AdminLayout() {
               to="/"
               className={cn(
                 'flex items-center gap-3 rounded-2xl text-sm font-medium font-cairo transition-all duration-300 group',
-                'text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text hover:bg-gray-50 dark:hover:bg-white/5',
+                'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
                 sidebarOpen ? 'px-3.5 py-2.5' : 'justify-center p-2.5',
               )}
               title={!sidebarOpen ? 'العودة للمتجر' : undefined}
@@ -286,7 +286,7 @@ export function AdminLayout() {
               onClick={closeMobile}
             />
             <motion.aside
-              className="absolute inset-y-0 right-0 w-[85vw] max-w-sm bg-white dark:bg-dark-bg flex flex-col shadow-2xl"
+              className="absolute inset-y-0 right-0 w-[85vw] max-w-sm bg-white flex flex-col shadow-2xl"
               initial={{ x: '100%' }}
               animate={{ x: 0, transition: { type: 'spring', damping: 28, stiffness: 300 } }}
               exit={{ x: '100%', transition: { duration: 0.2, ease: 'easeIn' } }}
@@ -294,19 +294,19 @@ export function AdminLayout() {
               {/* Decorative */}
               <div className="absolute -top-40 -right-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
 
-              <div className="relative flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/5">
+              <div className="relative flex items-center justify-between p-4 border-b border-gray-100">
                 <Link to="/admin" onClick={closeMobile} className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center shadow-lg shadow-secondary/30">
                     <Store className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <span className="block font-bold text-base font-cairo text-gray-900 dark:text-dark-text">لوحة التحكم</span>
-                    <span className="block text-[10px] text-gray-500 dark:text-dark-muted/60 font-cairo">إدارة المتجر</span>
+                    <span className="block font-bold text-base font-cairo text-gray-900">لوحة التحكم</span>
+                    <span className="block text-[10px] text-gray-500 font-cairo">إدارة المتجر</span>
                   </div>
                 </Link>
                 <button
                   onClick={closeMobile}
-                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                   aria-label="إغلاق"
                 >
                   <X className="w-5 h-5" />
@@ -325,9 +325,9 @@ export function AdminLayout() {
                 ))}
               </div>
 
-              <div className="relative p-3 border-t border-gray-100 dark:border-white/5 space-y-2">
+              <div className="relative p-3 border-t border-gray-100 space-y-2">
                 <Link to="/admin/settings" onClick={closeMobile}
-                  className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-medium font-cairo text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-medium font-cairo text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
                     {user?.avatar ? (
@@ -337,12 +337,12 @@ export function AdminLayout() {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium font-cairo text-gray-900 dark:text-dark-text truncate">{user?.name || 'المدير'}</p>
-                    <p className="text-[11px] text-gray-500 dark:text-dark-muted/60 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
+                    <p className="text-sm font-medium font-cairo text-gray-900 truncate">{user?.name || 'المدير'}</p>
+                    <p className="text-[11px] text-gray-500 font-cairo truncate">{user?.email || 'admin@admin.com'}</p>
                   </div>
                 </Link>
                 <Link to="/" onClick={closeMobile}
-                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-medium font-cairo text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <Home className="w-5 h-5" />
                   <span>العودة للمتجر</span>
@@ -360,21 +360,21 @@ export function AdminLayout() {
         sidebarOpen && 'lg:mr-64',
       )}>
         {/* Top Bar */}
-        <header className="sticky top-0 z-20 bg-white/80 dark:bg-dark-card/80 backdrop-blur-xl border-b border-gray-100 dark:border-dark-border supports-[backdrop-filter]:bg-white/70">
+        <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 supports-[backdrop-filter]:bg-white/70">
           <div className="flex items-center justify-between h-14 lg:h-16 px-3 lg:px-6">
             <div className="flex items-center gap-2 min-w-0">
               <button
                 onClick={() => setMobileOpen(true)}
-                className="lg:hidden p-2 -mr-1 rounded-xl text-gray-500 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors active:scale-95"
+                className="lg:hidden p-2 -mr-1 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors active:scale-95"
                 aria-label="فتح القائمة"
               >
                 <Menu className="w-5 h-5" />
               </button>
               <div className="min-w-0">
-                <h1 className="text-sm lg:text-base font-bold font-cairo text-gray-900 dark:text-dark-text truncate">
+                <h1 className="text-sm lg:text-base font-bold font-cairo text-gray-900 truncate">
                   {currentPage?.label || 'لوحة التحكم'}
                 </h1>
-                <p className="hidden sm:block text-[11px] text-gray-400 dark:text-dark-muted font-cairo truncate">
+                <p className="hidden sm:block text-[11px] text-gray-400 font-cairo truncate">
                   {SITE_NAME}
                 </p>
               </div>
@@ -387,8 +387,8 @@ export function AdminLayout() {
                   onClick={() => setShowUserMenu((prev) => !prev)}
                   className={cn(
                     'flex items-center gap-2 px-2 lg:px-3 py-1.5 rounded-xl transition-all duration-200',
-                    'hover:bg-gray-100 dark:hover:bg-dark-border/50 active:scale-95',
-                    showUserMenu && 'bg-gray-100 dark:bg-dark-border/50 ring-1 ring-secondary/20',
+                    'hover:bg-gray-100 active:scale-95',
+                    showUserMenu && 'bg-gray-100 ring-1 ring-secondary/20',
                   )}
                   aria-haspopup="true"
                   aria-expanded={showUserMenu}
@@ -400,7 +400,7 @@ export function AdminLayout() {
                       user?.name?.charAt(0) || 'أ'
                     )}
                   </div>
-                  <span className="hidden md:block text-sm font-medium font-cairo text-gray-700 dark:text-dark-text max-w-[100px] truncate">
+                  <span className="hidden md:block text-sm font-medium font-cairo text-gray-700 max-w-[100px] truncate">
                     {user?.name || 'المدير'}
                   </span>
                   <ChevronDown className={cn(
@@ -415,18 +415,18 @@ export function AdminLayout() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute left-0 top-full mt-1.5 w-48 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft-lg py-1.5 z-50"
+                      className="absolute left-0 top-full mt-1.5 w-48 bg-white rounded-2xl border border-gray-100 shadow-soft-lg py-1.5 z-50"
                     >
                       <Link to="/" onClick={() => setShowUserMenu(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors"
                       >
                         <Home className="w-4 h-4" />
                         زيارة المتجر
                       </Link>
-                      <div className="h-px bg-gray-100 dark:bg-dark-border mx-3 my-1" />
+                      <div className="h-px bg-gray-100 mx-3 my-1" />
                       <button
                         onClick={() => { logout(); setShowUserMenu(false); }}
-                        className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-cairo text-danger hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                        className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-cairo text-danger hover:bg-red-50 transition-colors"
                       >
                         <LogOut className="w-4 h-4" />
                         تسجيل الخروج
@@ -447,7 +447,7 @@ export function AdminLayout() {
 
       {/* ─── Premium Mobile Bottom Navigation Bar ─── */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 safe-area-bottom">
-        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 dark:bg-dark-card/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20 dark:border-dark-border/50">
+        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)][0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20">
           <div className="flex items-center justify-around h-16 px-1">
             {bottomNavItems.map((item) => {
               const active = isActive(item.href);
@@ -462,11 +462,11 @@ export function AdminLayout() {
                 >
                   <div className={cn(
                     'relative flex items-center justify-center w-10 h-10 rounded-xl transition-all duration-200',
-                    active && 'bg-secondary/10 dark:bg-secondary/20'
+                    active && 'bg-secondary/10'
                   )}>
                     <div className={cn(
                       'transition-all duration-200',
-                      active ? 'text-secondary scale-110' : 'text-gray-400 dark:text-dark-muted'
+                      active ? 'text-secondary scale-110' : 'text-gray-400'
                     )}>
                       {item.icon}
                     </div>
@@ -481,7 +481,7 @@ export function AdminLayout() {
                     'text-[10px] font-cairo mt-0.5 transition-all duration-200',
                     active
                       ? 'text-secondary font-bold'
-                      : 'text-gray-400 dark:text-dark-muted'
+                      : 'text-gray-400'
                   )}>
                     {item.label}
                   </span>

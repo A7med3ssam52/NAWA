@@ -11,8 +11,8 @@ export function Skeleton({ className, variant = 'text', width, height }: Skeleto
   return (
     <div
       className={cn(
-        'relative overflow-hidden bg-gray-200 dark:bg-dark-border',
-        'before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/5 before:to-transparent before:bg-[length:200%_100%] before:animate-shimmer',
+        'relative overflow-hidden bg-gray-200',
+        'before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:bg-[length:200%_100%] before:animate-shimmer',
         variant === 'circular' && 'rounded-full',
         variant === 'text' && 'rounded-lg h-4',
         variant === 'rectangular' && 'rounded-xl',

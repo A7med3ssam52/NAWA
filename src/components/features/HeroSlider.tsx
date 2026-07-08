@@ -18,7 +18,8 @@ const slides = [
     cta: 'تسوق الآن',
     link: PAGES.PRODUCTS,
     icon: Sparkles,
-    gradient: 'from-secondary via-secondary/80 to-purple-600',
+    image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1920&q=80',
+    gradient: 'from-secondary/80 via-secondary/60 to-purple-600/80',
   },
   {
     id: 2,
@@ -27,7 +28,8 @@ const slides = [
     cta: 'استكشف العروض',
     link: PAGES.OFFERS,
     icon: Zap,
-    gradient: 'from-accent via-orange-500 to-rose-500',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80',
+    gradient: 'from-accent/80 via-orange-500/60 to-rose-500/80',
   },
   {
     id: 3,
@@ -36,7 +38,8 @@ const slides = [
     cta: 'تسوق الآن',
     link: PAGES.PRODUCTS,
     icon: Truck,
-    gradient: 'from-emerald-500 via-green-500 to-teal-600',
+    image: 'https://images.unsplash.com/photo-1553729459-afe8f2e2b8c7?w=1920&q=80',
+    gradient: 'from-emerald-500/80 via-green-500/60 to-teal-600/80',
   },
 ];
 
@@ -59,16 +62,16 @@ export function HeroSlider() {
           const Icon = slide.icon;
           return (
             <SwiperSlide key={slide.id}>
-              <div
-                className={`relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] bg-gradient-to-br ${slide.gradient} overflow-hidden`}
-              >
-                {/* Decorative Elements */}
-                <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
-                  <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
-                  <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-                  <div className="absolute top-1/2 left-1/4 w-1 h-1 bg-white/20 rounded-full" />
-                  <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-white/20 rounded-full" />
-                  <div className="absolute bottom-1/4 right-1/4 w-1.5 h-1.5 bg-white/20 rounded-full" />
+              <div className="relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] overflow-hidden">
+                {/* Background Image */}
+                <div className="absolute inset-0">
+                  <img
+                    src={slide.image}
+                    alt={slide.heading}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${slide.gradient}`} />
+                  <div className="absolute inset-0 bg-black/20" />
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">

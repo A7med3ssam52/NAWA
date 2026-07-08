@@ -59,9 +59,9 @@ export function CartPage() {
     <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"
     >
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
           سلة التسوق
-          <span className="text-base font-medium text-gray-400 dark:text-dark-muted mr-2">({items.length})</span>
+          <span className="text-base font-medium text-gray-400 mr-2">({items.length})</span>
         </h1>
         <Button variant="ghost" size="sm" onClick={clearCart}>
           <Trash2 className="w-4 h-4" />
@@ -91,25 +91,25 @@ export function CartPage() {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft sticky top-28 space-y-4">
-            <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft sticky top-28 space-y-4">
+            <h3 className="text-base font-bold font-cairo text-gray-900">
               ملخص الطلب
             </h3>
 
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm font-cairo">
-                <span className="text-gray-500 dark:text-dark-muted">المجموع الفرعي</span>
-                <span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(subtotal)}</span>
+                <span className="text-gray-500">المجموع الفرعي</span>
+                <span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex items-center justify-between text-sm font-cairo">
-                <span className="text-gray-500 dark:text-dark-muted">الشحن</span>
-                <span className={cn('font-semibold', shippingCost === 0 ? 'text-success' : 'text-gray-900 dark:text-dark-text')}>
+                <span className="text-gray-500">الشحن</span>
+                <span className={cn('font-semibold', shippingCost === 0 ? 'text-success' : 'text-gray-900')}>
                   {shippingCost === 0 ? 'مجاني' : formatPrice(shippingCost)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm font-cairo">
-                <span className="text-gray-500 dark:text-dark-muted">الضريبة (14%)</span>
-                <span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(tax)}</span>
+                <span className="text-gray-500">الضريبة (14%)</span>
+                <span className="text-gray-900 font-semibold">{formatPrice(tax)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex items-center justify-between text-sm font-cairo">
@@ -119,8 +119,8 @@ export function CartPage() {
               )}
               <Divider />
               <div className="flex items-center justify-between">
-                <span className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">الإجمالي</span>
-                <span className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(total)}</span>
+                <span className="text-base font-bold font-cairo text-gray-900">الإجمالي</span>
+                <span className="text-xl font-bold font-cairo text-gray-900">{formatPrice(total)}</span>
               </div>
             </div>
 

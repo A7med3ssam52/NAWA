@@ -33,10 +33,10 @@ function RouteErrorBoundary() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4 text-center">
       <div className="text-5xl">⚠️</div>
-      <h2 className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+      <h2 className="text-xl font-bold font-cairo text-gray-900">
         {isChunkError ? 'حدث خطأ في تحميل الصفحة' : 'حدث خطأ غير متوقع'}
       </h2>
-      <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo max-w-md">
+      <p className="text-sm text-gray-500 font-cairo max-w-md">
         {isChunkError
           ? 'تم تحديث التطبيق مؤخراً. يرجى إعادة تحميل الصفحة.'
           : 'يرجى المحاولة مرة أخرى.'}

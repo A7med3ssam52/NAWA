@@ -31,7 +31,7 @@ export function CartPreview() {
       {/* Cart Button */}
       <Link
         to={PAGES.CART}
-        className="relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+        className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         aria-label="سلة التسوق"
       >
         <ShoppingCart className="w-5 h-5" />
@@ -50,22 +50,22 @@ export function CartPreview() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50 animate-fade-in-up"
+          className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
           onMouseEnter={show}
           onMouseLeave={hide}
         >
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                <span className="text-sm font-bold font-cairo text-gray-900">
                   سلة التسوق
                 </span>
-                <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+                <span className="text-xs text-gray-400 font-cairo">
                   {itemsCount} منتج{itemsCount !== 1 ? 'ات' : ''}
                 </span>
               </div>
 
               {items.length === 0 ? (
-                <div className="py-6 text-center text-sm text-gray-400 dark:text-dark-muted font-cairo">
+                <div className="py-6 text-center text-sm text-gray-400 font-cairo">
                   سلة التسوق فارغة
                 </div>
               ) : (
@@ -73,9 +73,9 @@ export function CartPreview() {
                   {items.slice(0, 5).map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors group"
+                      className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors group"
                     >
-                      <div className="w-12 h-12 rounded-lg bg-gray-50 dark:bg-dark-border/50 overflow-hidden shrink-0">
+                      <div className="w-12 h-12 rounded-lg bg-gray-50 overflow-hidden shrink-0">
                         <img
                           src={item.product.images[0]}
                           alt={item.product.name}
@@ -84,7 +84,7 @@ export function CartPreview() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium font-cairo text-gray-900 dark:text-dark-text truncate">
+                        <p className="text-sm font-medium font-cairo text-gray-900 truncate">
                           {item.product.name}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
@@ -98,12 +98,12 @@ export function CartPreview() {
                                   updateQuantity(item.id, item.quantity - 1);
                                 }
                               }}
-                              className="p-0.5 rounded text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-border transition-colors"
+                              className="p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
                               aria-label="تقليل الكمية"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
-                            <span className="text-xs font-medium text-gray-500 dark:text-dark-muted min-w-[16px] text-center">
+                            <span className="text-xs font-medium text-gray-500 min-w-[16px] text-center">
                               {item.quantity}
                             </span>
                             <button
@@ -111,13 +111,13 @@ export function CartPreview() {
                                 e.preventDefault();
                                 updateQuantity(item.id, item.quantity + 1);
                               }}
-                              className="p-0.5 rounded text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-200 dark:hover:bg-dark-border transition-colors"
+                              className="p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
                               aria-label="زيادة الكمية"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
                           </div>
-                          <span className="text-xs font-bold text-gray-900 dark:text-dark-text">
+                          <span className="text-xs font-bold text-gray-900">
                             {item.product.price.toLocaleString('ar-EG')} {CURRENCY}
                           </span>
                         </div>
@@ -139,8 +139,8 @@ export function CartPreview() {
 
               {items.length > 0 && (
                 <>
-                  <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100 dark:border-dark-border">
-                    <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                  <div className="flex items-center justify-between pt-3 mt-2 border-t border-gray-100">
+                    <span className="text-sm font-bold font-cairo text-gray-900">
                       المجموع
                     </span>
                     <span className="text-sm font-bold text-secondary">

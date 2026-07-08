@@ -28,7 +28,7 @@ export const IosButton = forwardRef<HTMLButtonElement, IosButtonProps>(
       primary: 'ios-button-primary',
       secondary: 'ios-button-secondary',
       ghost: 'ios-button-ghost',
-      outline: 'border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700',
+      outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50',
     };
 
     return (

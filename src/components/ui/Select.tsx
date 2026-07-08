@@ -23,7 +23,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-dark-text font-cairo"
+            className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo"
           >
             {label}
           </label>
@@ -35,14 +35,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             dir={dir}
             className={cn(
               'w-full px-4 py-2.5 text-sm font-cairo appearance-none transition-all duration-200',
-              'bg-white dark:bg-dark-card border rounded-xl',
-              'text-gray-900 dark:text-dark-text',
+              'bg-white border rounded-xl',
+              'text-gray-900',
               'focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary',
-              'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 dark:disabled:bg-dark-border/30',
+              'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50',
               error
                 ? 'border-danger focus:ring-danger/30 focus:border-danger'
-                : 'border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-gray-600',
-              props.value ? 'text-gray-900 dark:text-dark-text' : 'text-gray-400 dark:text-dark-muted',
+                : 'border-gray-200 hover:border-gray-300',
+              props.value ? 'text-gray-900' : 'text-gray-400',
               className
             )}
             aria-invalid={!!error}
@@ -53,7 +53,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               {placeholder}
             </option>
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value} className="text-gray-900 dark:bg-dark-card">
+              <option key={opt.value} value={opt.value} className="text-gray-900">
                 {opt.label}
               </option>
             ))}

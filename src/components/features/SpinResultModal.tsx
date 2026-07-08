@@ -113,7 +113,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 30 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-sm mx-auto bg-white dark:bg-dark-card rounded-3xl shadow-2xl border border-gray-100 dark:border-dark-border overflow-hidden"
+        className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-sm mx-auto bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
         dir="rtl"
       >
         <div className="relative text-center px-4 sm:px-6 pt-6 sm:pt-8 pb-4 sm:pb-6 overflow-hidden">
@@ -157,7 +157,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
 
           <div className="space-y-1.5 sm:space-y-2 relative mt-3 sm:mt-4">
             <motion.h3
-              className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text"
+              className="text-xl sm:text-2xl font-bold font-cairo text-gray-900"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -165,7 +165,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
               {config.title}
             </motion.h3>
             <motion.p
-              className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo"
+              className="text-xs sm:text-sm text-gray-500 font-cairo"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -199,7 +199,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
               </div>
             )}
             {prize.type === 'tryAgain' && (
-              <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted">
+              <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gray-100 text-gray-500">
                 <span className="text-sm sm:text-lg font-bold font-cairo">حظ أوفر في المرة القادمة!</span>
               </div>
             )}
@@ -207,14 +207,14 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
 
           {couponCode && isWin && (
             <motion.div
-              className="relative bg-gray-50 dark:bg-dark-border/50 rounded-2xl p-2.5 sm:p-3 mt-3 sm:mt-4 border border-dashed border-gray-200 dark:border-gray-600"
+              className="relative bg-gray-50 rounded-2xl p-2.5 sm:p-3 mt-3 sm:mt-4 border border-dashed border-gray-200"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <p className="text-[10px] sm:text-[11px] text-gray-400 dark:text-dark-muted font-cairo mb-0.5 sm:mb-1">كود الخصم</p>
+              <p className="text-[10px] sm:text-[11px] text-gray-400 font-cairo mb-0.5 sm:mb-1">كود الخصم</p>
               <p className="text-base sm:text-lg font-bold font-cairo text-secondary tracking-wider break-all" dir="ltr">{couponCode}</p>
-              <p className="text-[9px] sm:text-[10px] text-gray-400 dark:text-dark-muted font-cairo mt-0.5 sm:mt-1">صالح لمدة 7 أيام</p>
+              <p className="text-[9px] sm:text-[10px] text-gray-400 font-cairo mt-0.5 sm:mt-1">صالح لمدة 7 أيام</p>
             </motion.div>
           )}
 
@@ -228,7 +228,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
               <>
                 <button
                   onClick={onClose}
-                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-gray-500 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-all active:scale-95"
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-gray-500 hover:bg-gray-100 transition-all active:scale-95"
                 >
                   لاحقاً
                 </button>

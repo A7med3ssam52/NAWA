@@ -43,7 +43,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     <div className="space-y-4">
       {/* Main Image */}
       <div
-        className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 dark:bg-dark-border/30 border border-gray-100 dark:border-dark-border cursor-crosshair"
+        className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 cursor-crosshair"
         onMouseEnter={() => !isMobile && setZoomed(true)}
         onMouseLeave={() => setZoomed(false)}
         onMouseMove={handleMouseMove}
@@ -64,7 +64,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               }
             />
             {!zoomed && !isMobile && (
-              <div className="absolute bottom-3 left-3 p-2 rounded-xl bg-white/80 dark:bg-dark-card/80 backdrop-blur-sm shadow-soft">
+              <div className="absolute bottom-3 left-3 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft">
                 <ZoomIn className="w-4 h-4 text-gray-500" />
               </div>
             )}
@@ -72,7 +72,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
-              <ImageOff className="w-16 h-16 mx-auto text-gray-300 dark:text-dark-muted mb-2" />
+              <ImageOff className="w-16 h-16 mx-auto text-gray-300 mb-2" />
               <p className="text-sm text-gray-400 font-cairo">لا توجد صورة</p>
             </div>
           </div>
@@ -87,10 +87,10 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   prev === 0 ? displayImages.length - 1 : prev - 1
                 )
               }
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 dark:bg-dark-card/80 backdrop-blur-sm shadow-soft hover:bg-white dark:hover:bg-dark-card transition-colors opacity-0 group-hover:opacity-100"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
               aria-label="الصورة السابقة"
             >
-              <ChevronRight className="w-5 h-5 text-gray-700 dark:text-dark-text" />
+              <ChevronRight className="w-5 h-5 text-gray-700" />
             </button>
             <button
               onClick={() =>
@@ -98,10 +98,10 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   prev === displayImages.length - 1 ? 0 : prev + 1
                 )
               }
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 dark:bg-dark-card/80 backdrop-blur-sm shadow-soft hover:bg-white dark:hover:bg-dark-card transition-colors opacity-0 group-hover:opacity-100"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
               aria-label="الصورة التالية"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-700 dark:text-dark-text" />
+              <ChevronLeft className="w-5 h-5 text-gray-700" />
             </button>
           </>
         )}
@@ -125,7 +125,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                 'relative shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200',
                 index === selectedIndex
                   ? 'border-secondary ring-2 ring-secondary/30'
-                  : 'border-gray-100 dark:border-dark-border hover:border-gray-300 dark:hover:border-dark-muted'
+                  : 'border-gray-100 hover:border-gray-300'
               )}
               aria-label={`الصورة ${index + 1}`}
               aria-current={index === selectedIndex ? 'true' : undefined}
@@ -139,7 +139,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-dark-border/50">
+                <div className="w-full h-full flex items-center justify-center bg-gray-50">
                   <ImageOff className="w-5 h-5 text-gray-300" />
                 </div>
               )}
@@ -168,7 +168,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                     'relative w-full aspect-square rounded-xl overflow-hidden border-2 transition-all duration-200',
                     index === selectedIndex
                       ? 'border-secondary ring-2 ring-secondary/30'
-                      : 'border-gray-100 dark:border-dark-border'
+                      : 'border-gray-100'
                   )}
                   aria-label={`الصورة ${index + 1}`}
                 >
@@ -181,7 +181,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-dark-border/50">
+                    <div className="w-full h-full flex items-center justify-center bg-gray-50">
                       <ImageOff className="w-4 h-4 text-gray-300" />
                     </div>
                   )}

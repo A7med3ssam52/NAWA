@@ -94,8 +94,8 @@ export function AdminCouponsPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">كوبونات الخصم</h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إدارة أكواد الخصم والتخفيضات</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">كوبونات الخصم</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة أكواد الخصم والتخفيضات</p>
         </div>
         <Button onClick={openAdd}><Plus className="w-4 h-4" /> إضافة كود</Button>
       </div>
@@ -115,53 +115,53 @@ export function AdminCouponsPage() {
       ) : filtered.length === 0 ? (
         <EmptyState icon={<Tag className="w-16 h-16" />} title="لا توجد كوبونات" description={search ? 'لا توجد نتائج للبحث' : 'لم يتم إضافة أي كود خصم بعد'} action={!search ? { label: 'إضافة كود', onClick: openAdd } : undefined} />
       ) : (
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-dark-border">
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الكود</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الخصم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">النوع</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الحد الأدنى</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الاستخدام</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">تاريخ الانتهاء</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الحالة</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الإجراءات</th>
+                <tr className="border-b border-gray-100">
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الكود</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الخصم</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">النوع</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الحد الأدنى</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الاستخدام</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">تاريخ الانتهاء</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الحالة</th>
+                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((coupon) => {
                   const expired = isExpired(coupon.expiresAt);
                   return (
-                    <tr key={coupon.id} className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors">
+                    <tr key={coupon.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/10 text-secondary text-sm font-bold font-cairo">
                           <Percent className="w-3 h-3" /> {coupon.code}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                        <span className="text-sm font-bold font-cairo text-gray-900">
                           {coupon.type === 'percentage' ? `${coupon.discount}%` : `${coupon.discount.toLocaleString('ar-EG')} ج.م`}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs font-cairo text-gray-500 dark:text-dark-muted">
+                        <span className="text-xs font-cairo text-gray-500">
                           {coupon.type === 'percentage' ? 'نسبة مئوية' : 'قيمة ثابتة'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm font-cairo text-gray-600 dark:text-dark-muted">
+                        <span className="text-sm font-cairo text-gray-600">
                           {coupon.minOrder > 0 ? `${coupon.minOrder.toLocaleString('ar-EG')} ج.م` : 'بدون'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-sm font-cairo text-gray-600 dark:text-dark-muted">
+                        <span className="text-sm font-cairo text-gray-600">
                           {coupon.usedCount} / {coupon.usageLimit}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={cn('text-sm font-cairo', expired ? 'text-danger' : 'text-gray-600 dark:text-dark-muted')}>
+                        <span className={cn('text-sm font-cairo', expired ? 'text-danger' : 'text-gray-600')}>
                           {formatDate(coupon.expiresAt)}
                         </span>
                       </td>
@@ -220,7 +220,7 @@ export function AdminCouponsPage() {
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">هل أنت متأكد من حذف الكود <strong className="text-gray-900 dark:text-dark-text">{deleteModal?.code}</strong>؟</p>
+          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف الكود <strong className="text-gray-900">{deleteModal?.code}</strong>؟</p>
           <div className="flex items-center gap-3">
             <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
             <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>

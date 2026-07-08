@@ -22,7 +22,7 @@ export function TrackingTimeline({ events, currentStatus, cancelled }: TrackingT
   return (
     <div className="relative" dir="rtl">
       {/* Vertical Line */}
-      <div className="absolute right-[19px] top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-dark-border" aria-hidden="true" />
+      <div className="absolute right-[19px] top-0 bottom-0 w-0.5 bg-gray-200" aria-hidden="true" />
 
       <div className="space-y-0">
         {events.map((event, index) => {
@@ -44,7 +44,7 @@ export function TrackingTimeline({ events, currentStatus, cancelled }: TrackingT
                     ? 'bg-success border-success text-white'
                     : cancelled && !event.completed
                       ? 'bg-danger/10 border-danger/30 text-danger'
-                      : 'bg-white dark:bg-dark-card border-gray-300 dark:border-dark-muted text-gray-400 dark:text-dark-muted'
+                      : 'bg-white border-gray-300 text-gray-400'
                 )}
               >
                 {event.completed ? (
@@ -62,19 +62,19 @@ export function TrackingTimeline({ events, currentStatus, cancelled }: TrackingT
                   className={cn(
                     'text-sm font-bold font-cairo mb-0.5',
                     event.completed
-                      ? 'text-gray-900 dark:text-dark-text'
+                      ? 'text-gray-900'
                       : cancelled
                         ? 'text-danger'
-                        : 'text-gray-400 dark:text-dark-muted'
+                        : 'text-gray-400'
                   )}
                 >
                   {statusLabels[event.status] || event.status}
                 </h4>
-                <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo mb-1">
+                <p className="text-xs text-gray-500 font-cairo mb-1">
                   {formatDateTime(event.date)}
                 </p>
                 {event.description && (
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo leading-relaxed">
+                  <p className="text-xs text-gray-400 font-cairo leading-relaxed">
                     {event.description}
                   </p>
                 )}

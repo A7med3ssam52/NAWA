@@ -18,7 +18,7 @@ interface TabsProps {
 
 export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   return (
-    <div className={cn('flex border-b border-gray-200 dark:border-dark-border gap-0', className)} dir="rtl" role="tablist">
+    <div className={cn('flex border-b border-gray-200 gap-0', className)} dir="rtl" role="tablist">
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
@@ -31,7 +31,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
               'relative flex items-center gap-2 px-5 py-3 text-sm font-cairo font-medium transition-colors duration-200',
               isActive
                 ? 'text-secondary'
-                : 'text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text'
+                : 'text-gray-500 hover:text-gray-700'
             )}
           >
             {tab.icon}
@@ -42,7 +42,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
                   'text-[11px] px-1.5 py-0.5 rounded-full font-medium',
                   isActive
                     ? 'bg-secondary/10 text-secondary'
-                    : 'bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted'
+                    : 'bg-gray-100 text-gray-500'
                 )}
               >
                 {tab.count}

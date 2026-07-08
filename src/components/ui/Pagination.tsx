@@ -31,7 +31,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
-        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 dark:hover:text-dark-text disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
         aria-label="الصفحة الأولى"
       >
         <ChevronsRight className="w-4 h-4" />
@@ -39,7 +39,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 dark:hover:text-dark-text disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
         aria-label="الصفحة السابقة"
       >
         <ChevronRight className="w-4 h-4" />
@@ -47,7 +47,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
 
       {pages.map((page, idx) =>
         page === 'dots' ? (
-          <span key={`dots-${idx}`} className={cn(btnBase, 'text-gray-400 dark:text-dark-muted cursor-default')}>
+          <span key={`dots-${idx}`} className={cn(btnBase, 'text-gray-400 cursor-default')}>
             ...
           </span>
         ) : (
@@ -58,7 +58,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
               btnBase,
               page === currentPage
                 ? 'bg-secondary text-white shadow-md shadow-secondary/20'
-                : 'text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border'
+                : 'text-gray-600 hover:bg-gray-100'
             )}
             aria-current={page === currentPage ? 'page' : undefined}
             aria-label={`الصفحة ${page}`}
@@ -71,7 +71,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 dark:hover:text-dark-text disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
         aria-label="الصفحة التالية"
       >
         <ChevronLeft className="w-4 h-4" />
@@ -79,7 +79,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
-        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 dark:hover:text-dark-text disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
         aria-label="آخر صفحة"
       >
         <ChevronsLeft className="w-4 h-4" />

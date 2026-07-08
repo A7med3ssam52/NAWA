@@ -13,17 +13,17 @@ export function TestimonialCard({ testimonial, index = 0 }: TestimonialCardProps
 
   return (
     <FadeInView delay={index * 0.05} y={20} duration={0.3}>
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-6 shadow-soft hover:shadow-soft-lg transition-all duration-300">
+      <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-soft hover:shadow-soft-lg transition-all duration-300">
         <div className="flex items-center gap-0.5 mb-4" dir="ltr">
           {Array.from({ length: fullStars }).map((_, i) => (
             <Star key={`full-${i}`} className="w-4 h-4 fill-accent text-accent" />
           ))}
           {Array.from({ length: emptyStars }).map((_, i) => (
-            <Star key={`empty-${i}`} className="w-4 h-4 text-gray-200 dark:text-gray-600" />
+            <Star key={`empty-${i}`} className="w-4 h-4 text-gray-200" />
           ))}
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo leading-relaxed mb-5 line-clamp-4">
+        <p className="text-sm text-gray-600 font-cairo leading-relaxed mb-5 line-clamp-4">
           &ldquo;{testimonial.comment}&rdquo;
         </p>
 
@@ -36,10 +36,10 @@ export function TestimonialCard({ testimonial, index = 0 }: TestimonialCardProps
             )}
           </div>
           <div>
-            <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+            <p className="text-sm font-bold font-cairo text-gray-900">
               {testimonial.name}
             </p>
-            <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+            <p className="text-xs text-gray-400 font-cairo">
               {testimonial.role}
             </p>
           </div>

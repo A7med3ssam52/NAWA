@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-dark-text font-cairo ios-touch-feedback"
+            className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo ios-touch-feedback"
           >
             {label}
           </label>
@@ -26,7 +26,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative">
           {Icon && (
             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3 pointer-events-none">
-              <Icon className="w-4 h-4 text-gray-400 dark:text-dark-muted ios-touch-feedback" />
+              <Icon className="w-4 h-4 text-gray-400 ios-touch-feedback" />
             </div>
           )}
           <input
@@ -35,14 +35,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             dir={dir}
             className={cn(
               'w-full px-3 sm:px-4 py-3 sm:py-2.5 text-base sm:text-sm font-cairo transition-all duration-200 ios-button-touch',
-              'bg-gray-100 dark:bg-dark-border/50 border border-transparent focus:border-blue-500/30 rounded-xl',
-              'text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted',
+              'bg-gray-100 border border-transparent focus:border-blue-500/30 rounded-xl',
+              'text-gray-900 placeholder-gray-400',
               'focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500',
-              'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 dark:disabled:bg-dark-border/30',
+              'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50',
               Icon && 'pr-9 sm:pr-10',
               error
                 ? 'border-red-500 focus:ring-red-500/30 focus:border-red-500'
-                : 'border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-gray-600',
+                : 'border-gray-200 hover:border-gray-300',
               className
             )}
             aria-invalid={!!error}

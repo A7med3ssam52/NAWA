@@ -102,7 +102,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
         'animate-fade-in-up',
         standalone
           ? 'bg-transparent'
-          : 'absolute top-full right-0 left-0 mt-2 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border overflow-hidden z-50'
+          : 'absolute top-full right-0 left-0 mt-2 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50'
       )}
     >
       {/* Recent Searches */}
@@ -110,7 +110,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
         <div className="p-2">
           <div className="flex items-center gap-1.5 px-3 py-2">
             <Clock className="w-4 h-4 text-gray-400" />
-            <span className="text-xs font-bold font-cairo text-gray-400 dark:text-dark-muted">
+            <span className="text-xs font-bold font-cairo text-gray-400">
               عمليات البحث الأخيرة
             </span>
           </div>
@@ -119,8 +119,8 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
               key={text}
               onClick={() => handleSelect(text)}
               className={cn(
-                'flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors text-right',
-                selectedIndex === idx && 'bg-gray-50 dark:bg-dark-border/50'
+                'flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors text-right',
+                selectedIndex === idx && 'bg-gray-50'
               )}
             >
               <span>{text}</span>
@@ -141,7 +141,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
         <div className="p-2">
           <div className="flex items-center gap-1.5 px-3 py-2">
             <TrendingUp className="w-4 h-4 text-gray-400" />
-            <span className="text-xs font-bold font-cairo text-gray-400 dark:text-dark-muted">
+            <span className="text-xs font-bold font-cairo text-gray-400">
               الأكثر بحثاً
             </span>
           </div>
@@ -150,8 +150,8 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
               key={text}
               onClick={() => handleSelect(text)}
               className={cn(
-                'flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors text-right',
-                selectedIndex === idx && 'bg-gray-50 dark:bg-dark-border/50'
+                'flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors text-right',
+                selectedIndex === idx && 'bg-gray-50'
               )}
             >
               <Search className="w-4 h-4 text-gray-400 shrink-0" />
@@ -168,7 +168,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
             <>
               <div className="flex items-center gap-1.5 px-3 py-2">
                 <Package className="w-4 h-4 text-gray-400" />
-                <span className="text-xs font-bold font-cairo text-gray-400 dark:text-dark-muted">
+                <span className="text-xs font-bold font-cairo text-gray-400">
                   منتجات
                 </span>
               </div>
@@ -177,11 +177,11 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
                   key={product.id}
                   onClick={() => handleSelect(product.name)}
                   className={cn(
-                    'flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors text-right',
-                    selectedIndex === idx && 'bg-gray-50 dark:bg-dark-border/50'
+                    'flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors text-right',
+                    selectedIndex === idx && 'bg-gray-50'
                   )}
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-dark-border/50 overflow-hidden shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-gray-50 overflow-hidden shrink-0">
                     <img
                       src={product.images[0]}
                       alt={product.name}
@@ -190,10 +190,10 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-dark-text truncate">
+                    <p className="text-sm font-medium text-gray-900 truncate">
                       {product.name}
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-dark-muted">
+                    <p className="text-xs text-gray-400">
                       {categories.find((c) => c.id === product.category)?.name}
                     </p>
                   </div>
@@ -206,7 +206,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
             <>
               <div className="flex items-center gap-1.5 px-3 py-2 mt-1">
                 <Grid3X3 className="w-4 h-4 text-gray-400" />
-                <span className="text-xs font-bold font-cairo text-gray-400 dark:text-dark-muted">
+                <span className="text-xs font-bold font-cairo text-gray-400">
                   أقسام
                 </span>
               </div>
@@ -215,7 +215,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
                   key={cat.id}
                   onClick={() => handleSelect(cat.name)}
                   className={cn(
-                    'flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 dark:text-dark-muted hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors text-right'
+                    'flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-gray-50 transition-colors text-right'
                   )}
                 >
                   <Grid3X3 className="w-4 h-4 text-gray-400 shrink-0" />
@@ -228,7 +228,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
       )}
 
       {!showRecent && !showPopular && !showSuggestions && searchLower && (
-        <div className="px-3 py-6 text-center text-sm text-gray-400 dark:text-dark-muted font-cairo">
+        <div className="px-3 py-6 text-center text-sm text-gray-400 font-cairo">
           لا توجد نتائج لـ &quot;{query}&quot;
         </div>
       )}

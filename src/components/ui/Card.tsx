@@ -30,8 +30,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         className={cn(
           'rounded-2xl border transition-all duration-300',
           glass
-            ? 'bg-white/70 dark:bg-dark-card/70 backdrop-blur-xl border-white/20 dark:border-dark-border/50 shadow-soft'
-            : 'bg-white dark:bg-dark-card border-gray-100 dark:border-dark-border shadow-soft hover:shadow-soft-lg',
+            ? 'bg-white/70 backdrop-blur-xl border-white/20 shadow-soft'
+            : 'bg-white border-gray-100 shadow-soft hover:shadow-soft-lg',
           hover && 'cursor-pointer',
           paddings[padding],
           className

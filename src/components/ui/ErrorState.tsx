@@ -30,10 +30,10 @@ export function ErrorState({
       <div className="mb-4 p-4 rounded-full bg-danger/10">
         <AlertTriangle className="w-10 h-10 text-danger" />
       </div>
-      <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-cairo mb-2">
+      <h3 className="text-lg font-bold text-gray-900 font-cairo mb-2">
         {title}
       </h3>
-      <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo max-w-sm mb-6 leading-relaxed">
+      <p className="text-sm text-gray-500 font-cairo max-w-sm mb-6 leading-relaxed">
         {description}
       </p>
       {onRetry && (

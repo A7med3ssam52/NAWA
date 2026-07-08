@@ -62,5 +62,13 @@
     "image": "https://picsum.photos/seed/perfumes/400/400",
     "icon": "Sparkles",
     "productsCount": 10
+  },
+  {
+    "id": "cat-9",
+    "name": "كابلز",
+    "slug": "cables",
+    "image": "https://picsum.photos/seed/cables/400/400",
+    "icon": "Zap",
+    "productsCount": 6
   }
 ]

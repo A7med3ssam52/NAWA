@@ -69,7 +69,7 @@ export function NewsletterSection() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="أدخل بريدك الإلكتروني"
-              className="bg-white/90 dark:bg-dark-card/90 border-white/20 text-gray-900 dark:text-dark-text placeholder-gray-400 h-12"
+              className="bg-white/90 border-white/20 text-gray-900 placeholder-gray-400 h-12"
               dir="rtl"
             />
           </div>
@@ -79,7 +79,7 @@ export function NewsletterSection() {
             size="lg"
             rounded="xl"
             loading={loading}
-            className="bg-white dark:bg-dark-card text-secondary hover:bg-white/90 dark:hover:bg-dark-card/90 shadow-lg whitespace-nowrap h-12"
+            className="bg-white text-secondary hover:bg-white/90 shadow-lg whitespace-nowrap h-12"
           >
             <Send className="w-4 h-4" />
             اشتراك

@@ -5,6 +5,7 @@ import { WishlistProvider } from '@/contexts/WishlistContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CompareProvider } from '@/contexts/CompareContext';
 import { SpinProvider } from '@/contexts/SpinContext';
+import { DirectionProvider } from '@/components/ui/DirectionProvider';
 import { Toaster } from '@/components/ui/Toast';
 import { AppRouter } from '@/routes';
 
@@ -28,8 +29,10 @@ export default function App() {
               <WishlistProvider>
                 <CompareProvider>
                   <SpinProvider>
-                    <AppRouter />
-                    <Toaster />
+                    <DirectionProvider>
+                      <AppRouter />
+                      <Toaster />
+                    </DirectionProvider>
                   </SpinProvider>
                 </CompareProvider>
               </WishlistProvider>

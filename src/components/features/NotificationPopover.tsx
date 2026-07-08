@@ -24,7 +24,7 @@ const typeIcons: Record<string, typeof Package> = {
 const typeConfig: Record<string, { color: string; bg: string }> = {
   order: { color: 'text-secondary', bg: 'bg-secondary/10' },
   promo: { color: 'text-accent', bg: 'bg-accent/10' },
-  system: { color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-white/5' },
+  system: { color: 'text-gray-500', bg: 'bg-gray-100' },
 };
 
 export function NotificationPopover() {
@@ -60,7 +60,7 @@ export function NotificationPopover() {
     <div ref={popoverRef} className="relative">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="relative p-2 rounded-xl text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+        className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         aria-label="الإشعارات"
         aria-expanded={open}
         aria-haspopup="true"
@@ -75,14 +75,14 @@ export function NotificationPopover() {
 
       {open && (
         <div
-          className="absolute left-0 top-full mt-2 w-[360px] sm:w-96 bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-white/5 overflow-hidden z-50 animate-fade-in-up"
+          className="absolute left-0 top-full mt-2 w-[360px] sm:w-96 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
           dir="rtl"
         >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 dark:border-white/5 bg-gradient-to-l from-secondary/5 to-transparent">
+            <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 bg-gradient-to-l from-secondary/5 to-transparent">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-secondary" />
-                <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">الإشعارات</span>
+                <span className="text-sm font-bold font-cairo text-gray-900">الإشعارات</span>
                 {unread.length > 0 && (
                   <span className="px-1.5 py-0.5 text-[10px] font-bold text-white bg-danger rounded-full">
                     {unread.length}
@@ -113,8 +113,8 @@ export function NotificationPopover() {
                         className={cn(
                           'flex items-start gap-3 px-4 py-3 transition-all duration-200 cursor-pointer group',
                           notif.read
-                            ? 'hover:bg-gray-50 dark:hover:bg-white/5'
-                            : 'bg-secondary/[0.03] hover:bg-secondary/[0.06] dark:bg-white/[0.02] dark:hover:bg-white/[0.05]',
+                            ? 'hover:bg-gray-50'
+                            : 'bg-secondary/[0.03] hover:bg-secondary/[0.06][0.02][0.05]',
                         )}
                       >
                         <div className={cn(
@@ -128,8 +128,8 @@ export function NotificationPopover() {
                             <p className={cn(
                               'text-sm font-cairo leading-snug',
                               notif.read
-                                ? 'text-gray-600 dark:text-dark-muted font-medium'
-                                : 'text-gray-900 dark:text-dark-text font-bold',
+                                ? 'text-gray-600 font-medium'
+                                : 'text-gray-900 font-bold',
                             )}>
                               {notif.title}
                             </p>
@@ -137,12 +137,12 @@ export function NotificationPopover() {
                               <span className="w-2 h-2 rounded-full bg-secondary shrink-0 mt-1.5" />
                             )}
                           </div>
-                          <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-0.5 line-clamp-1">
+                          <p className="text-xs text-gray-400 font-cairo mt-0.5 line-clamp-1">
                             {notif.message}
                           </p>
                           <div className="flex items-center gap-1 mt-1.5">
-                            <Clock className="w-3 h-3 text-gray-300 dark:text-dark-muted/50" />
-                            <span className="text-[10px] text-gray-300 dark:text-dark-muted/50 font-cairo">
+                            <Clock className="w-3 h-3 text-gray-300" />
+                            <span className="text-[10px] text-gray-300 font-cairo">
                               {getTimeAgo(notif.createdAt)}
                             </span>
                           </div>
@@ -153,11 +153,11 @@ export function NotificationPopover() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-3">
-                    <Bell className="w-7 h-7 text-gray-300 dark:text-dark-muted/40" />
+                  <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mb-3">
+                    <Bell className="w-7 h-7 text-gray-300" />
                   </div>
-                  <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">لا توجد إشعارات</p>
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-1">ستظهر الإشعارات هنا عندما تصلك</p>
+                  <p className="text-sm font-bold font-cairo text-gray-900">لا توجد إشعارات</p>
+                  <p className="text-xs text-gray-400 font-cairo mt-1">ستظهر الإشعارات هنا عندما تصلك</p>
                 </div>
               )}
             </div>
@@ -167,7 +167,7 @@ export function NotificationPopover() {
               <Link
                 to={PAGES.NOTIFICATIONS}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-white/5 text-sm font-medium font-cairo text-secondary hover:text-blue-700 hover:bg-secondary/[0.03] dark:hover:bg-white/[0.03] transition-colors group"
+                className="flex items-center justify-between px-4 py-3 border-t border-gray-100 text-sm font-medium font-cairo text-secondary hover:text-blue-700 hover:bg-secondary/[0.03][0.03] transition-colors group"
               >
                 <span>عرض كل الإشعارات</span>
                 <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />

@@ -27,15 +27,15 @@ export function EmptyState({ icon, title, description, action, className }: Empt
       role="status"
     >
       {icon && (
-        <div className="mb-4 text-gray-300 dark:text-dark-border">
+        <div className="mb-4 text-gray-300">
           {icon}
         </div>
       )}
-      <h3 className="text-lg font-bold text-gray-900 dark:text-dark-text font-cairo mb-2">
+      <h3 className="text-lg font-bold text-gray-900 font-cairo mb-2">
         {title}
       </h3>
       {description && (
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo max-w-sm mb-6 leading-relaxed">
+        <p className="text-sm text-gray-500 font-cairo max-w-sm mb-6 leading-relaxed">
           {description}
         </p>
       )}

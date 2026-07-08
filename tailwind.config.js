@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-  darkMode: 'class',
+
   theme: {
     extend: {
       colors: {
@@ -27,13 +27,7 @@ export default {
           systemIndigo: '#5856D6',
           transparent: 'transparent',
         },
-        dark: {
-          bg: '#0F172A',
-          card: '#1E293B',
-          border: '#334155',
-          text: '#F1F5F9',
-          muted: '#94A3B8',
-        },
+
       },
       fontFamily: {
         cairo: ['Cairo', 'sans-serif'],
@@ -194,7 +188,7 @@ export default {
         'gradient-lr': 'linear-gradient(to left, var(--tw-gradient-stops))',
         'gradient-rl': 'linear-gradient(to right, var(--tw-gradient-stops))',
         'glass': 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-        'dark-glass': 'linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.6))',
+
       },
       backdropBlur: {
         'xs': '2px',

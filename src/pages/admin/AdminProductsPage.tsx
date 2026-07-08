@@ -225,10 +225,10 @@ export function AdminProductsPage() {
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">
             إدارة المنتجات
           </h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">
+          <p className="text-sm text-gray-500 font-cairo mt-1">
             {total} منتج
           </p>
         </div>
@@ -238,7 +238,7 @@ export function AdminProductsPage() {
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-4 lg:p-6 space-y-4">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4 lg:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -248,7 +248,7 @@ export function AdminProductsPage() {
               placeholder="بحث عن منتج..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pr-10 pl-4 py-2.5 text-sm font-cairo bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
+              className="w-full pr-10 pl-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
             />
           </div>
           <div className="w-full sm:w-48">
@@ -272,7 +272,7 @@ export function AdminProductsPage() {
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-16 bg-gray-100 dark:bg-dark-border/50 rounded-xl animate-pulse" />
+              <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : products.length === 0 ? (
@@ -287,15 +287,15 @@ export function AdminProductsPage() {
             <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-dark-border">
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">صورة</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">الاسم</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">السعر</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">المخزون</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">التصنيف</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">التقييم</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">الحالة</th>
-                    <th className="text-center py-3 px-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo whitespace-nowrap">إجراءات</th>
+                  <tr className="border-b border-gray-100">
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">صورة</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">الاسم</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">السعر</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">المخزون</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">التصنيف</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">التقييم</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">الحالة</th>
+                    <th className="text-center py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">إجراءات</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -304,14 +304,14 @@ export function AdminProductsPage() {
                       key={product.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/20 transition-colors"
+                      className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                     >
                       <td className="py-3 px-3">
-                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-border/50 shrink-0">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-50 shrink-0">
                           {product.images[0] ? (
                             <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-dark-muted">
+                            <div className="w-full h-full flex items-center justify-center text-gray-300">
                               <ImageIcon className="w-5 h-5" />
                             </div>
                           )}
@@ -319,18 +319,18 @@ export function AdminProductsPage() {
                       </td>
                       <td className="py-3 px-3">
                         <div className="flex flex-col">
-                          <span className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">
+                          <span className="text-sm font-semibold font-cairo text-gray-900">
                             {product.name}
                           </span>
-                          <span className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo">{product.sku}</span>
+                          <span className="text-[10px] text-gray-400 font-cairo">{product.sku}</span>
                         </div>
                       </td>
                       <td className="py-3 px-3">
-                        <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                        <span className="text-sm font-bold font-cairo text-gray-900">
                           {formatPrice(product.price)}
                         </span>
                         {product.oldPrice && (
-                          <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo line-through mr-1">
+                          <span className="text-xs text-gray-400 font-cairo line-through mr-1">
                             {formatPrice(product.oldPrice)}
                           </span>
                         )}
@@ -341,14 +341,14 @@ export function AdminProductsPage() {
                         </Badge>
                       </td>
                       <td className="py-3 px-3">
-                        <span className="text-sm font-cairo text-gray-600 dark:text-dark-text">
+                        <span className="text-sm font-cairo text-gray-600">
                           {catMap[product.category] || product.category}
                         </span>
                       </td>
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-1">
                           <Star className="w-3 h-3 fill-accent text-accent" />
-                          <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                          <span className="text-sm font-bold font-cairo text-gray-900">
                             {product.rating.toFixed(1)}
                           </span>
                         </div>
@@ -387,14 +387,14 @@ export function AdminProductsPage() {
                     <motion.div
                       key={product.id}
                       variants={itemAnim}
-                      className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-4"
+                      className="bg-white rounded-2xl border border-gray-100 shadow-soft p-4"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 dark:bg-dark-border/50 shrink-0">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 shrink-0">
                           {product.images[0] ? (
                             <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-dark-muted">
+                            <div className="w-full h-full flex items-center justify-center text-gray-300">
                               <ImageIcon className="w-6 h-6" />
                             </div>
                           )}
@@ -402,21 +402,21 @@ export function AdminProductsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text truncate">
+                              <h3 className="text-sm font-bold font-cairo text-gray-900 truncate">
                                 {product.name}
                               </h3>
-                              <p className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo">{product.sku}</p>
+                              <p className="text-[10px] text-gray-400 font-cairo">{product.sku}</p>
                             </div>
                             <div className="flex gap-1 shrink-0">
                               <button
                                 onClick={() => openEditModal(product)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-colors"
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-gray-100 transition-colors"
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>
                               <button
                                 onClick={() => setDeleteTarget(product)}
-                                className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-gray-100 dark:hover:bg-dark-border/50 transition-colors"
+                                className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-gray-100 transition-colors"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -424,18 +424,18 @@ export function AdminProductsPage() {
                           </div>
                           <div className="flex items-center justify-between mt-2">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                              <span className="text-sm font-bold font-cairo text-gray-900">
                                 {formatPrice(product.price)}
                               </span>
                               {product.oldPrice && (
-                                <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo line-through">
+                                <span className="text-xs text-gray-400 font-cairo line-through">
                                   {formatPrice(product.oldPrice)}
                                 </span>
                               )}
                             </div>
                             <div className="flex items-center gap-1">
                               <Star className="w-3 h-3 fill-accent text-accent" />
-                              <span className="text-xs font-bold font-cairo text-gray-900 dark:text-dark-text">
+                              <span className="text-xs font-bold font-cairo text-gray-900">
                                 {product.rating.toFixed(1)}
                               </span>
                             </div>
@@ -443,7 +443,7 @@ export function AdminProductsPage() {
                           <div className="flex items-center gap-2 mt-2">
                             <Badge variant={sb.variant} size="sm">{sb.label} ({product.stock})</Badge>
                             {product.isFeatured && <Badge variant="info" size="sm">مميز</Badge>}
-                            <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+                            <span className="text-xs text-gray-400 font-cairo">
                               {catMap[product.category] || product.category}
                             </span>
                           </div>
@@ -497,23 +497,23 @@ export function AdminProductsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-dark-text font-cairo">وصف مختصر</label>
+              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">وصف مختصر</label>
               <textarea
                 dir="rtl"
                 value={form.shortDescription}
                 onChange={(e) => updateForm('shortDescription', e.target.value)}
                 placeholder="وصف مختصر"
-                className="w-full px-4 py-2.5 text-sm font-cairo bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
+                className="w-full px-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
               />
             </div>
             <div>
-              <label className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-dark-text font-cairo">وصف المنتج</label>
+              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">وصف المنتج</label>
               <textarea
                 dir="rtl"
                 value={form.description}
                 onChange={(e) => updateForm('description', e.target.value)}
                 placeholder="وصف المنتج"
-                className="w-full px-4 py-2.5 text-sm font-cairo bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
+                className="w-full px-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
               />
             </div>
           </div>
@@ -523,11 +523,11 @@ export function AdminProductsPage() {
               type="checkbox"
               checked={form.isFeatured}
               onChange={(e) => updateForm('isFeatured', e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 dark:border-dark-border text-secondary focus:ring-secondary/30"
+              className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary/30"
             />
-            <span className="text-sm font-medium font-cairo text-gray-700 dark:text-dark-text">منتج مميز</span>
+            <span className="text-sm font-medium font-cairo text-gray-700">منتج مميز</span>
           </label>
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <Button variant="ghost" onClick={() => { setModalMode(null); setForm(emptyForm); }}>
               إلغاء
             </Button>
@@ -549,13 +549,13 @@ export function AdminProductsPage() {
             <AlertTriangle className="w-7 h-7 text-danger" />
           </div>
           <div>
-            <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">
+            <p className="text-sm text-gray-600 font-cairo">
               هل أنت متأكد من حذف المنتج
             </p>
-            <p className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text mt-1">
+            <p className="text-base font-bold font-cairo text-gray-900 mt-1">
               {deleteTarget?.name}
             </p>
-            <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-1">
+            <p className="text-xs text-gray-400 font-cairo mt-1">
               لا يمكن التراجع عن هذا الإجراء
             </p>
           </div>

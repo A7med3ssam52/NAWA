@@ -17,7 +17,7 @@ export function CategoryCard({ category, index = 0 }: CategoryCardProps) {
     <FadeInView delay={index * 0.05} y={20} duration={0.4}>
       <Link
         to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', category.slug)}`}
-        className="group relative block rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-border shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300"
+        className="group relative block rounded-2xl overflow-hidden bg-gray-100 shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300"
       >
         <div className="relative aspect-[4/3] overflow-hidden">
           <img

@@ -68,13 +68,13 @@ export const IosBottomSheet = memo(function IosBottomSheet({
           >
             {showHandle && (
               <div className="flex justify-center py-3">
-                <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full" />
+                <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
               </div>
             )}
 
             {title && (
-              <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white text-center">
+              <div className="px-6 py-4 border-b border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-900 text-center">
                   {title}
                 </h3>
               </div>
@@ -87,7 +87,7 @@ export const IosBottomSheet = memo(function IosBottomSheet({
             {onClose && (
               <button
                 onClick={onClose}
-                className="absolute top-3 right-3 p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white ios-touch-feedback"
+                className="absolute top-3 right-3 p-2 text-gray-400 hover:text-gray-600 ios-touch-feedback"
               >
                 <X className="w-5 h-5" />
               </button>

@@ -76,8 +76,8 @@ export function AdminCategoriesPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">التصنيفات</h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إدارة تصنيفات المنتجات</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">التصنيفات</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة تصنيفات المنتجات</p>
         </div>
         <Button onClick={openAdd}><Plus className="w-4 h-4" /> إضافة تصنيف</Button>
       </div>
@@ -92,11 +92,11 @@ export function AdminCategoriesPage() {
             className="pr-10"
           />
         </div>
-        <div className="flex items-center gap-2 bg-white dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border p-1">
-          <button onClick={() => setView('grid')} className={cn('p-2 rounded-lg transition-colors', view === 'grid' ? 'bg-secondary text-white' : 'text-gray-500 dark:text-dark-muted hover:text-gray-900')}>
+        <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-100 p-1">
+          <button onClick={() => setView('grid')} className={cn('p-2 rounded-lg transition-colors', view === 'grid' ? 'bg-secondary text-white' : 'text-gray-500 hover:text-gray-900')}>
             <Grid3X3 className="w-4 h-4" />
           </button>
-          <button onClick={() => setView('table')} className={cn('p-2 rounded-lg transition-colors', view === 'table' ? 'bg-secondary text-white' : 'text-gray-500 dark:text-dark-muted hover:text-gray-900')}>
+          <button onClick={() => setView('table')} className={cn('p-2 rounded-lg transition-colors', view === 'table' ? 'bg-secondary text-white' : 'text-gray-500 hover:text-gray-900')}>
             <List className="w-4 h-4" />
           </button>
         </div>
@@ -110,18 +110,18 @@ export function AdminCategoriesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map((cat, i) => (
             <motion.div key={cat.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-              className="group bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden hover:shadow-soft-lg transition-all duration-300"
+              className="group bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden hover:shadow-soft-lg transition-all duration-300"
             >
-              <div className="h-36 bg-gray-50 dark:bg-dark-border/50 overflow-hidden">
+              <div className="h-36 bg-gray-50 overflow-hidden">
                 <img src={cat.image} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
               </div>
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Folder className="w-4 h-4 text-secondary" />
-                  <h3 className="font-bold font-cairo text-gray-900 dark:text-dark-text">{cat.name}</h3>
+                  <h3 className="font-bold font-cairo text-gray-900">{cat.name}</h3>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{cat.productsCount} منتج</span>
+                  <span className="text-xs text-gray-500 font-cairo">{cat.productsCount} منتج</span>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onClick={() => openEdit(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
                     <button onClick={() => setDeleteModal(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
@@ -132,29 +132,29 @@ export function AdminCategoriesPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-dark-border">
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الصورة</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الاسم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الرابط</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">المنتجات</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الإجراءات</th>
+                <tr className="border-b border-gray-100">
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الصورة</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الاسم</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الرابط</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">المنتجات</th>
+                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((cat) => (
-                  <tr key={cat.id} className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors">
+                  <tr key={cat.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-50 dark:bg-dark-border/50">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-50">
                         <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" loading="lazy" />
                       </div>
                     </td>
-                    <td className="px-4 py-3"><span className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">{cat.name}</span></td>
-                    <td className="px-4 py-3"><span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">{cat.slug}</span></td>
-                    <td className="px-4 py-3"><span className="text-sm font-cairo text-gray-600 dark:text-dark-muted">{cat.productsCount}</span></td>
+                    <td className="px-4 py-3"><span className="text-sm font-semibold font-cairo text-gray-900">{cat.name}</span></td>
+                    <td className="px-4 py-3"><span className="text-xs text-gray-400 font-cairo">{cat.slug}</span></td>
+                    <td className="px-4 py-3"><span className="text-sm font-cairo text-gray-600">{cat.productsCount}</span></td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1 justify-end">
                         <button onClick={() => openEdit(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
@@ -187,7 +187,7 @@ export function AdminCategoriesPage() {
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">هل أنت متأكد من حذف التصنيف <strong className="text-gray-900 dark:text-dark-text">{deleteModal?.name}</strong>؟</p>
+          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف التصنيف <strong className="text-gray-900">{deleteModal?.name}</strong>؟</p>
           <div className="flex items-center gap-3">
             <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
             <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>

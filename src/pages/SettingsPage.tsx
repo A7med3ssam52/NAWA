@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Moon, Bell, Tag, Shield, LogOut, Trash2, ChevronLeft } from 'lucide-react';
-import { useTheme, useAuth } from '@/contexts';
+import { Bell, Tag, Shield, LogOut, Trash2, ChevronLeft } from 'lucide-react';
+import { useAuth } from '@/contexts';
 import { useNavigate } from 'react-router-dom';
 import { PAGES } from '@/constants';
 import { Button, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export function SettingsPage() {
-  const { isDark, toggle } = useTheme();
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [orderNotif, setOrderNotif] = useState(true);
@@ -29,46 +28,25 @@ export function SettingsPage() {
       dir="rtl"
       className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
-      <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-6">
+      <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-6">
         الإعدادات
       </h1>
 
       <div className="space-y-4">
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden divide-y divide-gray-100 dark:divide-dark-border">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/10 text-accent">
-                <Moon className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">الوضع الليلي</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تفعيل الألوان الداكنة</p>
-              </div>
-            </div>
-            <button
-              onClick={toggle}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${isDark ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'}`}
-              role="switch"
-              aria-checked={isDark}
-              aria-label="الوضع الليلي"
-            >
-              <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${isDark ? 'translate-x-[26px]' : 'translate-x-0.5'}`} />
-            </button>
-          </div>
-
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden divide-y divide-gray-100">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/10 text-secondary">
                 <Bell className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">إشعارات الطلبات</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">إشعارات حالة الطلبات والتوصيل</p>
+                <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات الطلبات</p>
+                <p className="text-xs text-gray-400 font-cairo">إشعارات حالة الطلبات والتوصيل</p>
               </div>
             </div>
             <button
               onClick={() => setOrderNotif(!orderNotif)}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${orderNotif ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'}`}
+              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${orderNotif ? 'bg-secondary' : 'bg-gray-300'}`}
               role="switch"
               aria-checked={orderNotif}
               aria-label="إشعارات الطلبات"
@@ -83,13 +61,13 @@ export function SettingsPage() {
                 <Tag className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">إشعارات العروض</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">إشعارات العروض والتخفيضات</p>
+                <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات العروض</p>
+                <p className="text-xs text-gray-400 font-cairo">إشعارات العروض والتخفيضات</p>
               </div>
             </div>
             <button
               onClick={() => setPromoNotif(!promoNotif)}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${promoNotif ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'}`}
+              className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${promoNotif ? 'bg-secondary' : 'bg-gray-300'}`}
               role="switch"
               aria-checked={promoNotif}
               aria-label="إشعارات العروض"
@@ -99,35 +77,35 @@ export function SettingsPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden divide-y divide-gray-100 dark:divide-dark-border">
-          <button onClick={handleLogout} className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden divide-y divide-gray-100">
+          <button onClick={handleLogout} className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-danger/10 text-danger">
                 <LogOut className="w-5 h-5" />
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold font-cairo text-danger">تسجيل الخروج</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تسجيل الخروج من الحساب</p>
+                <p className="text-xs text-gray-400 font-cairo">تسجيل الخروج من الحساب</p>
               </div>
             </div>
             <ChevronLeft className="w-4 h-4 text-gray-400" />
           </button>
 
-          <button className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors">
+          <button className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-danger/10 text-danger">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold font-cairo text-danger">حذف الحساب</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">حذف الحساب وجميع البيانات</p>
+                <p className="text-xs text-gray-400 font-cairo">حذف الحساب وجميع البيانات</p>
               </div>
             </div>
             <ChevronLeft className="w-4 h-4 text-gray-400" />
           </button>
         </div>
 
-        <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo text-center pt-4">
+        <p className="text-xs text-gray-400 font-cairo text-center pt-4">
           الإصدار 1.0.0
         </p>
       </div>

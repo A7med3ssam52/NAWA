@@ -40,13 +40,13 @@ export function Rating({ value, count, size = 'md', showCount = true, className 
         {Array.from({ length: emptyStars }).map((_, i) => (
           <Star
             key={`empty-${i}`}
-            className={cn(sizes[size], 'text-gray-300 dark:text-gray-600')}
+            className={cn(sizes[size], 'text-gray-300')}
             aria-hidden="true"
           />
         ))}
       </div>
       {showCount && count !== undefined && (
-        <span className="text-xs text-gray-500 dark:text-dark-muted font-cairo">
+        <span className="text-xs text-gray-500 font-cairo">
           ({count})
         </span>
       )}

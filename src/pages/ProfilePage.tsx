@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, MapPin, Package, Heart, Bell, Settings, Star, Camera,
-  Save, Plus, Trash2, LogOut, Moon, Shield, Mail, Phone,
+  Save, Plus, Trash2, LogOut, Shield, Mail, Phone,
   ChevronLeft, Clock, CheckCircle, X, Tag, Edit3, CreditCard,
   Map, Home, Briefcase, MoreHorizontal, AlertCircle, Eye,
   EyeOff, Star as StarIcon, MessageSquare, RefreshCw, Filter,
   Check, XCircle, Search, Hash, Download, Calendar, FileText,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth, useWishlist, useTheme } from '@/contexts';
+import { useAuth, useWishlist } from '@/contexts';
 import {
   getUserOrders, getUserNotifications, getUserAddresses,
   orders as allOrders, reviews as allReviews,
@@ -29,7 +29,7 @@ function generateId() {
 
 function MemberSinceBadge({ date }: { date: string }) {
   return (
-    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/5 dark:bg-secondary/10 text-secondary text-xs font-cairo font-medium">
+    <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/5 text-secondary text-xs font-cairo font-medium">
       <Calendar className="w-3.5 h-3.5" />
       عضو منذ {formatDate(date)}
     </div>
@@ -40,14 +40,14 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      className="flex items-center gap-3 p-4 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-soft-lg transition-all duration-300"
+      className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 shadow-soft hover:shadow-soft-lg transition-all duration-300"
     >
       <div className={`flex items-center justify-center w-11 h-11 rounded-xl ${color} shrink-0`}>
         {icon}
       </div>
       <div>
-        <p className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">{value}</p>
-        <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">{label}</p>
+        <p className="text-lg font-bold font-cairo text-gray-900">{value}</p>
+        <p className="text-xs text-gray-400 font-cairo">{label}</p>
       </div>
     </motion.div>
   );
@@ -74,15 +74,15 @@ function PasswordSection() {
   };
 
   return (
-    <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-5 lg:p-6">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-soft p-5 lg:p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/10 text-secondary">
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">كلمة المرور</h3>
-            <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تغيير كلمة المرور الخاصة بك</p>
+            <h3 className="text-sm font-bold font-cairo text-gray-900">كلمة المرور</h3>
+            <p className="text-xs text-gray-400 font-cairo">تغيير كلمة المرور الخاصة بك</p>
           </div>
         </div>
         <Button variant="outline" size="sm" rounded="xl" onClick={() => setShowForm(!showForm)}>
@@ -111,7 +111,7 @@ function PasswordSection() {
                 <button
                   type="button"
                   onClick={() => setShowCurrent(!showCurrent)}
-                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 dark:hover:text-dark-text transition-colors"
+                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
                   aria-label={showCurrent ? 'إخفاء' : 'إظهار'}
                 >
                   {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -128,7 +128,7 @@ function PasswordSection() {
                 <button
                   type="button"
                   onClick={() => setShowNew(!showNew)}
-                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 dark:hover:text-dark-text transition-colors"
+                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
                   aria-label={showNew ? 'إخفاء' : 'إظهار'}
                 >
                   {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -145,7 +145,7 @@ function PasswordSection() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 dark:hover:text-dark-text transition-colors"
+                  className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
                   aria-label={showConfirm ? 'إخفاء' : 'إظهار'}
                 >
                   {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -230,9 +230,9 @@ function AddressFormModal({
             type="checkbox"
             checked={isDefault}
             onChange={(e) => setIsDefault(e.target.checked)}
-            className="w-4 h-4 rounded border-gray-300 dark:border-dark-border text-secondary focus:ring-secondary"
+            className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary"
           />
-          <span className="text-sm font-cairo text-gray-700 dark:text-dark-text">تعيين كعنوان افتراضي</span>
+          <span className="text-sm font-cairo text-gray-700">تعيين كعنوان افتراضي</span>
         </label>
         <div className="flex gap-3 pt-2">
           <Button variant="secondary" size="md" rounded="xl" onClick={handleSubmit} fullWidth>
@@ -261,7 +261,7 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
   const typeColors: Record<string, string> = {
     order: 'bg-secondary/10 text-secondary',
     promo: 'bg-accent/10 text-accent',
-    system: 'bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted',
+    system: 'bg-gray-100 text-gray-500',
   };
 
   return (
@@ -274,8 +274,8 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
       className={cn(
         'relative p-4 rounded-2xl border transition-all duration-200',
         notif.read
-          ? 'bg-white dark:bg-dark-card border-gray-100 dark:border-dark-border'
-          : 'bg-secondary/[0.03] dark:bg-secondary/[0.06] border-secondary/20 shadow-soft'
+          ? 'bg-white border-gray-100'
+          : 'bg-secondary/[0.03][0.06] border-secondary/20 shadow-soft'
       )}
     >
       <div className="flex items-start gap-3">
@@ -285,14 +285,14 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <p className={cn('text-sm font-cairo', notif.read ? 'font-medium text-gray-700 dark:text-dark-muted' : 'font-bold text-gray-900 dark:text-dark-text')}>
+              <p className={cn('text-sm font-cairo', notif.read ? 'font-medium text-gray-700' : 'font-bold text-gray-900')}>
                 {notif.title}
               </p>
-              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo mt-1 leading-relaxed">{notif.message}</p>
+              <p className="text-xs text-gray-500 font-cairo mt-1 leading-relaxed">{notif.message}</p>
             </div>
           </div>
           <div className="flex items-center justify-between mt-3">
-            <span className="text-[11px] text-gray-400 dark:text-dark-muted font-cairo flex items-center gap-1">
+            <span className="text-[11px] text-gray-400 font-cairo flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {getTimeAgo(notif.createdAt)}
             </span>
@@ -335,7 +335,6 @@ const orderStatusFilters = [
 export function ProfilePage() {
   const { user, addresses: userAddresses, updateProfile, addAddress, removeAddress, setDefaultAddress, logout } = useAuth();
   const { items: wishlistItems, removeItem } = useWishlist();
-  const { isDark, toggle } = useTheme();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('profile');
@@ -450,7 +449,7 @@ export function ProfilePage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white dark:bg-dark-card rounded-3xl border border-gray-100 dark:border-dark-border shadow-soft-lg p-6 lg:p-8 mb-8"
+        className="bg-white rounded-3xl border border-gray-100 shadow-soft-lg p-6 lg:p-8 mb-8"
       >
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="relative group shrink-0">
@@ -462,7 +461,7 @@ export function ProfilePage() {
               )}
             </div>
             <button
-              className="absolute -bottom-1 -left-1 w-9 h-9 rounded-xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border flex items-center justify-center text-gray-500 dark:text-dark-muted hover:text-secondary hover:border-secondary shadow-soft transition-all duration-200 opacity-0 group-hover:opacity-100"
+              className="absolute -bottom-1 -left-1 w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-secondary hover:border-secondary shadow-soft transition-all duration-200 opacity-0 group-hover:opacity-100"
               aria-label="تغيير الصورة"
             >
               <Camera className="w-4 h-4" />
@@ -470,16 +469,16 @@ export function ProfilePage() {
           </div>
           <div className="flex-1 text-center sm:text-right">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-              <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+              <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
                 {user.name}
               </h1>
               <MemberSinceBadge date={memberSince} />
             </div>
-            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo flex items-center justify-center sm:justify-start gap-2 mb-1">
+            <p className="text-sm text-gray-500 font-cairo flex items-center justify-center sm:justify-start gap-2 mb-1">
               <Mail className="w-4 h-4" /> {user.email}
             </p>
             {user.phone && (
-              <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo flex items-center justify-center sm:justify-start gap-2">
+              <p className="text-sm text-gray-500 font-cairo flex items-center justify-center sm:justify-start gap-2">
                 <Phone className="w-4 h-4" /> {user.phone}
               </p>
             )}
@@ -487,7 +486,7 @@ export function ProfilePage() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-gray-100 dark:border-dark-border">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-gray-100">
           <StatCard
             icon={<Package className="w-5 h-5 text-white" />}
             label="الطلبات"
@@ -529,14 +528,14 @@ export function ProfilePage() {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
-            <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-5 lg:p-6">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft p-5 lg:p-6">
               <div className="flex items-center gap-3 mb-5">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/10 text-secondary">
                   <User className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">البيانات الشخصية</h2>
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">قم بتحديث معلوماتك الشخصية</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">البيانات الشخصية</h2>
+                  <p className="text-xs text-gray-400 font-cairo">قم بتحديث معلوماتك الشخصية</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
@@ -567,8 +566,8 @@ export function ProfilePage() {
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">عناويني</h2>
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">إدارة عناوين التوصيل الخاصة بك</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">عناويني</h2>
+                  <p className="text-xs text-gray-400 font-cairo">إدارة عناوين التوصيل الخاصة بك</p>
                 </div>
               </div>
               <Button variant="secondary" size="md" rounded="xl" onClick={() => { setEditingAddress(null); setAddressModal(true); }}>
@@ -584,10 +583,10 @@ export function ProfilePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     className={cn(
-                      'relative p-5 bg-white dark:bg-dark-card rounded-2xl border shadow-soft transition-all duration-200 hover:shadow-soft-lg',
+                      'relative p-5 bg-white rounded-2xl border shadow-soft transition-all duration-200 hover:shadow-soft-lg',
                       addr.isDefault
-                        ? 'border-secondary/30 dark:border-secondary/40 ring-1 ring-secondary/20'
-                        : 'border-gray-100 dark:border-dark-border'
+                        ? 'border-secondary/30 ring-1 ring-secondary/20'
+                        : 'border-gray-100'
                     )}
                   >
                     {addr.isDefault && (
@@ -603,15 +602,15 @@ export function ProfilePage() {
                       )}>
                         {addr.label === 'العمل' ? <Briefcase className="w-4 h-4" /> : <Home className="w-4 h-4" />}
                       </div>
-                      <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{addr.label}</span>
+                      <span className="text-sm font-bold font-cairo text-gray-900">{addr.label}</span>
                     </div>
-                    <div className="space-y-1 text-xs text-gray-500 dark:text-dark-muted font-cairo">
+                    <div className="space-y-1 text-xs text-gray-500 font-cairo">
                       <p className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /> {addr.fullName}</p>
                       <p className="flex items-center gap-1.5" dir="ltr"><Phone className="w-3.5 h-3.5" /> {addr.phone}</p>
                       <p className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {addr.street}، {addr.city}، {addr.state}</p>
                       {addr.zipCode && <p className="flex items-center gap-1.5"><Hash className="w-3.5 h-3.5" /> {addr.zipCode}</p>}
                     </div>
-                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-dark-border">
+                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
                       <Button
                         variant="outline"
                         size="sm"
@@ -668,8 +667,8 @@ export function ProfilePage() {
                   <Package className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">طلباتي</h2>
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">متابعة وتتبع جميع طلباتك</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">طلباتي</h2>
+                  <p className="text-xs text-gray-400 font-cairo">متابعة وتتبع جميع طلباتك</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
@@ -681,7 +680,7 @@ export function ProfilePage() {
                       'whitespace-nowrap px-3 py-1.5 text-xs font-cairo font-medium rounded-xl transition-all duration-200',
                       orderFilter === f.value
                         ? 'bg-secondary text-white shadow-sm'
-                        : 'bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-dark-muted hover:bg-gray-200 dark:hover:bg-dark-border/70'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     )}
                   >
                     {f.label}
@@ -712,13 +711,13 @@ export function ProfilePage() {
                     >
                       <Link
                         to={PAGES.ORDER_DETAILS.replace(':orderId', order.id)}
-                        className="block bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-soft-lg transition-all duration-300 group"
+                        className="block bg-white rounded-2xl border border-gray-100 shadow-soft hover:shadow-soft-lg transition-all duration-300 group"
                       >
                         <div className="p-5">
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div>
-                              <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mb-0.5">رقم الطلب</p>
-                              <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text font-mono" dir="ltr">
+                              <p className="text-xs text-gray-400 font-cairo mb-0.5">رقم الطلب</p>
+                              <p className="text-sm font-bold font-cairo text-gray-900 font-mono" dir="ltr">
                                 {order.orderNumber}
                               </p>
                             </div>
@@ -733,7 +732,7 @@ export function ProfilePage() {
                               {statusInfo.label}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-dark-muted font-cairo mb-4">
+                          <div className="flex items-center gap-4 text-xs text-gray-500 font-cairo mb-4">
                             <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {formatDate(order.createdAt)}</span>
                             <span>{order.items.length} منتج</span>
                             <span>{formatPrice(order.total)}</span>
@@ -743,13 +742,13 @@ export function ProfilePage() {
                               {order.items.slice(0, 4).map((item, idx) => (
                                 <div
                                   key={idx}
-                                  className="w-10 h-10 rounded-xl border-2 border-white dark:border-dark-card bg-gray-50 dark:bg-dark-border/50 overflow-hidden"
+                                  className="w-10 h-10 rounded-xl border-2 border-white bg-gray-50 overflow-hidden"
                                 >
                                   <img src={item.productImage} alt={item.productName} loading="lazy" className="w-full h-full object-cover" />
                                 </div>
                               ))}
                               {order.items.length > 4 && (
-                                <div className="w-10 h-10 rounded-xl border-2 border-white dark:border-dark-card bg-gray-100 dark:bg-dark-border flex items-center justify-center text-[10px] font-bold font-cairo text-gray-500 dark:text-dark-muted">
+                                <div className="w-10 h-10 rounded-xl border-2 border-white bg-gray-100 flex items-center justify-center text-[10px] font-bold font-cairo text-gray-500">
                                   +{order.items.length - 4}
                                 </div>
                               )}
@@ -764,7 +763,7 @@ export function ProfilePage() {
                                     <div
                                       className={cn(
                                         'h-1.5 rounded-full flex-1 transition-colors duration-300',
-                                        isCompleted ? 'bg-success' : 'bg-gray-200 dark:bg-dark-border'
+                                        isCompleted ? 'bg-success' : 'bg-gray-200'
                                       )}
                                     />
                                     {isCompleted && idx === currentStepIndex && (
@@ -775,12 +774,12 @@ export function ProfilePage() {
                               })}
                             </div>
                           )}
-                          <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-dark-border">
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                             <div className="flex items-center gap-1.5 text-sm font-medium font-cairo text-secondary group-hover:gap-2.5 transition-all">
                               عرض التفاصيل
                               <ChevronLeft className="w-4 h-4" />
                             </div>
-                            <div className="text-xs text-gray-400 dark:text-dark-muted font-cairo flex items-center gap-1">
+                            <div className="text-xs text-gray-400 font-cairo flex items-center gap-1">
                               <Clock className="w-3.5 h-3.5" />
                               {getTimeAgo(order.updatedAt || order.createdAt)}
                             </div>
@@ -816,8 +815,8 @@ export function ProfilePage() {
                 <Heart className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">المفضلة</h2>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">المنتجات التي أعجبتك</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">المفضلة</h2>
+                <p className="text-xs text-gray-400 font-cairo">المنتجات التي أعجبتك</p>
               </div>
             </div>
             {wishlistItems.length > 0 ? (
@@ -828,10 +827,10 @@ export function ProfilePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04 }}
-                    className="group bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-soft-lg transition-all duration-300 overflow-hidden"
+                    className="group bg-white rounded-2xl border border-gray-100 shadow-soft hover:shadow-soft-lg transition-all duration-300 overflow-hidden"
                   >
                     <Link to={PAGES.PRODUCT_DETAILS.replace(':slug', product.slug)} className="block">
-                      <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-dark-border/30">
+                      <div className="relative aspect-square overflow-hidden bg-gray-50">
                         <img
                           src={product.images[0]}
                           alt={product.name}
@@ -845,24 +844,24 @@ export function ProfilePage() {
                         )}
                         <button
                           onClick={(e) => { e.preventDefault(); removeItem(product.id); toast.success('تمت الإزالة من المفضلة'); }}
-                          className="absolute top-3 left-3 p-2 rounded-xl bg-white/80 dark:bg-dark-card/80 backdrop-blur-sm text-danger hover:bg-danger hover:text-white transition-all duration-200 shadow-soft"
+                          className="absolute top-3 left-3 p-2 rounded-xl bg-white/80 backdrop-blur-sm text-danger hover:bg-danger hover:text-white transition-all duration-200 shadow-soft"
                           aria-label="إزالة من المفضلة"
                         >
                           <Heart className="w-4 h-4 fill-current" />
                         </button>
                       </div>
                       <div className="p-4">
-                        <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text truncate">{product.name}</p>
+                        <p className="text-sm font-bold font-cairo text-gray-900 truncate">{product.name}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-base font-bold font-cairo text-secondary">{formatPrice(product.price)}</span>
                           {product.oldPrice && (
-                            <span className="text-xs text-gray-400 dark:text-dark-muted line-through font-cairo">{formatPrice(product.oldPrice)}</span>
+                            <span className="text-xs text-gray-400 line-through font-cairo">{formatPrice(product.oldPrice)}</span>
                           )}
                         </div>
                         <div className="flex items-center gap-1 mt-2">
                           <StarIcon className="w-3.5 h-3.5 fill-accent text-accent" />
-                          <span className="text-xs font-medium font-cairo text-gray-600 dark:text-dark-muted">{product.rating}</span>
-                          <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">({product.reviewsCount})</span>
+                          <span className="text-xs font-medium font-cairo text-gray-600">{product.rating}</span>
+                          <span className="text-xs text-gray-400 font-cairo">({product.reviewsCount})</span>
                         </div>
                       </div>
                     </Link>
@@ -895,8 +894,8 @@ export function ProfilePage() {
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">الإشعارات</h2>
-                  <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">الإشعارات</h2>
+                  <p className="text-xs text-gray-400 font-cairo">
                     {unreadNotifs.length > 0 ? `لديك ${unreadNotifs.length} إشعار غير مقروء` : 'جميع الإشعارات مقروءة'}
                   </p>
                 </div>
@@ -944,8 +943,8 @@ export function ProfilePage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">تقييماتي</h2>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">جميع تقييماتك على المنتجات</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">تقييماتي</h2>
+                <p className="text-xs text-gray-400 font-cairo">جميع تقييماتك على المنتجات</p>
               </div>
             </div>
             {userReviews.length > 0 ? (
@@ -956,31 +955,31 @@ export function ProfilePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft p-5"
+                    className="bg-white rounded-2xl border border-gray-100 shadow-soft p-5"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-50 dark:bg-dark-border/50 shrink-0">
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
                         <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" loading="lazy" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
-                          <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{review.userName}</h4>
-                          <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">{formatDate(review.createdAt)}</span>
+                          <h4 className="text-sm font-bold font-cairo text-gray-900">{review.userName}</h4>
+                          <span className="text-xs text-gray-400 font-cairo">{formatDate(review.createdAt)}</span>
                         </div>
                         <div className="flex items-center gap-0.5 mb-2">
                           {Array.from({ length: 5 }).map((_, idx) => (
                             <StarIcon
                               key={idx}
-                              className={cn('w-3.5 h-3.5', idx < review.rating ? 'fill-accent text-accent' : 'text-gray-300 dark:text-dark-border')}
+                              className={cn('w-3.5 h-3.5', idx < review.rating ? 'fill-accent text-accent' : 'text-gray-300')}
                             />
                           ))}
                         </div>
                         {review.title && (
-                          <p className="text-sm font-semibold font-cairo text-gray-800 dark:text-dark-text mb-1">{review.title}</p>
+                          <p className="text-sm font-semibold font-cairo text-gray-800 mb-1">{review.title}</p>
                         )}
-                        <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo leading-relaxed">{review.comment}</p>
-                        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100 dark:border-dark-border">
-                          <button className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-dark-muted hover:text-secondary transition-colors font-cairo">
+                        <p className="text-xs text-gray-500 font-cairo leading-relaxed">{review.comment}</p>
+                        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+                          <button className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-secondary transition-colors font-cairo">
                             <Heart className="w-3.5 h-3.5" />
                             {review.likes}
                           </button>
@@ -1012,59 +1011,32 @@ export function ProfilePage() {
             className="max-w-2xl"
           >
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted">
+              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 text-gray-500">
                 <Settings className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">الإعدادات</h2>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تخصيص إعدادات الحساب والتطبيق</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">الإعدادات</h2>
+                <p className="text-xs text-gray-400 font-cairo">تخصيص إعدادات الحساب والتطبيق</p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden divide-y divide-gray-100 dark:divide-dark-border">
-                <div className="flex items-center justify-between p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/10 text-accent">
-                      <Moon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">الوضع الليلي</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تفعيل الألوان الداكنة للواجهة</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggle}
-                    className={cn(
-                      'relative w-12 h-6 rounded-full transition-colors duration-200',
-                      isDark ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
-                    )}
-                    role="switch"
-                    aria-checked={isDark}
-                    aria-label="الوضع الليلي"
-                  >
-                    <div className={cn(
-                      'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200',
-                      isDark ? 'translate-x-[26px]' : 'translate-x-0.5'
-                    )} />
-                  </button>
-                </div>
-
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden divide-y divide-gray-100">
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/10 text-secondary">
                       <Bell className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">إشعارات الطلبات</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">إشعارات حالة الطلبات والتوصيل</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات الطلبات</p>
+                      <p className="text-xs text-gray-400 font-cairo">إشعارات حالة الطلبات والتوصيل</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setOrderNotif(!orderNotif)}
                     className={cn(
                       'relative w-12 h-6 rounded-full transition-colors duration-200',
-                      orderNotif ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                      orderNotif ? 'bg-secondary' : 'bg-gray-300'
                     )}
                     role="switch"
                     aria-checked={orderNotif}
@@ -1083,15 +1055,15 @@ export function ProfilePage() {
                       <Tag className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">إشعارات العروض</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">إشعارات العروض والتخفيضات</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات العروض</p>
+                      <p className="text-xs text-gray-400 font-cairo">إشعارات العروض والتخفيضات</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setPromoNotif(!promoNotif)}
                     className={cn(
                       'relative w-12 h-6 rounded-full transition-colors duration-200',
-                      promoNotif ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                      promoNotif ? 'bg-secondary' : 'bg-gray-300'
                     )}
                     role="switch"
                     aria-checked={promoNotif}
@@ -1105,18 +1077,18 @@ export function ProfilePage() {
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden divide-y divide-gray-100 dark:divide-dark-border">
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden divide-y divide-gray-100">
                 <button
                   onClick={() => navigate(PAGES.PRIVACY)}
-                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-secondary/10 text-secondary">
                       <Shield className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">سياسة الخصوصية</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تعرف على كيفية حماية بياناتك</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">سياسة الخصوصية</p>
+                      <p className="text-xs text-gray-400 font-cairo">تعرف على كيفية حماية بياناتك</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1124,15 +1096,15 @@ export function ProfilePage() {
 
                 <button
                   onClick={() => navigate(PAGES.TERMS)}
-                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-accent/10 text-accent">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">الشروط والأحكام</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">شروط استخدام المتجر</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">الشروط والأحكام</p>
+                      <p className="text-xs text-gray-400 font-cairo">شروط استخدام المتجر</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1140,7 +1112,7 @@ export function ProfilePage() {
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+                  className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-danger/10 text-danger">
@@ -1148,27 +1120,27 @@ export function ProfilePage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold font-cairo text-danger">تسجيل الخروج</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">تسجيل الخروج من الحساب</p>
+                      <p className="text-xs text-gray-400 font-cairo">تسجيل الخروج من الحساب</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
                 </button>
 
-                <button className="flex items-center justify-between w-full p-4 hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors">
+                <button className="flex items-center justify-between w-full p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-danger/10 text-danger">
                       <Trash2 className="w-5 h-5" />
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold font-cairo text-danger">حذف الحساب</p>
-                      <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">حذف الحساب وجميع البيانات نهائياً</p>
+                      <p className="text-xs text-gray-400 font-cairo">حذف الحساب وجميع البيانات نهائياً</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
 
-              <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo text-center pt-4">
+              <p className="text-xs text-gray-400 font-cairo text-center pt-4">
                 زاهي - الإصدار 1.0.0
               </p>
             </div>

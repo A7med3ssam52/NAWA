@@ -43,13 +43,13 @@ function StatCard({ title, value, icon, trend, trendLabel, color }: {
     <div
       className={cn(
         'relative overflow-hidden rounded-2xl border p-5 shadow-soft transition-all duration-300 hover:shadow-soft-lg animate-fade-in-up',
-        'bg-white dark:bg-dark-card border-gray-100 dark:border-dark-border'
+        'bg-white border-gray-100'
       )}
     >
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-500 dark:text-dark-muted font-cairo">{title}</p>
-          <p className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">{typeof value === 'number' ? value.toLocaleString('ar-EG') : value}</p>
+          <p className="text-sm font-medium text-gray-500 font-cairo">{title}</p>
+          <p className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">{typeof value === 'number' ? value.toLocaleString('ar-EG') : value}</p>
           {trend && trendLabel && (
             <div className="flex items-center gap-1 text-xs font-medium font-cairo">
               {trend === 'up' ? (
@@ -73,8 +73,8 @@ function ChartBar({ label, value, max, color }: { label: string; value: number; 
   const pct = max > 0 ? (value / max) * 100 : 0;
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-gray-500 dark:text-dark-muted font-cairo w-28 shrink-0 text-left">{label}</span>
-      <div className="flex-1 h-8 bg-gray-100 dark:bg-dark-border rounded-xl overflow-hidden relative">
+      <span className="text-xs text-gray-500 font-cairo w-28 shrink-0 text-left">{label}</span>
+      <div className="flex-1 h-8 bg-gray-100 rounded-xl overflow-hidden relative">
         <div
           className={cn('h-full rounded-xl flex items-center justify-end px-2 transition-all duration-1000 ease-out', color)}
           style={{ width: `${pct}%` }}
@@ -91,11 +91,11 @@ function RecentOrdersTable({ orders }: { orders: Order[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm font-cairo">
         <thead>
-          <tr className="border-b border-gray-100 dark:border-dark-border">
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">رقم الطلب</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">التاريخ</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">المبلغ</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">الحالة</th>
+          <tr className="border-b border-gray-100">
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">رقم الطلب</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">التاريخ</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">المبلغ</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">الحالة</th>
           </tr>
         </thead>
         <tbody>
@@ -104,13 +104,13 @@ function RecentOrdersTable({ orders }: { orders: Order[] }) {
             return (
               <tr
                 key={order.id}
-                className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors"
+                className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
               >
                 <td className="py-3 px-2">
-                  <span className="font-semibold text-gray-900 dark:text-dark-text">{order.orderNumber}</span>
+                  <span className="font-semibold text-gray-900">{order.orderNumber}</span>
                 </td>
-                <td className="py-3 px-2 text-gray-500 dark:text-dark-muted">{formatDate(order.createdAt)}</td>
-                <td className="py-3 px-2 font-semibold text-gray-900 dark:text-dark-text">{formatPrice(order.total)}</td>
+                <td className="py-3 px-2 text-gray-500">{formatDate(order.createdAt)}</td>
+                <td className="py-3 px-2 font-semibold text-gray-900">{formatPrice(order.total)}</td>
                 <td className="py-3 px-2">
                   <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium font-cairo', statusInfo.color)}>
                     {statusIcons[order.status]}
@@ -131,33 +131,33 @@ function TopProductsTable({ products }: { products: Product[] }) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm font-cairo">
         <thead>
-          <tr className="border-b border-gray-100 dark:border-dark-border">
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">المنتج</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">السعر</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">المبيعات</th>
-            <th className="text-right py-3 px-2 text-gray-500 dark:text-dark-muted font-medium">التقييم</th>
+          <tr className="border-b border-gray-100">
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">المنتج</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">السعر</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">المبيعات</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">التقييم</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product, i) => (
             <tr
               key={product.id}
-              className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors"
+              className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
             >
               <td className="py-3 px-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-border/50 shrink-0">
+                  <div className="w-9 h-9 rounded-lg overflow-hidden bg-gray-50 shrink-0">
                     <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                   </div>
-                  <span className="font-semibold text-gray-900 dark:text-dark-text truncate max-w-[180px] block">{product.name}</span>
+                  <span className="font-semibold text-gray-900 truncate max-w-[180px] block">{product.name}</span>
                 </div>
               </td>
-              <td className="py-3 px-2 font-semibold text-gray-900 dark:text-dark-text">{formatPrice(product.price)}</td>
-              <td className="py-3 px-2 text-gray-500 dark:text-dark-muted">{product.reviewsCount.toLocaleString('ar-EG')}</td>
+              <td className="py-3 px-2 font-semibold text-gray-900">{formatPrice(product.price)}</td>
+              <td className="py-3 px-2 text-gray-500">{product.reviewsCount.toLocaleString('ar-EG')}</td>
               <td className="py-3 px-2">
                 <div className="flex items-center gap-1">
                   <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-                  <span className="font-semibold text-gray-900 dark:text-dark-text">{product.rating}</span>
+                  <span className="font-semibold text-gray-900">{product.rating}</span>
                 </div>
               </td>
             </tr>
@@ -180,10 +180,10 @@ export function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">لوحة التحكم</h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">نظرة عامة على أداء المتجر</p>
+          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">لوحة التحكم</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">نظرة عامة على أداء المتجر</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+        <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
           <Clock className="w-4 h-4" />
           <span>آخر تحديث: {formatDate(new Date().toISOString())}</span>
         </div>
@@ -203,9 +203,9 @@ export function DashboardPage() {
         {/* Revenue Chart */}
         <Card className="lg:col-span-2" padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">الإيرادات الشهرية</h2>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">الإيرادات الشهرية</h2>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo bg-gray-100 dark:bg-dark-border px-3 py-1 rounded-full">
+              <span className="text-xs font-medium text-gray-500 font-cairo bg-gray-100 px-3 py-1 rounded-full">
                 شهري
               </span>
             </div>
@@ -222,14 +222,14 @@ export function DashboardPage() {
                 />
               ))
             ) : (
-              <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo text-center py-8">لا توجد بيانات</p>
+              <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد بيانات</p>
             )}
           </div>
         </Card>
 
         {/* Order Status Distribution */}
         <Card padding="lg">
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text mb-6">حالات الطلبات</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900 mb-6">حالات الطلبات</h2>
           <div className="space-y-4">
             {stats.orderStatusDistribution.map((item) => {
               const total = stats.totalOrders || 1;
@@ -240,11 +240,11 @@ export function DashboardPage() {
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
                       <span className={cn('w-2.5 h-2.5 rounded-full', statusColors[item.status])} />
-                      <span className="text-sm font-medium font-cairo text-gray-700 dark:text-dark-muted">{statusInfo.label}</span>
+                      <span className="text-sm font-medium font-cairo text-gray-700">{statusInfo.label}</span>
                     </div>
-                    <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{item.count}</span>
+                    <span className="text-sm font-bold font-cairo text-gray-900">{item.count}</span>
                   </div>
-                  <div className="h-2 bg-gray-100 dark:bg-dark-border rounded-full overflow-hidden">
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className={cn('h-full rounded-full transition-all duration-1000 ease-out', statusColors[item.status])}
                       style={{ width: `${pct}%` }}
@@ -261,7 +261,7 @@ export function DashboardPage() {
         {/* Category Distribution */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">التصنيفات</h2>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">التصنيفات</h2>
             <Link to="/categories" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
           </div>
           <div className="space-y-3">
@@ -270,8 +270,8 @@ export function DashboardPage() {
               const pct = (cat.count / maxCount) * 100;
               return (
                 <div key={cat.name} className="flex items-center gap-3">
-                  <span className="text-xs text-gray-500 dark:text-dark-muted font-cairo w-24 shrink-0 text-left">{cat.name}</span>
-                  <div className="flex-1 h-6 bg-gray-100 dark:bg-dark-border rounded-lg overflow-hidden relative">
+                  <span className="text-xs text-gray-500 font-cairo w-24 shrink-0 text-left">{cat.name}</span>
+                  <div className="flex-1 h-6 bg-gray-100 rounded-lg overflow-hidden relative">
                     <div
                       className="h-full rounded-lg bg-gradient-to-l from-accent to-orange-400 flex items-center justify-end px-2 transition-all duration-1000 ease-out"
                       style={{ width: `${pct}%` }}
@@ -288,88 +288,88 @@ export function DashboardPage() {
         {/* Recent Orders */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">آخر الطلبات</h2>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">آخر الطلبات</h2>
             <Link to="/profile/orders" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
           </div>
           {stats.recentOrders.length > 0 ? (
             <RecentOrdersTable orders={stats.recentOrders} />
           ) : (
-            <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo text-center py-8">لا توجد طلبات</p>
+            <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد طلبات</p>
           )}
         </Card>
 
         {/* Top Products */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">الأكثر مبيعاً</h2>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">الأكثر مبيعاً</h2>
             <Link to="/products" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
           </div>
           {stats.topProducts.length > 0 ? (
             <TopProductsTable products={stats.topProducts} />
           ) : (
-            <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo text-center py-8">لا توجد منتجات</p>
+            <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد منتجات</p>
           )}
         </Card>
       </div>
 
       {/* Bottom Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 shadow-soft">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-soft">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-blue-100 dark:bg-blue-500/20">
-              <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <div className="p-2 rounded-xl bg-blue-100">
+              <Package className="w-4 h-4 text-blue-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo">الماركات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">الماركات</span>
           </div>
-          <p className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">{stats.totalBrands}</p>
+          <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalBrands}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {brands.slice(0, 4).map((b) => (
-              <span key={b.id} className="text-[10px] bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-dark-muted px-2 py-0.5 rounded-full font-cairo">{b.name}</span>
+              <span key={b.id} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-cairo">{b.name}</span>
             ))}
-            {brands.length > 4 && <span className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo">+{brands.length - 4}</span>}
+            {brands.length > 4 && <span className="text-[10px] text-gray-400 font-cairo">+{brands.length - 4}</span>}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 shadow-soft">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-soft">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-500/20">
-              <Layers className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="p-2 rounded-xl bg-emerald-100">
+              <Layers className="w-4 h-4 text-emerald-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo">التصنيفات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">التصنيفات</span>
           </div>
-          <p className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">{stats.totalCategories}</p>
+          <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalCategories}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {categories.slice(0, 4).map((c) => (
-              <span key={c.id} className="text-[10px] bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-dark-muted px-2 py-0.5 rounded-full font-cairo">{c.name}</span>
+              <span key={c.id} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-cairo">{c.name}</span>
             ))}
-            {categories.length > 4 && <span className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo">+{categories.length - 4}</span>}
+            {categories.length > 4 && <span className="text-[10px] text-gray-400 font-cairo">+{categories.length - 4}</span>}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 shadow-soft">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-soft">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-500/20">
-              <Percent className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+            <div className="p-2 rounded-xl bg-purple-100">
+              <Percent className="w-4 h-4 text-purple-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo">الكوبونات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">الكوبونات</span>
           </div>
-          <p className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">{stats.totalCoupons}</p>
+          <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalCoupons}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {coupons.slice(0, 3).map((c) => (
-              <span key={c.id} className="text-[10px] bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-dark-muted px-2 py-0.5 rounded-full font-cairo">{c.code}</span>
+              <span key={c.id} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-cairo">{c.code}</span>
             ))}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 shadow-soft">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-soft">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 rounded-xl bg-rose-100 dark:bg-rose-500/20">
-              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+            <div className="p-2 rounded-xl bg-rose-100">
+              <AlertTriangle className="w-4 h-4 text-rose-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo">مخزون منخفض</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">مخزون منخفض</span>
           </div>
-          <p className="text-xl font-bold font-cairo text-gray-900 dark:text-dark-text">{stats.lowStockProducts}</p>
-          <p className="text-[10px] text-gray-400 dark:text-dark-muted font-cairo mt-1">منتجات أقل من 10 قطع في المخزون</p>
+          <p className="text-xl font-bold font-cairo text-gray-900">{stats.lowStockProducts}</p>
+          <p className="text-[10px] text-gray-400 font-cairo mt-1">منتجات أقل من 10 قطع في المخزون</p>
         </div>
       </div>
     </div>

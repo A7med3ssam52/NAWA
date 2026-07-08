@@ -12,7 +12,7 @@ export const IosInput = forwardRef<HTMLInputElement, IosInputProps>(
     return (
       <div className="w-full space-y-2">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="block text-sm font-medium text-gray-700">
             {label}
           </label>
         )}

@@ -40,7 +40,7 @@ function FilterCheckbox({ checked, onChange, label, count }: {
           'w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-200 shrink-0',
           checked
             ? 'bg-gradient-to-br from-secondary to-blue-500 border-secondary text-white shadow-sm shadow-secondary/20'
-            : 'border-gray-300 dark:border-dark-muted group-hover:border-gray-400 dark:group-hover:border-dark-text',
+            : 'border-gray-300 group-hover:border-gray-400',
         )}
       >
         {checked && (
@@ -49,11 +49,11 @@ function FilterCheckbox({ checked, onChange, label, count }: {
           </div>
         )}
       </div>
-      <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted group-hover:text-gray-900 dark:group-hover:text-dark-text transition-colors flex-1">
+      <span className="text-sm font-cairo text-gray-700 group-hover:text-gray-900 transition-colors flex-1">
         {label}
       </span>
       {count !== undefined && (
-        <span className="text-xs text-gray-400 dark:text-dark-muted bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-full">{count}</span>
+        <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{count}</span>
       )}
       <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" aria-label={label} />
     </label>
@@ -148,9 +148,9 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             <SlidersHorizontal className="w-5 h-5 text-secondary" />
           </div>
           <div>
-            <span className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">الفلاتر</span>
+            <span className="text-base font-bold font-cairo text-gray-900">الفلاتر</span>
             {hasActiveFilters && (
-              <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo mr-2">
+              <span className="text-xs text-gray-400 font-cairo mr-2">
                 ({activeCount} نشط)
               </span>
             )}
@@ -182,7 +182,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             value={categorySearch}
             onChange={(e) => setCategorySearch(e.target.value)}
             placeholder="بحث في الأقسام..."
-            className="w-full py-2 pr-8 pl-3 text-xs font-cairo bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl text-gray-900 dark:text-dark-text placeholder-gray-400 dark:placeholder-dark-muted focus:outline-none focus:ring-1 focus:ring-secondary/30 transition-all"
+            className="w-full py-2 pr-8 pl-3 text-xs font-cairo bg-gray-50 border border-gray-100 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-secondary/30 transition-all"
           />
           {categorySearch && (
             <button
@@ -205,7 +205,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               />
             ))
           ) : (
-            <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo py-2 text-center">لا توجد نتائج</p>
+            <p className="text-sm text-gray-400 font-cairo py-2 text-center">لا توجد نتائج</p>
           )}
         </div>
       </FilterSection>
@@ -249,7 +249,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               min={0}
             />
           </div>
-          <div className="w-6 h-px bg-gray-300 dark:bg-dark-border shrink-0" />
+          <div className="w-6 h-px bg-gray-300 shrink-0" />
           <div className="relative flex-1">
             <Input
               type="number"
@@ -279,13 +279,13 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               className={cn(
                 'flex items-center gap-2.5 w-full px-1 py-2 rounded-xl text-sm font-cairo transition-all duration-200 group',
                 localFilters.rating === rating
-                  ? 'text-accent bg-accent/5 dark:bg-accent/10'
-                  : 'text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text hover:bg-gray-50 dark:hover:bg-white/5',
+                  ? 'text-accent bg-accent/5'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
               )}
             >
               <div className={cn(
                 'p-1 rounded-lg transition-colors',
-                localFilters.rating === rating ? 'bg-accent/10' : 'group-hover:bg-gray-100 dark:group-hover:bg-white/5',
+                localFilters.rating === rating ? 'bg-accent/10' : 'group-hover:bg-gray-100',
               )}>
                 <div className="flex items-center gap-0.5" dir="ltr">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -295,13 +295,13 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
                         'w-4 h-4 transition-all',
                         i < rating
                           ? 'fill-accent text-accent'
-                          : 'text-gray-200 dark:text-gray-600',
+                          : 'text-gray-200',
                       )}
                     />
                   ))}
                 </div>
               </div>
-              <span className="text-xs text-gray-400 dark:text-dark-muted">وما فوق</span>
+              <span className="text-xs text-gray-400">وما فوق</span>
               {localFilters.rating === rating && (
                 <div className="mr-auto animate-scale-in">
                   <Check className="w-3.5 h-3.5 text-accent" />
@@ -327,8 +327,8 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               className={cn(
                 'flex items-center gap-2.5 w-full px-1 py-2 rounded-xl text-sm font-cairo transition-all duration-200 group',
                 localFilters.discount === option.value
-                  ? 'text-success bg-success/5 dark:bg-success/10'
-                  : 'text-gray-500 dark:text-dark-muted hover:text-gray-700 dark:hover:text-dark-text hover:bg-gray-50 dark:hover:bg-white/5',
+                  ? 'text-success bg-success/5'
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50',
               )}
             >
               <div
@@ -336,7 +336,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
                   'w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all shrink-0',
                   localFilters.discount === option.value
                     ? 'bg-gradient-to-br from-success to-green-500 border-success text-white shadow-sm shadow-success/20'
-                    : 'border-gray-300 dark:border-dark-muted group-hover:border-gray-400 dark:group-hover:border-dark-text',
+                    : 'border-gray-300 group-hover:border-gray-400',
                 )}
               >
                 {localFilters.discount === option.value && (
@@ -362,7 +362,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
 
       {/* Mobile Apply Button */}
       {isMobile && (
-        <div className="pt-4 sticky bottom-0 bg-white dark:bg-dark-card pb-2">
+        <div className="pt-4 sticky bottom-0 bg-white pb-2">
           <Button
             variant="primary"
             size="lg"
@@ -382,7 +382,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
     return (
       <div
         className={cn(
-          'w-64 shrink-0 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-white/5 p-4 shadow-soft h-fit sticky top-28',
+          'w-64 shrink-0 bg-white rounded-2xl border border-gray-100 p-4 shadow-soft h-fit sticky top-28',
           className,
         )}
       >
@@ -400,7 +400,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
           'flex items-center gap-2 px-4 py-2.5 rounded-xl font-cairo text-sm transition-all duration-200',
           hasActiveFilters
             ? 'bg-gradient-to-l from-secondary to-blue-500 text-white border-transparent shadow-md shadow-secondary/20'
-            : 'bg-white dark:bg-dark-card text-gray-700 dark:text-dark-muted border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 hover:shadow-sm',
+            : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm',
           className,
         )}
         aria-label="فتح الفلاتر"
@@ -441,10 +441,10 @@ function FilterSection({
   children,
 }: FilterSectionProps) {
   return (
-    <div className="border-b border-gray-100 dark:border-white/5 pb-1">
+    <div className="border-b border-gray-100 pb-1">
       <button
         onClick={onToggle}
-        className="flex items-center justify-between w-full py-3 px-1 text-sm font-bold font-cairo text-gray-900 dark:text-dark-text hover:text-secondary dark:hover:text-secondary transition-colors"
+        className="flex items-center justify-between w-full py-3 px-1 text-sm font-bold font-cairo text-gray-900 hover:text-secondary transition-colors"
         aria-expanded={expanded}
       >
         {title}

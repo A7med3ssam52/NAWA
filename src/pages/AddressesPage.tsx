@@ -41,7 +41,7 @@ export function AddressesPage() {
       className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
           عناويني
         </h1>
         <Button variant="secondary" size="md" rounded="xl" onClick={() => { setEditId(null); setShowModal(true); }}>
@@ -56,7 +56,7 @@ export function AddressesPage() {
               key={addr.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative p-5 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft"
+              className="relative p-5 bg-white rounded-2xl border border-gray-100 shadow-soft"
             >
               {addr.isDefault && (
                 <div className="absolute top-3 left-3">
@@ -65,12 +65,12 @@ export function AddressesPage() {
               )}
               <div className="flex items-center gap-2 mb-2">
                 <MapPin className="w-4 h-4 text-secondary" />
-                <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{addr.label}</span>
+                <span className="text-sm font-bold font-cairo text-gray-900">{addr.label}</span>
               </div>
-              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{addr.fullName}</p>
-              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{addr.phone}</p>
-              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo mt-1">{addr.street}، {addr.city}، {addr.state}</p>
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-dark-border">
+              <p className="text-xs text-gray-500 font-cairo">{addr.fullName}</p>
+              <p className="text-xs text-gray-500 font-cairo">{addr.phone}</p>
+              <p className="text-xs text-gray-500 font-cairo mt-1">{addr.street}، {addr.city}، {addr.state}</p>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                 {!addr.isDefault && (
                   <Button variant="ghost" size="sm" onClick={() => handleSetDefault(addr.id)}>تعيين كافتراضي</Button>
                 )}
@@ -86,7 +86,7 @@ export function AddressesPage() {
       )}
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editId ? 'تعديل العنوان' : 'إضافة عنوان جديد'} size="lg">
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo text-center py-4">نموذج إضافة عنوان</p>
+        <p className="text-sm text-gray-500 font-cairo text-center py-4">نموذج إضافة عنوان</p>
       </Modal>
     </motion.div>
   );

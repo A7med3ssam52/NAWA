@@ -37,11 +37,11 @@ export function OrderDetailsPage() {
 
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-1">
+          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-1">
             تفاصيل الطلب
           </h1>
-          <p className="text-sm font-mono text-gray-500 dark:text-dark-muted font-cairo" dir="ltr">{order.orderNumber}</p>
-          <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-1">{formatDate(order.createdAt)}</p>
+          <p className="text-sm font-mono text-gray-500 font-cairo" dir="ltr">{order.orderNumber}</p>
+          <p className="text-xs text-gray-400 font-cairo mt-1">{formatDate(order.createdAt)}</p>
         </div>
         <Badge variant={order.status === 'cancelled' ? 'danger' : order.status === 'delivered' ? 'success' : 'info'} size="lg">
           {statusInfo.label}
@@ -50,24 +50,24 @@ export function OrderDetailsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 space-y-5">
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-            <h2 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">تتبع الطلب</h2>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+            <h2 className="text-base font-bold font-cairo text-gray-900 mb-4">تتبع الطلب</h2>
             <TrackingTimeline events={order.tracking} currentStatus={order.status} cancelled={order.status === 'cancelled'} />
           </div>
 
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-            <h2 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">المنتجات</h2>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+            <h2 className="text-base font-bold font-cairo text-gray-900 mb-4">المنتجات</h2>
             <div className="space-y-3">
               {order.items.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-dark-border/30 rounded-xl">
-                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 dark:bg-dark-border shrink-0">
+                <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                     <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">{item.productName}</p>
-                    <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-0.5">الكمية: {item.quantity}</p>
+                    <p className="text-sm font-semibold font-cairo text-gray-900">{item.productName}</p>
+                    <p className="text-xs text-gray-400 font-cairo mt-0.5">الكمية: {item.quantity}</p>
                   </div>
-                  <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(item.price * item.quantity)}</span>
+                  <span className="text-sm font-bold font-cairo text-gray-900">{formatPrice(item.price * item.quantity)}</span>
                 </div>
               ))}
             </div>
@@ -75,40 +75,40 @@ export function OrderDetailsPage() {
         </div>
 
         <div className="space-y-5">
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-3">
-            <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">ملخص الطلب</h3>
-            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500 dark:text-dark-muted">المجموع الفرعي</span><span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(order.subtotal)}</span></div>
-            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500 dark:text-dark-muted">الشحن</span><span className="text-gray-900 dark:text-dark-text font-semibold">{order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping)}</span></div>
-            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500 dark:text-dark-muted">الضريبة</span><span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(order.tax)}</span></div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
+            <h3 className="text-base font-bold font-cairo text-gray-900">ملخص الطلب</h3>
+            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">المجموع الفرعي</span><span className="text-gray-900 font-semibold">{formatPrice(order.subtotal)}</span></div>
+            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">الشحن</span><span className="text-gray-900 font-semibold">{order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping)}</span></div>
+            <div className="flex justify-between text-sm font-cairo"><span className="text-gray-500">الضريبة</span><span className="text-gray-900 font-semibold">{formatPrice(order.tax)}</span></div>
             {order.discount > 0 && <div className="flex justify-between text-sm font-cairo"><span className="text-success">الخصم</span><span className="text-success font-semibold">-{formatPrice(order.discount)}</span></div>}
             <Divider />
-            <div className="flex justify-between"><span className="text-base font-bold text-gray-900 dark:text-dark-text">الإجمالي</span><span className="text-lg font-bold text-gray-900 dark:text-dark-text">{formatPrice(order.total)}</span></div>
+            <div className="flex justify-between"><span className="text-base font-bold text-gray-900">الإجمالي</span><span className="text-lg font-bold text-gray-900">{formatPrice(order.total)}</span></div>
           </div>
 
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-3">
-            <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
+            <h3 className="text-base font-bold font-cairo text-gray-900 flex items-center gap-2">
               <MapPin className="w-4 h-4 text-gray-400" /> عنوان الشحن
             </h3>
             {order.shippingAddress && (
               <>
-                <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">{order.shippingAddress.fullName}</p>
-                <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{order.shippingAddress.phone}</p>
-                <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{order.shippingAddress.street}، {order.shippingAddress.city}، {order.shippingAddress.state}</p>
+                <p className="text-sm font-semibold font-cairo text-gray-900">{order.shippingAddress.fullName}</p>
+                <p className="text-xs text-gray-500 font-cairo">{order.shippingAddress.phone}</p>
+                <p className="text-xs text-gray-500 font-cairo">{order.shippingAddress.street}، {order.shippingAddress.city}، {order.shippingAddress.state}</p>
               </>
             )}
           </div>
 
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-3">
-            <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text flex items-center gap-2">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
+            <h3 className="text-base font-bold font-cairo text-gray-900 flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-gray-400" /> طريقة الدفع
             </h3>
-            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">{getPaymentMethodLabel(order.paymentMethod)}</p>
+            <p className="text-sm text-gray-500 font-cairo">{getPaymentMethodLabel(order.paymentMethod)}</p>
           </div>
 
           {order.notes && (
-            <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-              <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-1">ملاحظات</h3>
-              <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{order.notes}</p>
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+              <h3 className="text-sm font-bold font-cairo text-gray-900 mb-1">ملاحظات</h3>
+              <p className="text-xs text-gray-500 font-cairo">{order.notes}</p>
             </div>
           )}
         </div>

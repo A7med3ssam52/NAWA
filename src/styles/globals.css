@@ -20,11 +20,6 @@
     @apply bg-secondary/20 text-secondary;
   }
 
-  :root.dark body,
-  html.dark body {
-    @apply bg-dark-bg text-dark-text;
-  }
-
   input,
   textarea,
   select {
@@ -137,13 +132,6 @@
     border-bottom: 1px solid rgba(0,0,0,0.1);
   }
 
-  .ios-dark-nav-bar {
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-
   /* iOS Button Styles */
   .ios-button-primary {
     background: #007AFF;
@@ -210,10 +198,6 @@
     overflow: hidden;
   }
 
-  .dark .ios-card {
-    background: rgba(30, 30, 30, 0.8);
-  }
-
   .ios-card-dark {
     background: rgba(30, 30, 30, 0.8);
     backdrop-filter: blur(20px);
@@ -238,10 +222,6 @@
     overflow: hidden;
   }
 
-  .dark .ios-group {
-    background: rgba(30, 30, 30, 0.8);
-  }
-
   /* iOS Card Group */
   .ios-card-group {
     @apply ios-group px-4 py-2;
@@ -258,16 +238,8 @@
     @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-soft;
   }
 
-  .dark .glass {
-    @apply bg-dark-glass border-dark-border/50;
-  }
-
   .glass-card {
     @apply bg-white/80 backdrop-blur-md border border-white/30 shadow-soft rounded-2xl;
-  }
-
-  .dark .glass-card {
-    @apply bg-dark-card/80 border-dark-border/40;
   }
 
   .gradient-primary {
@@ -299,7 +271,7 @@
   }
 
   .skeleton {
-    @apply bg-gray-200 dark:bg-dark-border animate-pulse rounded-xl;
+    @apply bg-gray-200 animate-pulse rounded-xl;
   }
 
   .scrollbar-hide {
@@ -323,13 +295,6 @@
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
     border-radius: 4px;
-  }
-
-  .dark .scrollbar-thin {
-    scrollbar-color: #475569 transparent;
-  }
-  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #475569;
   }
 
   .line-clamp-1 {
@@ -402,10 +367,6 @@
 
 .swiper-pagination-bullet {
   @apply !w-2.5 !h-2.5 !bg-gray-400;
-}
-
-.dark .swiper-pagination-bullet {
-  @apply !bg-gray-500;
 }
 
 .swiper-pagination-bullet-active {

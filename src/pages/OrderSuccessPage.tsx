@@ -32,7 +32,7 @@ export function OrderSuccessPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-2"
+        className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-2"
       >
         تم تأكيد طلبك بنجاح
       </motion.h1>
@@ -41,7 +41,7 @@ export function OrderSuccessPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-sm text-gray-500 dark:text-dark-muted font-cairo mb-6"
+        className="text-sm text-gray-500 font-cairo mb-6"
       >
         شكراً لك على طلبك. سنقوم بتجهيزه وتوصيله في أقرب وقت ممكن.
       </motion.p>
@@ -51,10 +51,10 @@ export function OrderSuccessPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-4 bg-gray-50 dark:bg-dark-border/30 rounded-2xl mb-6"
+          className="p-4 bg-gray-50 rounded-2xl mb-6"
         >
-          <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mb-1">رقم الطلب</p>
-          <p className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text font-mono" dir="ltr">{order.orderNumber}</p>
+          <p className="text-xs text-gray-400 font-cairo mb-1">رقم الطلب</p>
+          <p className="text-lg font-bold font-cairo text-gray-900 font-mono" dir="ltr">{order.orderNumber}</p>
         </motion.div>
       )}
 

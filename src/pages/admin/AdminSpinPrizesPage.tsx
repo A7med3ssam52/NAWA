@@ -114,8 +114,8 @@ export function AdminSpinPrizesPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">جوائز عجلة الحظ</h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إدارة جوائز وفرص عجلة الحظ</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">جوائز عجلة الحظ</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة جوائز وفرص عجلة الحظ</p>
         </div>
         <Button onClick={openAdd}><Plus className="w-4 h-4" /> إضافة جائزة</Button>
       </div>
@@ -144,38 +144,38 @@ export function AdminSpinPrizesPage() {
               action={!search ? { label: 'إضافة جائزة', onClick: openAdd } : undefined}
             />
           ) : (
-            <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-100 dark:border-dark-border">
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الجائزة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">النوع</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">القيمة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الوزن</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الفرصة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الحالة</th>
-                      <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الإجراءات</th>
+                    <tr className="border-b border-gray-100">
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الجائزة</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">النوع</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">القيمة</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الوزن</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الفرصة</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الحالة</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filtered.map((prize) => {
                       const chance = totalWeight > 0 ? ((prize.weight / totalWeight) * 100).toFixed(1) : '0';
                       return (
-                        <tr key={prize.id} className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors">
+                        <tr key={prize.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
                               <span
                                 className="w-4 h-4 rounded-lg"
                                 style={{ backgroundColor: prize.color }}
                               />
-                              <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+                              <span className="text-sm font-bold font-cairo text-gray-900">
                                 {prize.label}
                               </span>
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-xs font-cairo text-gray-500 dark:text-dark-muted">
+                            <span className="text-xs font-cairo text-gray-500">
                               {prize.type === 'percentage' ? 'نسبة مئوية'
                                 : prize.type === 'fixed' ? 'قيمة ثابتة'
                                 : prize.type === 'freeShipping' ? 'شحن مجاني'
@@ -183,7 +183,7 @@ export function AdminSpinPrizesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm font-cairo text-gray-600 dark:text-dark-muted">
+                            <span className="text-sm font-cairo text-gray-600">
                               {prize.type === 'percentage' ? `${prize.value}%`
                                 : prize.type === 'fixed' ? `${prize.value?.toLocaleString('ar-EG')} ج.م`
                                 : prize.type === 'freeShipping' ? '—'
@@ -191,11 +191,11 @@ export function AdminSpinPrizesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <span className="text-sm font-cairo text-gray-600 dark:text-dark-muted">{prize.weight}</span>
+                            <span className="text-sm font-cairo text-gray-600">{prize.weight}</span>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
-                              <div className="w-20 h-1.5 rounded-full bg-gray-100 dark:bg-dark-border overflow-hidden">
+                              <div className="w-20 h-1.5 rounded-full bg-gray-100 overflow-hidden">
                                 <div
                                   className="h-full rounded-full transition-all"
                                   style={{
@@ -243,45 +243,45 @@ export function AdminSpinPrizesPage() {
 
       {activeTab === 'stats' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
                 <Gift className="w-5 h-5 text-secondary" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">{prizes.length}</p>
-            <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mt-0.5">إجمالي الجوائز</p>
+            <p className="text-2xl font-bold font-cairo text-gray-900">{prizes.length}</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">إجمالي الجوائز</p>
           </div>
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-green-500" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+            <p className="text-2xl font-bold font-cairo text-gray-900">
               {prizes.filter((p) => p.isActive && p.type !== 'tryAgain').length}
             </p>
-            <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mt-0.5">جوائز قابلة للفوز</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">جوائز قابلة للفوز</p>
           </div>
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                 <Gift className="w-5 h-5 text-accent" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">{totalWeight}</p>
-            <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mt-0.5">الوزن الإجمالي</p>
+            <p className="text-2xl font-bold font-cairo text-gray-900">{totalWeight}</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">الوزن الإجمالي</p>
           </div>
-          <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-danger/10 flex items-center justify-center">
                 <X className="w-5 h-5 text-danger" />
               </div>
             </div>
-            <p className="text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+            <p className="text-2xl font-bold font-cairo text-gray-900">
               {prizes.filter((p) => !p.isActive).length}
             </p>
-            <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mt-0.5">جوائز معطلة</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">جوائز معطلة</p>
           </div>
         </div>
       )}
@@ -332,7 +332,7 @@ export function AdminSpinPrizesPage() {
 
           {/* Color presets */}
           <div>
-            <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mb-2">ألوان مقترحة</p>
+            <p className="text-xs font-cairo text-gray-500 mb-2">ألوان مقترحة</p>
             <div className="flex flex-wrap gap-2">
               {defaultColors.map((color) => (
                 <button
@@ -341,7 +341,7 @@ export function AdminSpinPrizesPage() {
                   onClick={() => setForm({ ...form, color })}
                   className={cn(
                     'w-8 h-8 rounded-xl border-2 transition-all',
-                    form.color === color ? 'border-gray-900 dark:border-white scale-110' : 'border-transparent',
+                    form.color === color ? 'border-gray-900 scale-110' : 'border-transparent',
                   )}
                   style={{ backgroundColor: color }}
                 />
@@ -364,8 +364,8 @@ export function AdminSpinPrizesPage() {
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">
-            هل أنت متأكد من حذف الجائزة <strong className="text-gray-900 dark:text-dark-text">{deleteModal?.label}</strong>؟
+          <p className="text-sm text-gray-600 font-cairo">
+            هل أنت متأكد من حذف الجائزة <strong className="text-gray-900">{deleteModal?.label}</strong>؟
           </p>
           <div className="flex items-center gap-3">
             <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>

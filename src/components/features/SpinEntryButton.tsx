@@ -110,7 +110,7 @@ export function SpinEntryButton() {
               'font-bold font-cairo',
               canSpin
                 ? 'bg-gradient-to-r from-secondary to-blue-500 text-white hover:shadow-secondary/40 hover:scale-105 active:scale-95'
-                : 'bg-gray-200 dark:bg-dark-border text-gray-400 dark:text-dark-muted cursor-not-allowed',
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed',
               isMobile
                 ? 'bottom-20 left-3 px-3 py-2.5 text-xs'
                 : 'bottom-6 left-6 px-4 py-3 text-sm',
@@ -157,12 +157,12 @@ export function SpinEntryButton() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 40 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-md mx-auto bg-white dark:bg-dark-card rounded-3xl shadow-2xl border border-gray-100 dark:border-dark-border p-4 sm:p-6 pt-8 sm:pt-10 overflow-y-auto max-h-[95vh]"
+              className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-gray-100 p-4 sm:p-6 pt-8 sm:pt-10 overflow-y-auto max-h-[95vh]"
               dir="rtl"
             >
               <button
                 onClick={handleClose}
-                className="absolute top-2 left-2 sm:top-3 sm:left-3 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                className="absolute top-2 left-2 sm:top-3 sm:left-3 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                 aria-label="إغلاق"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -174,10 +174,10 @@ export function SpinEntryButton() {
                     <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-br from-secondary/10 to-blue-500/10 flex items-center justify-center mb-4">
                       <Phone className="w-8 h-8 sm:w-10 sm:h-10 text-secondary" />
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900">
                       أدخل رقم هاتفك
                     </h2>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo mt-2 max-w-xs mx-auto">
+                    <p className="text-xs sm:text-sm text-gray-500 font-cairo mt-2 max-w-xs mx-auto">
                       للمشاركة في عجلة الحظ، يرجى إدخال رقم هاتفك المصري
                     </p>
                   </div>
@@ -195,10 +195,10 @@ export function SpinEntryButton() {
                           placeholder="20XXXXXXXXX"
                           className={cn(
                             'w-full text-left dir-ltr px-4 pr-8 py-3 sm:py-3.5 text-base sm:text-lg font-cairo tracking-wider',
-                            'bg-gray-50 dark:bg-dark-border/50 border-2 rounded-2xl transition-all',
-                            'text-gray-900 dark:text-dark-text placeholder-gray-400',
-                            'focus:outline-none focus:border-secondary focus:bg-white dark:focus:bg-dark-border',
-                            phoneError ? 'border-danger' : 'border-gray-200 dark:border-dark-border',
+                            'bg-gray-50 border-2 rounded-2xl transition-all',
+                            'text-gray-900 placeholder-gray-400',
+                            'focus:outline-none focus:border-secondary focus:bg-white',
+                            phoneError ? 'border-danger' : 'border-gray-200',
                           )}
                           autoFocus
                         />
@@ -211,9 +211,9 @@ export function SpinEntryButton() {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-500/10 rounded-2xl border border-amber-200 dark:border-amber-500/20">
+                    <div className="flex items-center gap-2 p-3 bg-amber-50 rounded-2xl border border-amber-200">
                       <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-                      <p className="text-[11px] text-amber-700 dark:text-amber-400 font-cairo">
+                      <p className="text-[11px] text-amber-700 font-cairo">
                         رقم الهاتف سيُستخدم مرة واحدة فقط ولن يتم تخزينه بشكل دائم
                       </p>
                     </div>
@@ -234,10 +234,10 @@ export function SpinEntryButton() {
                       <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                       فرصة يومية
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+                    <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900">
                       عجلة الحظ
                     </h2>
-                    <p className="text-xs sm:text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">
+                    <p className="text-xs sm:text-sm text-gray-500 font-cairo mt-1">
                       {canSpin
                         ? `لديك ${spinsRemainingToday} فرصة للفوز اليوم`
                         : 'لقد استنفذت فرصك اليوم، عد غداً!'}
@@ -253,7 +253,7 @@ export function SpinEntryButton() {
                   />
 
                   <div className="mt-4 sm:mt-6 space-y-1.5">
-                    <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 dark:text-dark-muted font-cairo text-center mb-2">
+                    <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 font-cairo text-center mb-2">
                       الجوائز
                     </p>
                     <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5">

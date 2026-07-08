@@ -18,7 +18,7 @@ export function BrandCard({ brand, index = 0 }: BrandCardProps) {
       <Link
         to={`/brands/${brand.slug}`}
         className={cn(
-          'flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border border-gray-100 dark:border-dark-border bg-white dark:bg-dark-card shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300'
+          'flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border border-gray-100 bg-white shadow-soft hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300'
         )}
       >
         {!imgError ? (
@@ -37,15 +37,15 @@ export function BrandCard({ brand, index = 0 }: BrandCardProps) {
           </div>
         ) : (
           <div className="w-20 h-14 flex items-center justify-center">
-            <span className="text-lg font-bold font-cairo text-gray-400 dark:text-dark-muted">
+            <span className="text-lg font-bold font-cairo text-gray-400">
               {brand.name.charAt(0)}
             </span>
           </div>
         )}
-        <span className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text text-center">
+        <span className="text-sm font-semibold font-cairo text-gray-900 text-center">
           {brand.name}
         </span>
-        <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+        <span className="text-xs text-gray-400 font-cairo">
           {brand.productsCount} منتج
         </span>
       </Link>

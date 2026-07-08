@@ -38,8 +38,8 @@ export function AdminSettingsPage() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">الإعدادات</h1>
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إعدادات المتجر العامة</p>
+        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">الإعدادات</h1>
+        <p className="text-sm text-gray-500 font-cairo mt-1">إعدادات المتجر العامة</p>
       </div>
 
       <Card padding="lg">
@@ -47,7 +47,7 @@ export function AdminSettingsPage() {
           <div className="p-2.5 rounded-xl bg-secondary/10 text-secondary">
             <Store className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">معلومات المتجر</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900">معلومات المتجر</h2>
         </div>
         <div className="space-y-4 max-w-lg">
           <Input label="اسم المتجر" value={storeInfo.name} onChange={(e) => setStoreInfo({ ...storeInfo, name: e.target.value })} />
@@ -61,7 +61,7 @@ export function AdminSettingsPage() {
           <div className="p-2.5 rounded-xl bg-accent/10 text-accent">
             <Truck className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">الشحن والضرائب</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900">الشحن والضرائب</h2>
         </div>
         <div className="space-y-4 max-w-lg">
           <Input label="تكلفة الشحن (ج.م)" type="number" value={shipping.cost} onChange={(e) => setShipping({ ...shipping, cost: e.target.value })} />
@@ -76,7 +76,7 @@ export function AdminSettingsPage() {
           <div className="p-2.5 rounded-xl bg-secondary/10 text-secondary">
             <Megaphone className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">شريط الإعلانات</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900">شريط الإعلانات</h2>
         </div>
         <div className="space-y-4 max-w-xl">
           <Textarea
@@ -94,7 +94,7 @@ export function AdminSettingsPage() {
                 onClick={() => setAnnouncement({ ...announcement, enabled: !announcement.enabled })}
                 className={cn(
                   'relative w-10 h-6 rounded-full transition-colors duration-200',
-                  announcement.enabled ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                  announcement.enabled ? 'bg-secondary' : 'bg-gray-300'
                 )}
               >
                 <span className={cn(
@@ -102,7 +102,7 @@ export function AdminSettingsPage() {
                   announcement.enabled && 'translate-x-4'
                 )} />
               </button>
-              <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted">تفعيل الإعلان</span>
+              <span className="text-sm font-cairo text-gray-700">تفعيل الإعلان</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
               <button
@@ -112,7 +112,7 @@ export function AdminSettingsPage() {
                 onClick={() => setAnnouncement({ ...announcement, dismissible: !announcement.dismissible })}
                 className={cn(
                   'relative w-10 h-6 rounded-full transition-colors duration-200',
-                  announcement.dismissible ? 'bg-secondary' : 'bg-gray-300 dark:bg-dark-border'
+                  announcement.dismissible ? 'bg-secondary' : 'bg-gray-300'
                 )}
               >
                 <span className={cn(
@@ -120,7 +120,7 @@ export function AdminSettingsPage() {
                   announcement.dismissible && 'translate-x-4'
                 )} />
               </button>
-              <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted">قابل للإغلاق</span>
+              <span className="text-sm font-cairo text-gray-700">قابل للإغلاق</span>
             </label>
           </div>
           <Button onClick={handleSaveAnnouncement}>
@@ -134,7 +134,7 @@ export function AdminSettingsPage() {
           <div className="p-2.5 rounded-xl bg-success/10 text-success">
             <Phone className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">جهات الاتصال</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900">جهات الاتصال</h2>
         </div>
         <div className="space-y-4 max-w-lg">
           <Input label="رقم الهاتف" value={contact.phone} onChange={(e) => setContact({ ...contact, phone: e.target.value })} />
@@ -149,9 +149,9 @@ export function AdminSettingsPage() {
           <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-500">
             <Palette className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">المظهر</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900">المظهر</h2>
         </div>
-        <p className="text-sm font-cairo text-gray-500 dark:text-dark-muted mb-4">يمكنك تغيير المظهر بين الوضع الفاتح والداكن من خلال زر التبديل في الشريط العلوي.</p>
+        <p className="text-sm font-cairo text-gray-500 mb-4">يمكنك تغيير المظهر بين الوضع الفاتح والداكن من خلال زر التبديل في الشريط العلوي.</p>
       </Card>
     </motion.div>
   );

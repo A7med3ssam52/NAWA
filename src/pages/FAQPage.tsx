@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Accordion } from '@/components/ui/Accordion';
 import type { AccordionItem } from '@/components/ui/Accordion';
 
@@ -56,21 +57,23 @@ const faqItems: AccordionItem[] = [
 ];
 
 export function FAQPage() {
+  const { t, i18n } = useTranslation();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16"
     >
       <div className="text-center mb-10">
-        <h1 className="text-3xl lg:text-4xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-3">
-          الأسئلة الشائعة
+        <h1 className="text-3xl lg:text-4xl font-bold font-cairo text-gray-900 mb-3">
+          {t('faq.title')}
         </h1>
-        <p className="text-sm lg:text-base text-gray-500 dark:text-dark-muted font-cairo">
-          إجابات على أكثر الأسئلة شيوعاً حول منتجاتنا وخدماتنا
+        <p className="text-sm lg:text-base text-gray-500 font-cairo">
+          {t('faq.subtitle')}
         </p>
       </div>
 

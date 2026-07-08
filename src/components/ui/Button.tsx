@@ -15,8 +15,8 @@ const variants = {
   secondary: 'bg-secondary text-white hover:bg-secondary/90 shadow-lg shadow-secondary/20 hover:shadow-secondary/30 active:scale-95 ios-touch-feedback',
   accent: 'bg-accent text-white hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-accent/30 active:scale-95 ios-touch-feedback',
   danger: 'bg-danger text-white hover:bg-danger/90 shadow-lg shadow-danger/20 active:scale-95 ios-touch-feedback',
-  ghost: 'bg-transparent text-primary dark:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-border/50 ios-touch-feedback',
-  outline: 'border-2 border-primary text-primary dark:text-dark-text dark:border-dark-text hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white active:scale-95 ios-touch-feedback',
+  ghost: 'bg-transparent text-primary hover:bg-gray-100 ios-touch-feedback',
+  outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-white active:scale-95 ios-touch-feedback',
   success: 'bg-success text-white hover:bg-success/90 shadow-lg shadow-success/20 active:scale-95 ios-touch-feedback',
 };
 

@@ -135,8 +135,8 @@ export function AdminOrdersPage() {
     >
       {/* Header */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">إدارة الطلبات</h1>
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">عرض وإدارة جميع طلبات المتجر</p>
+        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">إدارة الطلبات</h1>
+        <p className="text-sm text-gray-500 font-cairo mt-1">عرض وإدارة جميع طلبات المتجر</p>
       </div>
 
       {/* Stats Summary */}
@@ -152,12 +152,12 @@ export function AdminOrdersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="relative overflow-hidden rounded-2xl border p-4 shadow-soft bg-white dark:bg-dark-card border-gray-100 dark:border-dark-border"
+            className="relative overflow-hidden rounded-2xl border p-4 shadow-soft bg-white border-gray-100"
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-500 dark:text-dark-muted font-cairo">{stat.label}</p>
-                <p className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text mt-1">
+                <p className="text-xs font-medium text-gray-500 font-cairo">{stat.label}</p>
+                <p className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 mt-1">
                   {stat.value}
                 </p>
               </div>
@@ -190,7 +190,7 @@ export function AdminOrdersPage() {
                   'px-3 py-1.5 rounded-lg text-sm font-cairo font-medium whitespace-nowrap transition-all duration-200',
                   statusFilter === tab.value
                     ? 'bg-secondary text-white shadow-md shadow-secondary/20'
-                    : 'text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border',
+                    : 'text-gray-600 hover:bg-gray-100',
                 )}
               >
                 {tab.label}
@@ -219,13 +219,13 @@ export function AdminOrdersPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-100 dark:border-dark-border bg-gray-50 dark:bg-dark-border/30">
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">رقم الطلب</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">العميل</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">التاريخ</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">المبلغ</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">الحالة</th>
-                      <th className="text-left px-4 py-3 text-xs font-bold font-cairo text-gray-500 dark:text-dark-muted">الإجراءات</th>
+                    <tr className="border-b border-gray-100 bg-gray-50">
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">رقم الطلب</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">العميل</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">التاريخ</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">المبلغ</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">الحالة</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold font-cairo text-gray-500">الإجراءات</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -237,21 +237,21 @@ export function AdminOrdersPage() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          className="border-b border-gray-100 dark:border-dark-border last:border-b-0 hover:bg-gray-50 dark:hover:bg-dark-border/20 transition-colors"
+                          className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors"
                         >
                           <td className="px-4 py-3.5">
-                            <span className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">{order.orderNumber}</span>
+                            <span className="text-sm font-semibold font-cairo text-gray-900">{order.orderNumber}</span>
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className="text-sm font-cairo text-gray-700 dark:text-dark-muted">
+                            <span className="text-sm font-cairo text-gray-700">
                               {order.shippingAddress?.fullName || '—'}
                             </span>
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className="text-sm font-cairo text-gray-500 dark:text-dark-muted">{formatDate(order.createdAt)}</span>
+                            <span className="text-sm font-cairo text-gray-500">{formatDate(order.createdAt)}</span>
                           </td>
                           <td className="px-4 py-3.5">
-                            <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(order.total)}</span>
+                            <span className="text-sm font-bold font-cairo text-gray-900">{formatPrice(order.total)}</span>
                           </td>
                           <td className="px-4 py-3.5">
                             <Badge variant={statusBadgeVariant(order.status)} size="sm">
@@ -300,19 +300,19 @@ export function AdminOrdersPage() {
                   <div role="button" tabIndex={0} onClick={() => openOrderModal(order.id)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openOrderModal(order.id); }}>
                     <Card padding="md" className="cursor-pointer hover:shadow-soft-lg transition-shadow">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{order.orderNumber}</span>
+                      <span className="text-sm font-bold font-cairo text-gray-900">{order.orderNumber}</span>
                       <Badge variant={statusBadgeVariant(order.status)} size="sm">
                         {ORDER_STATUS_MAP[order.status]?.label || order.status}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500 dark:text-dark-muted font-cairo">
+                      <span className="text-gray-500 font-cairo">
                         {order.shippingAddress?.fullName || '—'}
                       </span>
-                      <span className="font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(order.total)}</span>
+                      <span className="font-bold font-cairo text-gray-900">{formatPrice(order.total)}</span>
                     </div>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xs text-gray-400 dark:text-dark-muted font-cairo">{formatDate(order.createdAt)}</span>
+                      <span className="text-xs text-gray-400 font-cairo">{formatDate(order.createdAt)}</span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -332,7 +332,7 @@ export function AdminOrdersPage() {
 
           {/* Pagination */}
           <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">
+            <p className="text-sm text-gray-500 font-cairo">
               إجمالي {total} طلب
             </p>
             {totalPages > 1 && (
@@ -378,7 +378,7 @@ export function AdminOrdersPage() {
         <div className="space-y-4">
           <div className="flex items-center gap-3 p-4 bg-danger/5 rounded-xl border border-danger/10">
             <AlertTriangle className="w-6 h-6 text-danger shrink-0" />
-            <p className="text-sm font-cairo text-gray-700 dark:text-dark-muted">
+            <p className="text-sm font-cairo text-gray-700">
               هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.
             </p>
           </div>
@@ -420,15 +420,15 @@ function OrderDetailContent({
   return (
     <div className="space-y-6" dir="rtl">
       {/* Order Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 dark:bg-dark-border/30 rounded-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">{order.orderNumber}</h3>
+            <h3 className="text-base font-bold font-cairo text-gray-900">{order.orderNumber}</h3>
             <Badge variant={statusBadgeVariant(order.status)} size="sm">
               {ORDER_STATUS_MAP[order.status]?.label || order.status}
             </Badge>
           </div>
-          <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">
+          <p className="text-xs text-gray-500 font-cairo">
             {formatDateTime(order.createdAt)}
           </p>
         </div>
@@ -451,29 +451,29 @@ function OrderDetailContent({
       </div>
 
       {/* Tracking Timeline */}
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-        <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4 flex items-center gap-2">
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-4 flex items-center gap-2">
           <Package className="w-4 h-4 text-gray-400" /> تتبع الطلب
         </h3>
         <TrackingTimeline events={order.tracking} currentStatus={order.status} cancelled={order.status === 'cancelled'} />
       </div>
 
       {/* Items */}
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-        <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">المنتجات</h3>
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-4">المنتجات</h3>
         <div className="space-y-3">
           {order.items.map((item, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-dark-border/30 rounded-xl">
-              <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 dark:bg-dark-border shrink-0">
+            <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+              <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                 <img src={item.productImage} alt={item.productName} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text">{item.productName}</p>
-                <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo mt-0.5">
+                <p className="text-sm font-semibold font-cairo text-gray-900">{item.productName}</p>
+                <p className="text-xs text-gray-400 font-cairo mt-0.5">
                   {formatPrice(item.price)} × {item.quantity}
                 </p>
               </div>
-              <span className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+              <span className="text-sm font-bold font-cairo text-gray-900">
                 {formatPrice(item.price * item.quantity)}
               </span>
             </div>
@@ -484,21 +484,21 @@ function OrderDetailContent({
       {/* Customer & Payment */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Customer Info */}
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-3">
-          <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text flex items-center gap-2">
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
+          <h3 className="text-sm font-bold font-cairo text-gray-900 flex items-center gap-2">
             <User className="w-4 h-4 text-gray-400" /> معلومات العميل
           </h3>
           {order.shippingAddress && (
             <>
-              <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-muted font-cairo">
+              <div className="flex items-center gap-2 text-sm text-gray-700 font-cairo">
                 <User className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                <span className="font-semibold text-gray-900 dark:text-dark-text">{order.shippingAddress.fullName}</span>
+                <span className="font-semibold text-gray-900">{order.shippingAddress.fullName}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
                 <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 {order.shippingAddress.phone}
               </div>
-              <div className="flex items-start gap-2 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <div className="flex items-start gap-2 text-sm text-gray-500 font-cairo">
                 <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
                 <span>{order.shippingAddress.street}، {order.shippingAddress.city}، {order.shippingAddress.state}</span>
               </div>
@@ -507,11 +507,11 @@ function OrderDetailContent({
         </div>
 
         {/* Payment Info */}
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-3">
-          <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text flex items-center gap-2">
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
+          <h3 className="text-sm font-bold font-cairo text-gray-900 flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-gray-400" /> طريقة الدفع
           </h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+          <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
             <CreditCard className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             {getPaymentMethodLabel(order.paymentMethod)}
           </div>
@@ -525,8 +525,8 @@ function OrderDetailContent({
       </div>
 
       {/* Order Totals */}
-      <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft space-y-2.5">
-        <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-3">ملخص الطلب</h3>
+      <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-2.5">
+        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-3">ملخص الطلب</h3>
         {[
           { label: 'المجموع الفرعي', value: formatPrice(order.subtotal), color: '' },
           { label: 'الشحن', value: order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping), color: '' },
@@ -534,25 +534,25 @@ function OrderDetailContent({
           ...(order.discount > 0 ? [{ label: 'الخصم', value: `-${formatPrice(order.discount)}`, color: 'text-success' }] : []),
         ].map((row) => (
           <div key={row.label} className="flex justify-between items-center">
-            <span className="text-sm text-gray-500 dark:text-dark-muted font-cairo">{row.label}</span>
-            <span className={cn('text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text', row.color)}>
+            <span className="text-sm text-gray-500 font-cairo">{row.label}</span>
+            <span className={cn('text-sm font-semibold font-cairo text-gray-900', row.color)}>
               {row.value}
             </span>
           </div>
         ))}
-        <div className="border-t border-gray-100 dark:border-dark-border pt-2.5 mt-2.5">
+        <div className="border-t border-gray-100 pt-2.5 mt-2.5">
           <div className="flex justify-between items-center">
-            <span className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">الإجمالي</span>
-            <span className="text-lg font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(order.total)}</span>
+            <span className="text-base font-bold font-cairo text-gray-900">الإجمالي</span>
+            <span className="text-lg font-bold font-cairo text-gray-900">{formatPrice(order.total)}</span>
           </div>
         </div>
       </div>
 
       {/* Notes */}
       {order.notes && (
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft">
-          <h3 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-2">ملاحظات</h3>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">{order.notes}</p>
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+          <h3 className="text-sm font-bold font-cairo text-gray-900 mb-2">ملاحظات</h3>
+          <p className="text-sm text-gray-500 font-cairo">{order.notes}</p>
         </div>
       )}
     </div>

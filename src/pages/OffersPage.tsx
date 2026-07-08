@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Zap } from 'lucide-react';
 import { useDiscountedProducts } from '@/api';
 import { ProductGrid } from '@/components/features/ProductGrid';
 
 export function OffersPage() {
+  const { t, i18n } = useTranslation();
   const { data: products, isLoading, error, refetch } = useDiscountedProducts();
 
   return (
@@ -12,7 +14,7 @@ export function OffersPage() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
       <motion.div
@@ -30,10 +32,10 @@ export function OffersPage() {
           </div>
           <div>
             <h1 className="text-2xl lg:text-4xl font-bold font-cairo text-white mb-1">
-              خصومات تصل إلى 50%
+              {t('home.heroSlide2Title')}
             </h1>
             <p className="text-sm lg:text-base text-white/80 font-cairo">
-              عروض حصرية على منتجات مختارة بأسعار لا تقبل المنافسة
+              {t('home.heroSlide2Sub')}
             </p>
           </div>
         </div>

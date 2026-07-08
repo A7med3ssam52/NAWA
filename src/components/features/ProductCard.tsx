@@ -59,11 +59,11 @@ export const ProductCard = memo(function ProductCard({
   }, [product, onToggleCompare]);
 
   return (
-    <div className="group relative bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft hover:shadow-soft-lg transition-shadow duration-300 overflow-hidden will-change-transform hover:-translate-y-1 transition-transform duration-300">
+    <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-soft hover:shadow-soft-lg transition-shadow duration-300 overflow-hidden will-change-transform hover:-translate-y-1 transition-transform duration-300">
       <Link to={`${PAGES.PRODUCT_DETAILS.replace(':slug', product.slug)}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-dark-border/30">
+        <div className="relative aspect-square overflow-hidden bg-gray-50">
           {!imageLoaded && !imgError && (
-            <div className="absolute inset-0 bg-gray-100 dark:bg-dark-border animate-pulse" />
+            <div className="absolute inset-0 bg-gray-100 animate-pulse" />
           )}
           {!imgError ? (
             <img
@@ -78,7 +78,7 @@ export const ProductCard = memo(function ProductCard({
               )}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-dark-muted">
+            <div className="w-full h-full flex items-center justify-center text-gray-300">
               <Eye className="w-12 h-12" />
             </div>
           )}
@@ -105,7 +105,7 @@ export const ProductCard = memo(function ProductCard({
               'absolute bottom-3 left-3 p-2 rounded-xl backdrop-blur-sm transition-all duration-200',
               inWishlist
                 ? 'bg-danger/20 text-danger'
-                : 'bg-white/80 dark:bg-dark-card/80 text-gray-400 hover:text-danger hover:bg-danger/10 opacity-0 group-hover:opacity-100'
+                : 'bg-white/80 text-gray-400 hover:text-danger hover:bg-danger/10 opacity-0 group-hover:opacity-100'
             )}
             aria-label={inWishlist ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}
           >
@@ -118,7 +118,7 @@ export const ProductCard = memo(function ProductCard({
               'absolute top-3 right-3 p-2 rounded-xl backdrop-blur-sm transition-all duration-200',
               inCompare
                 ? 'bg-secondary/20 text-secondary'
-                : 'bg-white/80 dark:bg-dark-card/80 text-gray-400 hover:text-secondary hover:bg-secondary/10'
+                : 'bg-white/80 text-gray-400 hover:text-secondary hover:bg-secondary/10'
             )}
             aria-label={inCompare ? 'إزالة من المقارنة' : 'إضافة إلى المقارنة'}
           >
@@ -127,7 +127,7 @@ export const ProductCard = memo(function ProductCard({
 
           {isOutOfStock && (
             <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
-              <span className="bg-white dark:bg-dark-card text-gray-900 dark:text-dark-text px-4 py-1.5 rounded-full text-sm font-bold font-cairo shadow-lg">
+              <span className="bg-white text-gray-900 px-4 py-1.5 rounded-full text-sm font-bold font-cairo shadow-lg">
                 نفد من المخزون
               </span>
             </div>
@@ -135,7 +135,7 @@ export const ProductCard = memo(function ProductCard({
         </div>
 
         <div className="p-4 space-y-2">
-          <h3 className="text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text line-clamp-2 group-hover:text-secondary transition-colors leading-relaxed min-h-[2.5rem]">
+          <h3 className="text-sm font-semibold font-cairo text-gray-900 line-clamp-2 group-hover:text-secondary transition-colors leading-relaxed min-h-[2.5rem]">
             {product.name}
           </h3>
 
@@ -145,11 +145,11 @@ export const ProductCard = memo(function ProductCard({
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <span className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">
+              <span className="text-base font-bold font-cairo text-gray-900">
                 {formatPrice(product.price)}
               </span>
               {product.oldPrice && product.oldPrice > product.price && (
-                <span className="text-xs text-gray-400 dark:text-dark-muted line-through font-cairo">
+                <span className="text-xs text-gray-400 line-through font-cairo">
                   {formatPrice(product.oldPrice)}
                 </span>
               )}

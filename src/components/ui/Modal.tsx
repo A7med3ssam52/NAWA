@@ -83,7 +83,7 @@ export function Modal({
           />
           <motion.div
             className={cn(
-              'relative w-full bg-white dark:bg-dark-card rounded-2xl shadow-soft-xl border border-gray-100 dark:border-dark-border',
+              'relative w-full bg-white rounded-2xl shadow-soft-xl border border-gray-100',
               'max-h-[90vh] overflow-y-auto',
               sizeStyles[size],
               className
@@ -95,16 +95,16 @@ export function Modal({
             dir="rtl"
           >
             {(title || !hideClose) && (
-              <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-dark-border">
+              <div className="flex items-center justify-between p-6 border-b border-gray-100">
                 {title && (
-                  <h2 className="text-lg font-bold text-gray-900 dark:text-dark-text font-cairo">
+                  <h2 className="text-lg font-bold text-gray-900 font-cairo">
                     {title}
                   </h2>
                 )}
                 {!hideClose && (
                   <button
                     onClick={onClose}
-                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-dark-border transition-colors"
+                    className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
                     aria-label="إغلاق"
                   >
                     <X className="w-5 h-5" />

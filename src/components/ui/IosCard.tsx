@@ -17,7 +17,7 @@ export const IosCard = forwardRef<HTMLDivElement, IosCardProps>(
         className={cn(
           'ios-card',
           disabled && 'opacity-50',
-          onPress && 'active:bg-gray-50 dark:active:bg-gray-800 transition-colors',
+          onPress && 'active:bg-gray-50 transition-colors',
           className
         )}
       >

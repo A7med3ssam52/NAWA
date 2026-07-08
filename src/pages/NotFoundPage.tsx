@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui';
 
 export function NotFoundPage() {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -12,7 +14,7 @@ export function NotFoundPage() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="min-h-[60vh] flex flex-col items-center justify-center px-4 text-center"
     >
       <motion.div
@@ -20,7 +22,7 @@ export function NotFoundPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <h1 className="text-8xl lg:text-9xl font-bold font-cairo text-gray-200 dark:text-dark-border leading-none mb-4">
+        <h1 className="text-8xl lg:text-9xl font-bold font-cairo text-gray-200 leading-none mb-4">
           404
         </h1>
       </motion.div>
@@ -37,18 +39,18 @@ export function NotFoundPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-3"
+        className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 mb-3"
       >
-        عذراً، الصفحة غير موجودة
+        {t('notFound.title')}
       </motion.h2>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-sm text-gray-500 dark:text-dark-muted font-cairo max-w-md mb-8"
+        className="text-sm text-gray-500 font-cairo max-w-md mb-8"
       >
-        الصفحة التي تبحث عنها قد تكون تم نقلها أو حذفها أو أنها غير متوفرة حالياً
+        {t('notFound.description')}
       </motion.p>
 
       <motion.div
@@ -58,7 +60,7 @@ export function NotFoundPage() {
       >
         <Button variant="secondary" size="lg" rounded="xl" onClick={() => navigate('/')}>
           <ArrowLeft className="w-5 h-5" />
-          العودة إلى الرئيسية
+          {t('notFound.backHome')}
         </Button>
       </motion.div>
     </motion.div>

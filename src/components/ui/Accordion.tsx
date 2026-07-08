@@ -32,14 +32,14 @@ export function Accordion({ items, allowMultiple = false, className }: Accordion
   };
 
   return (
-    <div className={cn('divide-y divide-gray-200 dark:divide-dark-border rounded-2xl border border-gray-200 dark:border-dark-border overflow-hidden bg-white dark:bg-dark-card', className)} dir="rtl">
+    <div className={cn('divide-y divide-gray-200 rounded-2xl border border-gray-200 overflow-hidden bg-white', className)} dir="rtl">
       {items.map((item) => {
         const isOpen = openIds.has(item.id);
         return (
           <div key={item.id}>
             <button
               onClick={() => toggle(item.id)}
-              className="flex items-center justify-between w-full px-5 py-4 text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text hover:bg-gray-50 dark:hover:bg-dark-border/50 transition-colors"
+              className="flex items-center justify-between w-full px-5 py-4 text-sm font-semibold font-cairo text-gray-900 hover:bg-gray-50 transition-colors"
               aria-expanded={isOpen}
               aria-controls={`accordion-content-${item.id}`}
             >
@@ -64,7 +64,7 @@ export function Accordion({ items, allowMultiple = false, className }: Accordion
                   role="region"
                   aria-labelledby={item.id}
                 >
-                  <div className="px-5 pb-4 text-sm text-gray-600 dark:text-dark-muted font-cairo leading-relaxed">
+                  <div className="px-5 pb-4 text-sm text-gray-600 font-cairo leading-relaxed">
                     {item.content}
                   </div>
                 </motion.div>

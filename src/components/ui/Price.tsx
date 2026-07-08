@@ -22,7 +22,7 @@ export function Price({ price, oldPrice, discount, size = 'md', className }: Pri
     <div className={cn('inline-flex items-baseline gap-2', className)}>
       <span
         className={cn(
-          'font-bold text-gray-900 dark:text-dark-text font-cairo',
+          'font-bold text-gray-900 font-cairo',
           sizes[size].current
         )}
       >
@@ -31,7 +31,7 @@ export function Price({ price, oldPrice, discount, size = 'md', className }: Pri
       {showOldPrice && (
         <span
           className={cn(
-            'text-gray-400 dark:text-dark-muted line-through font-cairo',
+            'text-gray-400 line-through font-cairo',
             sizes[size].old
           )}
         >

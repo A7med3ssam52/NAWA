@@ -72,16 +72,16 @@ export const Footer = memo(function Footer() {
   };
 
   return (
-    <footer dir="rtl" className="bg-gray-50 dark:bg-dark-bg border-t border-gray-100 dark:border-dark-border">
+    <footer dir="rtl" className="bg-gray-50 border-t border-gray-100">
       {/* Newsletter */}
-      <div className="bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 dark:from-secondary/5 dark:via-accent/5 dark:to-secondary/5 border-b border-gray-100 dark:border-dark-border">
+      <div className="bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-right">
-              <h3 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-1.5">
+              <h3 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 mb-1.5">
                 اشترك في النشرة البريدية
               </h3>
-              <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <p className="text-sm text-gray-500 font-cairo">
                 احصل على أحدث العروض والتخفيضات أولاً بأول
               </p>
             </div>
@@ -110,23 +110,21 @@ export const Footer = memo(function Footer() {
           {/* Logo & Description */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to={PAGES.HOME} className="inline-block mb-3">
-              <span className="text-2xl font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">
-                {SITE_NAME}
-              </span>
+              <img src="/images/zahilogo.png" alt={SITE_NAME} className="h-10 w-auto" />
             </Link>
-            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo leading-relaxed mb-4">
+            <p className="text-sm text-gray-500 font-cairo leading-relaxed mb-4">
               {SITE_DESCRIPTION}
             </p>
             <div className="space-y-2.5">
-              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <MapPin className="w-4 h-4 shrink-0 text-secondary" />
                 <span>القاهرة، مصر</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Phone className="w-4 h-4 shrink-0 text-secondary" />
                 <span dir="ltr">+20 100 123 4567</span>
               </div>
-              <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-dark-muted font-cairo">
+              <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Mail className="w-4 h-4 shrink-0 text-secondary" />
                 <span>info@zahi.store</span>
               </div>
@@ -135,7 +133,7 @@ export const Footer = memo(function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+            <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
               روابط سريعة
             </h4>
             <ul className="space-y-2.5">
@@ -143,7 +141,7 @@ export const Footer = memo(function Footer() {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                    className="text-sm font-cairo text-gray-500 hover:text-secondary transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -154,7 +152,7 @@ export const Footer = memo(function Footer() {
 
           {/* Categories */}
           <div>
-            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+            <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
               الأقسام
             </h4>
             <ul className="space-y-2.5">
@@ -162,7 +160,7 @@ export const Footer = memo(function Footer() {
                 <li key={cat.id}>
                   <Link
                     to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
-                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                    className="text-sm font-cairo text-gray-500 hover:text-secondary transition-colors"
                   >
                     {cat.name}
                   </Link>
@@ -173,7 +171,7 @@ export const Footer = memo(function Footer() {
 
           {/* Customer Service */}
           <div>
-            <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-4">
+            <h4 className="text-sm font-bold font-cairo text-gray-900 mb-4">
               خدمة العملاء
             </h4>
             <ul className="space-y-2.5">
@@ -181,7 +179,7 @@ export const Footer = memo(function Footer() {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm font-cairo text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary transition-colors"
+                    className="text-sm font-cairo text-gray-500 hover:text-secondary transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -193,11 +191,11 @@ export const Footer = memo(function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-100 dark:border-dark-border">
+      <div className="border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <p className="text-sm text-gray-400 dark:text-dark-muted font-cairo text-center lg:text-right">
+            <p className="text-sm text-gray-400 font-cairo text-center lg:text-right">
               © {new Date().getFullYear()} {SITE_NAME}. جميع الحقوق محفوظة.
             </p>
 
@@ -211,7 +209,7 @@ export const Footer = memo(function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-dark-muted hover:bg-secondary hover:text-white dark:hover:bg-secondary transition-all duration-200"
+                    className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:bg-secondary hover:text-white transition-all duration-200"
                     aria-label={social.label}
                   >
                     <Icon className="w-4 h-4" />
@@ -225,7 +223,7 @@ export const Footer = memo(function Footer() {
               {paymentMethods.map((method) => (
                 <div
                   key={method.name}
-                  className="w-10 h-7 flex items-center justify-center bg-white dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border px-1.5"
+                  className="w-10 h-7 flex items-center justify-center bg-white rounded-lg border border-gray-100 px-1.5"
                   title={method.name}
                 >
                   {method.src ? (
@@ -236,7 +234,7 @@ export const Footer = memo(function Footer() {
                       loading="lazy"
                     />
                   ) : (
-                    <span className="text-[6px] font-bold font-cairo text-gray-500 dark:text-dark-muted leading-tight text-center">
+                    <span className="text-[6px] font-bold font-cairo text-gray-500 leading-tight text-center">
                       {method.name}
                     </span>
                   )}

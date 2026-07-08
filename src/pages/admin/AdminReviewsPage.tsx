@@ -46,7 +46,7 @@ export function AdminReviewsPage() {
             key={star}
             className={cn(
               'w-3.5 h-3.5',
-              star <= rating ? 'fill-accent text-accent' : 'fill-gray-200 dark:fill-dark-border text-gray-200 dark:text-dark-border'
+              star <= rating ? 'fill-accent text-accent' : 'fill-gray-200 text-gray-200'
             )}
           />
         ))}
@@ -62,8 +62,8 @@ export function AdminReviewsPage() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">التقييمات</h1>
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إدارة تقييمات المنتجات</p>
+        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">التقييمات</h1>
+        <p className="text-sm text-gray-500 font-cairo mt-1">إدارة تقييمات المنتجات</p>
       </div>
 
       <div className="w-full sm:w-72">
@@ -80,17 +80,17 @@ export function AdminReviewsPage() {
       ) : reviews.length === 0 ? (
         <EmptyState icon={<MessageSquareQuote className="w-16 h-16" />} title="لا توجد تقييمات" description="لا توجد تقييمات لعرضها" />
       ) : (
-        <div className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border shadow-soft overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-dark-border">
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">المنتج</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">المستخدم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">التقييم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">التعليق</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">التاريخ</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 dark:text-dark-muted font-cairo">الإجراءات</th>
+                <tr className="border-b border-gray-100">
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">المنتج</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">المستخدم</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التقييم</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التعليق</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التاريخ</th>
+                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
                 </tr>
               </thead>
               <tbody>
@@ -98,34 +98,34 @@ export function AdminReviewsPage() {
                   const product = products.find((p) => p.id === review.productId);
                   return (
                     <motion.tr key={review.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                      className="border-b border-gray-50 dark:border-dark-border/50 hover:bg-gray-50 dark:hover:bg-dark-border/30 transition-colors"
+                      className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-border/50 shrink-0">
+                          <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-50 shrink-0">
                             <img src={product?.images?.[0] || ''} alt={product?.name || ''} className="w-full h-full object-cover" loading="lazy" />
                           </div>
-                          <span className="text-xs font-semibold font-cairo text-gray-900 dark:text-dark-text truncate max-w-[120px]">
+                          <span className="text-xs font-semibold font-cairo text-gray-900 truncate max-w-[120px]">
                             {product?.name || review.productId}
                           </span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-50 dark:bg-dark-border/50">
+                          <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-50">
                             <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" loading="lazy" />
                           </div>
-                          <span className="text-xs font-cairo text-gray-700 dark:text-dark-muted">{review.userName}</span>
+                          <span className="text-xs font-cairo text-gray-700">{review.userName}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">{renderStars(review.rating)}</td>
                       <td className="px-4 py-3">
-                        <span className="text-xs font-cairo text-gray-500 dark:text-dark-muted line-clamp-2 max-w-[200px]">
+                        <span className="text-xs font-cairo text-gray-500 line-clamp-2 max-w-[200px]">
                           {review.comment}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs font-cairo text-gray-400 dark:text-dark-muted">{formatDate(review.createdAt)}</span>
+                        <span className="text-xs font-cairo text-gray-400">{formatDate(review.createdAt)}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
@@ -148,11 +148,11 @@ export function AdminReviewsPage() {
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">هل أنت متأكد من حذف هذا التقييم؟</p>
+          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف هذا التقييم؟</p>
           {deleteModal && (
-            <div className="bg-gray-50 dark:bg-dark-border/30 rounded-xl p-3 text-right">
+            <div className="bg-gray-50 rounded-xl p-3 text-right">
               <div className="flex justify-center mb-2">{renderStars(deleteModal.rating)}</div>
-              <p className="text-xs font-cairo text-gray-600 dark:text-dark-muted">{deleteModal.comment}</p>
+              <p className="text-xs font-cairo text-gray-600">{deleteModal.comment}</p>
             </div>
           )}
           <div className="flex items-center gap-3">

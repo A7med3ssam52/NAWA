@@ -76,7 +76,7 @@ export function Drawer({
           />
           <motion.div
             className={cn(
-              'absolute inset-y-0 left-0 w-full bg-white dark:bg-dark-card shadow-2xl border-l border-gray-100 dark:border-white/5 flex flex-col overflow-hidden',
+              'absolute inset-y-0 left-0 w-full bg-white shadow-2xl border-l border-gray-100 flex flex-col overflow-hidden',
               width,
             )}
             variants={drawerVariants}
@@ -89,13 +89,13 @@ export function Drawer({
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
 
             {(title) && (
-              <div className="relative flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/5 bg-gradient-to-l from-secondary/5 to-transparent">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-dark-text font-cairo">
+              <div className="relative flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-l from-secondary/5 to-transparent">
+                <h2 className="text-lg font-bold text-gray-900 font-cairo">
                   {title}
                 </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-dark-text hover:bg-gray-100 dark:hover:bg-white/5 transition-colors active:scale-90"
+                  className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors active:scale-90"
                   aria-label="إغلاق"
                 >
                   <X className="w-5 h-5" />

@@ -59,7 +59,7 @@ export function ProductsPage() {
     <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"
     >
       <div className="flex items-center justify-between mb-6 lg:mb-8">
-        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text">
+        <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">
           جميع المنتجات
         </h1>
         <div className="w-48">
@@ -77,7 +77,7 @@ export function ProductsPage() {
         <div className="flex-1 min-w-0">
 
           {data && (
-            <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mb-4">
+            <p className="text-sm text-gray-500 font-cairo mb-4">
               {data.total} منتج
             </p>
           )}

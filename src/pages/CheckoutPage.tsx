@@ -84,17 +84,17 @@ export function CheckoutPage() {
             <div className={cn('flex items-center gap-2')}>
               <div className={cn(
                 'flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-300',
-                isActive ? 'bg-secondary border-secondary text-white' : 'border-gray-300 dark:border-dark-muted text-gray-400 dark:text-dark-muted',
+                isActive ? 'bg-secondary border-secondary text-white' : 'border-gray-300 text-gray-400',
                 isCurrent && 'ring-2 ring-secondary/30'
               )}>
                 <StepIcon className="w-4 h-4" />
               </div>
-              <span className={cn('text-xs font-cairo font-medium hidden sm:block', isActive ? 'text-secondary' : 'text-gray-400 dark:text-dark-muted')}>
+              <span className={cn('text-xs font-cairo font-medium hidden sm:block', isActive ? 'text-secondary' : 'text-gray-400')}>
                 {step.label}
               </span>
             </div>
             {idx < steps.length - 1 && (
-              <div className={cn('w-8 h-0.5 transition-colors duration-300', currentStep > step.id ? 'bg-secondary' : 'bg-gray-200 dark:bg-dark-border')} />
+              <div className={cn('w-8 h-0.5 transition-colors duration-300', currentStep > step.id ? 'bg-secondary' : 'bg-gray-200')} />
             )}
           </div>
         );
@@ -104,13 +104,13 @@ export function CheckoutPage() {
 
   return (
     <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text text-center mb-4 sm:mb-6">
+      <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-cairo text-gray-900 text-center mb-4 sm:mb-6">
         إتمام الطلب
       </h1>
 
       {isGuest && (
-        <div className="max-w-2xl mx-auto mb-4 p-3 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl text-center">
-          <p className="text-sm font-cairo text-blue-700 dark:text-blue-300">
+        <div className="max-w-2xl mx-auto mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+          <p className="text-sm font-cairo text-blue-700">
             أنت تطلب كضيف. يمكنك إنشاء حساب لتتبع طلباتك بسهولة في المستقبل.
           </p>
         </div>
@@ -119,11 +119,11 @@ export function CheckoutPage() {
       {renderStepIndicator()}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-        <div className="lg:col-span-2 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 sm:p-5 shadow-soft">
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 shadow-soft">
           <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.form key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} onSubmit={handleSubmit(handleShippingSubmit)} className="space-y-3 sm:space-y-4">
-                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 dark:text-dark-text mb-3 sm:mb-4">معلومات الشحن</h2>
+                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 mb-3 sm:mb-4">معلومات الشحن</h2>
                 <div className="grid grid-cols-1 gap-3 sm:gap-4">
                   <Input label="الاسم الكامل" placeholder="محمد أحمد" error={errors.fullName?.message} {...register('fullName')} />
                   <Input label="رقم الهاتف" placeholder="01234567890" error={errors.phone?.message} {...register('phone')} />
@@ -142,7 +142,7 @@ export function CheckoutPage() {
 
             {currentStep === 2 && (
               <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 dark:text-dark-text mb-3 sm:mb-4">طريقة الدفع</h2>
+                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 mb-3 sm:mb-4">طريقة الدفع</h2>
                 <div className="space-y-2 sm:space-y-3">
                   {[
                     { id: 'cod', label: 'الدفع عند الاستلام', desc: 'ادفع نقداً عند استلام الطلب', icon: Wallet },
@@ -153,13 +153,13 @@ export function CheckoutPage() {
                   ].map((method) => {
                     const Icon = method.icon;
                     return (
-                      <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)} className={cn('flex items-center gap-3 sm:gap-4 w-full p-3 sm:p-4 rounded-xl border-2 transition-all text-right', paymentMethod === method.id ? 'border-secondary bg-secondary/5' : 'border-gray-200 dark:border-dark-border hover:border-gray-300')}>
-                        <div className={cn('flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0', paymentMethod === method.id ? 'bg-secondary text-white' : 'bg-gray-100 dark:bg-dark-border text-gray-400')}>
+                      <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)} className={cn('flex items-center gap-3 sm:gap-4 w-full p-3 sm:p-4 rounded-xl border-2 transition-all text-right', paymentMethod === method.id ? 'border-secondary bg-secondary/5' : 'border-gray-200 hover:border-gray-300')}>
+                        <div className={cn('flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0', paymentMethod === method.id ? 'bg-secondary text-white' : 'bg-gray-100 text-gray-400')}>
                           <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{method.label}</p>
-                          <p className="text-xs text-gray-500 dark:text-dark-muted font-cairo">{method.desc}</p>
+                          <p className="text-sm font-bold font-cairo text-gray-900">{method.label}</p>
+                          <p className="text-xs text-gray-500 font-cairo">{method.desc}</p>
                         </div>
                         {paymentMethod === method.id && <Check className="w-4 h-4 sm:w-5 sm:h-5 text-secondary shrink-0" />}
                       </button>
@@ -175,18 +175,18 @@ export function CheckoutPage() {
 
             {currentStep >= 3 && (
               <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 dark:text-dark-text mb-3 sm:mb-4">مراجعة الطلب</h2>
+                <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 mb-3 sm:mb-4">مراجعة الطلب</h2>
                 <div className="space-y-2 sm:space-y-3 mb-4">
                   {items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 dark:bg-dark-border/30 rounded-xl">
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-gray-100 dark:bg-dark-border shrink-0">
+                    <div key={item.id} className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-xl">
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                         <img src={item.product.images[0]} alt={item.product.name} className="w-full h-full object-cover" loading="lazy" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs sm:text-sm font-semibold font-cairo text-gray-900 dark:text-dark-text truncate">{item.product.name}</p>
-                        <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">الكمية: {item.quantity}</p>
+                        <p className="text-xs sm:text-sm font-semibold font-cairo text-gray-900 truncate">{item.product.name}</p>
+                        <p className="text-xs text-gray-400 font-cairo">الكمية: {item.quantity}</p>
                       </div>
-                      <span className="text-xs sm:text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">{formatPrice(item.product.price * item.quantity)}</span>
+                      <span className="text-xs sm:text-sm font-bold font-cairo text-gray-900">{formatPrice(item.product.price * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
@@ -202,15 +202,15 @@ export function CheckoutPage() {
           </AnimatePresence>
         </div>
 
-        <div className="lg:col-span-1 bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-4 sm:p-5 shadow-soft sticky top-24 sm:top-28 space-y-2 sm:space-y-3 h-fit">
-          <h3 className="text-base font-bold font-cairo text-gray-900 dark:text-dark-text">ملخص الطلب</h3>
+        <div className="lg:col-span-1 bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 shadow-soft sticky top-24 sm:top-28 space-y-2 sm:space-y-3 h-fit">
+          <h3 className="text-base font-bold font-cairo text-gray-900">ملخص الطلب</h3>
           <div className="space-y-1.5 sm:space-y-2 text-sm font-cairo">
-            <div className="flex justify-between"><span className="text-gray-500 dark:text-dark-muted">المجموع الفرعي</span><span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(subtotal)}</span></div>
-            <div className="flex justify-between"><span className="text-gray-500 dark:text-dark-muted">الشحن</span><span className={actualShipping === 0 ? 'text-success font-semibold' : 'text-gray-900 dark:text-dark-text font-semibold'}>{actualShipping === 0 ? 'مجاني' : formatPrice(actualShipping)}</span></div>
-            <div className="flex justify-between"><span className="text-gray-500 dark:text-dark-muted">الضريبة</span><span className="text-gray-900 dark:text-dark-text font-semibold">{formatPrice(tax)}</span></div>
+            <div className="flex justify-between"><span className="text-gray-500">المجموع الفرعي</span><span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span></div>
+            <div className="flex justify-between"><span className="text-gray-500">الشحن</span><span className={actualShipping === 0 ? 'text-success font-semibold' : 'text-gray-900 font-semibold'}>{actualShipping === 0 ? 'مجاني' : formatPrice(actualShipping)}</span></div>
+            <div className="flex justify-between"><span className="text-gray-500">الضريبة</span><span className="text-gray-900 font-semibold">{formatPrice(tax)}</span></div>
             {discount > 0 && <div className="flex justify-between"><span className="text-success">الخصم</span><span className="text-success font-semibold">-{formatPrice(discount)}</span></div>}
             <Divider />
-            <div className="flex justify-between"><span className="text-base font-bold text-gray-900 dark:text-dark-text">الإجمالي</span><span className="text-lg sm:text-lg font-bold text-gray-900 dark:text-dark-text">{formatPrice(total)}</span></div>
+            <div className="flex justify-between"><span className="text-base font-bold text-gray-900">الإجمالي</span><span className="text-lg sm:text-lg font-bold text-gray-900">{formatPrice(total)}</span></div>
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ export function Layout() {
   }, [pathname]);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-white dark:bg-dark-bg flex flex-col">
+    <div dir="rtl" className="min-h-screen bg-white flex flex-col">
       <Navbar />
       <main className="flex-1">
         <Outlet />

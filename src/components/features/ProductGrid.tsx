@@ -25,7 +25,7 @@ export function ProductGrid({ items, loading, error, onRetry, className, animate
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border overflow-hidden"
+            className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
           >
             <ProductCardSkeleton />
           </div>

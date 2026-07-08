@@ -49,7 +49,7 @@ function FloatingInput({ label, type, icon, error, register, name, showToggle, o
       <div className="relative group transition-all duration-200">
         <div className={cn(
           'absolute right-3.5 top-1/2 -translate-y-1/2 z-10 transition-all duration-200 pointer-events-none',
-          focused ? 'text-secondary' : 'text-gray-400 dark:text-dark-muted/60'
+          focused ? 'text-secondary' : 'text-gray-400'
         )}>
           {icon}
         </div>
@@ -58,7 +58,7 @@ function FloatingInput({ label, type, icon, error, register, name, showToggle, o
             type="button"
             onClick={onToggle}
             tabIndex={-1}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10 text-gray-400 dark:text-dark-muted/60 hover:text-gray-600 dark:hover:text-dark-text transition-colors"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 z-10 text-gray-400 hover:text-gray-600 transition-colors"
           >
             {type === 'password' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -69,10 +69,10 @@ function FloatingInput({ label, type, icon, error, register, name, showToggle, o
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           className={cn(
-            'w-full h-12 px-10 bg-gray-50 dark:bg-dark-border/30 border-2 rounded-2xl text-sm font-cairo text-gray-900 dark:text-dark-text placeholder-transparent transition-all duration-200',
+            'w-full h-12 px-10 bg-gray-50 border-2 rounded-2xl text-sm font-cairo text-gray-900 placeholder-transparent transition-all duration-200',
             focused
-              ? 'border-secondary/40 dark:border-secondary/40 shadow-[0_0_0_4px_rgba(255,107,0,0.08)] dark:shadow-[0_0_0_4px_rgba(255,107,0,0.06)]'
-              : 'border-transparent dark:border-dark-border/30 hover:border-gray-200 dark:hover:border-dark-border/60',
+              ? 'border-secondary/40 shadow-[0_0_0_4px_rgba(255,107,0,0.08)][0_0_0_4px_rgba(255,107,0,0.06)]'
+              : 'border-transparent hover:border-gray-200',
             error && '!border-danger/60 !shadow-[0_0_0_4px_rgba(239,68,68,0.1)]'
           )}
         />
@@ -80,7 +80,7 @@ function FloatingInput({ label, type, icon, error, register, name, showToggle, o
           'absolute right-10 top-1/2 -translate-y-1/2 text-sm font-cairo pointer-events-none transition-all duration-200',
           hasValue || focused
             ? '-translate-y-[26px] right-3 text-xs text-secondary font-medium'
-            : 'text-gray-400 dark:text-dark-muted/60'
+            : 'text-gray-400'
         )}>
           {label}
         </label>
@@ -229,9 +229,9 @@ export function LoginPage() {
       </div>
 
       {/* Right Form Panel */}
-      <div className="flex-1 flex items-center justify-center bg-white dark:bg-dark-bg min-h-screen relative">
+      <div className="flex-1 flex items-center justify-center bg-white min-h-screen relative">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-secondary/[0.02] to-transparent dark:from-secondary/[0.03]" />
+          <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-secondary/[0.02] to-transparent[0.03]" />
         </div>
 
         <div className="relative z-10 w-full max-w-md px-4 sm:px-6 ios-safe-area-inset">
@@ -245,13 +245,13 @@ export function LoginPage() {
             <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center shadow-lg shadow-secondary/20">
               <ShoppingBag className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-dark-text font-cairo">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
               {SITE_NAME}
             </h1>
           </motion.div>
 
           {/* Form Card */}
-          <div className="sm:bg-white/80 sm:dark:bg-dark-card/80 sm:backdrop-blur-xl sm:border sm:border-gray-100 sm:dark:border-dark-border/50 sm:rounded-3xl sm:shadow-soft-lg sm:p-6 lg:p-8 lg:border-0 lg:bg-transparent lg:dark:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:p-0">
+          <div className="sm:bg-white/80 sm: sm:backdrop-blur-xl sm:border sm:border-gray-100 sm: sm:rounded-3xl sm:shadow-soft-lg sm:p-6 lg:p-8 lg:border-0 lg:bg-transparent lg: lg:shadow-none lg:backdrop-blur-none lg:p-0">
             <motion.div
               key={isRegister ? 'register' : 'login'}
               variants={containerVariants}
@@ -261,10 +261,10 @@ export function LoginPage() {
             >
               {/* Header */}
               <motion.div variants={itemVariants}>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-dark-text font-cairo">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
                   {isRegister ? 'إنشاء حساب' : 'تسجيل الدخول'}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">
+                <p className="text-sm text-gray-500 font-cairo mt-1">
                   {isRegister ? 'أهلاً بك! أدخل بياناتك لبدء التسوق' : 'مرحباً بعودتك! أدخل بيانات حسابك'}
                 </p>
               </motion.div>
@@ -447,16 +447,16 @@ export function LoginPage() {
 
               {/* Divider */}
               <motion.div variants={itemVariants} className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-gray-100 dark:bg-dark-border/50" />
-                <span className="text-xs text-gray-400 dark:text-dark-muted/60 font-cairo shrink-0">أو</span>
-                <div className="flex-1 h-px bg-gray-100 dark:bg-dark-border/50" />
+                <div className="flex-1 h-px bg-gray-100" />
+                <span className="text-xs text-gray-400 font-cairo shrink-0">أو</span>
+                <div className="flex-1 h-px bg-gray-100" />
               </motion.div>
 
               {/* Social Login */}
               <motion.div variants={itemVariants} className="flex gap-3">
                 <button
                   type="button"
-                  className="flex-1 h-12 sm:h-11 rounded-2xl font-medium font-cairo text-sm transition-all duration-200 active:scale-[0.97] text-nowrap bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 flex items-center justify-center gap-2 shadow-sm"
+                  className="flex-1 h-12 sm:h-11 rounded-2xl font-medium font-cairo text-sm transition-all duration-200 active:scale-[0.97] text-nowrap bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2 shadow-sm"
                 >
                   <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
@@ -465,7 +465,7 @@ export function LoginPage() {
                 </button>
                 <button
                   type="button"
-                  className="flex-1 h-12 sm:h-11 rounded-2xl font-medium font-cairo text-sm transition-all duration-200 active:scale-[0.97] text-nowrap bg-white dark:bg-dark-card text-gray-700 dark:text-dark-text border border-gray-200 dark:border-dark-border/60 hover:border-gray-300 dark:hover:border-dark-border/80 flex items-center justify-center gap-2 shadow-sm"
+                  className="flex-1 h-12 sm:h-11 rounded-2xl font-medium font-cairo text-sm transition-all duration-200 active:scale-[0.97] text-nowrap bg-white text-gray-700 border border-gray-200 hover:border-gray-300 flex items-center justify-center gap-2 shadow-sm"
                 >
                   <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
@@ -479,7 +479,7 @@ export function LoginPage() {
 
               {/* Toggle mode */}
               <motion.div variants={itemVariants} className="text-center">
-                <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo">
+                <p className="text-sm text-gray-500 font-cairo">
                   {isRegister ? 'لديك حساب بالفعل؟' : 'ليس لديك حساب؟'}{' '}
                   <button
                     type="button"
@@ -504,7 +504,7 @@ export function LoginPage() {
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-dark-muted/60 hover:text-gray-600 dark:hover:text-dark-muted font-cairo transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 font-cairo transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               العودة إلى المتجر

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, X } from 'lucide-react';
@@ -11,6 +12,7 @@ import { SearchSuggestions } from '@/components/features/SearchSuggestions';
 import { Pagination, Input } from '@/components/ui';
 
 export function SearchPage() {
+  const { t, i18n } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get('q') || '';
   const [query, setQuery] = useState(queryParam);
@@ -50,30 +52,30 @@ export function SearchPage() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
-      <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 dark:text-dark-text mb-6">
-        بحث
+      <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-6">
+        {t('search.title')}
       </h1>
 
       <div className="relative max-w-2xl mx-auto mb-8">
         <div className="relative">
-          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-dark-muted" />
+          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <Input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder="ابحث عن منتجات..."
+            placeholder={t('common.searchPlaceholder')}
             className="pr-12 pl-10 h-12 text-base"
           />
           {query && (
             <button
               onClick={handleClear}
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 dark:text-dark-muted hover:text-gray-600 dark:hover:text-dark-text transition-colors"
-              aria-label="مسح البحث"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label={t('nav.clearSearch')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -85,7 +87,7 @@ export function SearchPage() {
       </div>
 
       {debouncedQuery && data && (
-        <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mb-4 text-center">
+        <p className="text-sm text-gray-500 font-cairo mb-4 text-center">
           {data.total} نتيجة لـ &quot;{debouncedQuery}&quot;
         </p>
       )}

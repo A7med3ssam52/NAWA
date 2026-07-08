@@ -22,14 +22,14 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
           return (
             <li key={idx} className="flex items-center gap-1">
               {idx > 0 && (
-                <ChevronLeft className="w-4 h-4 text-gray-400 dark:text-dark-muted shrink-0" aria-hidden="true" />
+                <ChevronLeft className="w-4 h-4 text-gray-400 shrink-0" aria-hidden="true" />
               )}
               {item.href && !isLast ? (
                 <a
                   href={item.href}
                   className={cn(
                     'inline-flex items-center gap-1 text-sm font-cairo transition-colors',
-                    'text-gray-500 dark:text-dark-muted hover:text-secondary dark:hover:text-secondary'
+                    'text-gray-500 hover:text-secondary'
                   )}
                 >
                   {item.icon}
@@ -40,8 +40,8 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                   className={cn(
                     'inline-flex items-center gap-1 text-sm font-cairo',
                     isLast
-                      ? 'text-gray-900 dark:text-dark-text font-semibold'
-                      : 'text-gray-500 dark:text-dark-muted'
+                      ? 'text-gray-900 font-semibold'
+                      : 'text-gray-500'
                   )}
                   aria-current={isLast ? 'page' : undefined}
                 >

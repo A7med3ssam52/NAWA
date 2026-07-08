@@ -32,7 +32,7 @@ export function QuantitySelector({
   return (
     <div
       className={cn(
-        'inline-flex items-center border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden bg-white dark:bg-dark-card',
+        'inline-flex items-center border border-gray-200 rounded-xl overflow-hidden bg-white',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
@@ -45,7 +45,7 @@ export function QuantitySelector({
         disabled={disabled || value >= max}
         className={cn(
           s.button,
-          'text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
+          'text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
         )}
         aria-label="زيادة الكمية"
       >
@@ -54,7 +54,7 @@ export function QuantitySelector({
       <span
         className={cn(
           s.text,
-          'text-center font-semibold text-gray-900 dark:text-dark-text font-cairo select-none'
+          'text-center font-semibold text-gray-900 font-cairo select-none'
         )}
         aria-live="polite"
         aria-label={`الكمية: ${value}`}
@@ -67,7 +67,7 @@ export function QuantitySelector({
         disabled={disabled || value <= min}
         className={cn(
           s.button,
-          'text-gray-600 dark:text-dark-muted hover:bg-gray-100 dark:hover:bg-dark-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
+          'text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed'
         )}
         aria-label="تقليل الكمية"
       >

@@ -25,7 +25,7 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.3, delay: index * 0.05 }}
-      className="bg-white dark:bg-dark-card rounded-2xl border border-gray-100 dark:border-dark-border p-5 shadow-soft"
+      className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
@@ -38,10 +38,10 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             )}
           </div>
           <div>
-            <p className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text">
+            <p className="text-sm font-bold font-cairo text-gray-900">
               {review.userName}
             </p>
-            <p className="text-xs text-gray-400 dark:text-dark-muted font-cairo">
+            <p className="text-xs text-gray-400 font-cairo">
               {formatDate(review.createdAt)}
             </p>
           </div>
@@ -51,11 +51,11 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
 
       {/* Review Content */}
       {review.title && (
-        <h4 className="text-sm font-bold font-cairo text-gray-900 dark:text-dark-text mb-1.5">
+        <h4 className="text-sm font-bold font-cairo text-gray-900 mb-1.5">
           {review.title}
         </h4>
       )}
-      <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo leading-relaxed mb-3">
+      <p className="text-sm text-gray-600 font-cairo leading-relaxed mb-3">
         {review.comment}
       </p>
 
@@ -67,7 +67,7 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
             'flex items-center gap-1.5 text-xs font-medium font-cairo transition-colors duration-200 rounded-lg px-2.5 py-1.5',
             liked
               ? 'text-danger bg-danger/5'
-              : 'text-gray-400 dark:text-dark-muted hover:text-danger hover:bg-danger/5'
+              : 'text-gray-400 hover:text-danger hover:bg-danger/5'
           )}
           aria-label={liked ? 'إلغاء الإعجاب' : 'إعجاب'}
         >

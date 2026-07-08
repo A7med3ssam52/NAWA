@@ -76,8 +76,8 @@ export function AdminNotificationsPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900 dark:text-dark-text">الإشعارات</h1>
-          <p className="text-sm text-gray-500 dark:text-dark-muted font-cairo mt-1">إدارة وإرسال الإشعارات</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">الإشعارات</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة وإرسال الإشعارات</p>
         </div>
         <Button onClick={openAdd}><Plus className="w-4 h-4" /> إرسال إشعار</Button>
       </div>
@@ -93,8 +93,8 @@ export function AdminNotificationsPage() {
             return (
               <motion.div key={notif.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
                 className={cn(
-                  'bg-white dark:bg-dark-card rounded-2xl border shadow-soft p-4 transition-all duration-200',
-                  notif.read ? 'border-gray-100 dark:border-dark-border' : 'border-secondary/30 dark:border-secondary/40',
+                  'bg-white rounded-2xl border shadow-soft p-4 transition-all duration-200',
+                  notif.read ? 'border-gray-100' : 'border-secondary/30',
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -103,15 +103,15 @@ export function AdminNotificationsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className={cn('text-sm font-bold font-cairo', notif.read ? 'text-gray-900 dark:text-dark-text' : 'text-gray-900 dark:text-dark-text')}>
+                      <h3 className={cn('text-sm font-bold font-cairo', notif.read ? 'text-gray-900' : 'text-gray-900')}>
                         {notif.title}
                       </h3>
                       {!notif.read && <span className="w-2 h-2 rounded-full bg-secondary" />}
                     </div>
-                    <p className="text-xs font-cairo text-gray-500 dark:text-dark-muted mb-2 leading-relaxed">{notif.message}</p>
+                    <p className="text-xs font-cairo text-gray-500 mb-2 leading-relaxed">{notif.message}</p>
                     <div className="flex items-center gap-3">
                       <Badge variant={config.badgeVariant} size="sm">{config.label}</Badge>
-                      <span className="text-[10px] font-cairo text-gray-400 dark:text-dark-muted">{formatDate(notif.createdAt)}</span>
+                      <span className="text-[10px] font-cairo text-gray-400">{formatDate(notif.createdAt)}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -135,7 +135,7 @@ export function AdminNotificationsPage() {
                 <button key={p} onClick={() => setPage(p)}
                   className={cn(
                     'w-8 h-8 rounded-xl text-xs font-bold font-cairo transition-colors',
-                    p === page ? 'bg-secondary text-white' : 'bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-dark-muted hover:bg-gray-200 dark:hover:bg-dark-border/70'
+                    p === page ? 'bg-secondary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   )}
                 >
                   {p}
@@ -173,7 +173,7 @@ export function AdminNotificationsPage() {
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 dark:text-dark-muted font-cairo">هل أنت متأكد من حذف هذا الإشعار؟</p>
+          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف هذا الإشعار؟</p>
           <div className="flex items-center gap-3">
             <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
             <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>
