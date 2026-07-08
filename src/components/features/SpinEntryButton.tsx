@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Phone, AlertCircle, RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth, useSpin } from '@/contexts';
 import { SpinWheel } from './SpinWheel';
 import { SpinResultModal } from './SpinResultModal';
@@ -21,6 +22,7 @@ function storePhone(phone: string) {
 }
 
 export function SpinEntryButton() {
+  const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   const {
     prizes,
@@ -78,7 +80,7 @@ export function SpinEntryButton() {
   const handlePhoneSubmit = useCallback(() => {
     const cleaned = phone.replace(/\s/g, '');
     if (!isValidEgyptianPhone(cleaned)) {
-      setPhoneError('يرجى إدخال رقم مصري صحيح مكون من 11 رقم');
+      setPhoneError(t('spin.phoneError'));
       return;
     }
     storePhone(cleaned);
@@ -125,7 +127,7 @@ export function SpinEntryButton() {
             >
               <RefreshCw className={isMobile ? 'w-4 h-4' : 'w-5 h-5'} />
             </motion.span>
-            <span>{isMobile ? 'حظ' : 'عجلة الحظ'}</span>
+            <span>{isMobile ? t('spin.shortTitle') : t('spin.spinButton')}</span>
             {canSpin && (
               <motion.span
                 initial={{ scale: 0 }}
@@ -158,12 +160,12 @@ export function SpinEntryButton() {
               exit={{ scale: 0.8, opacity: 0, y: 40 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="relative w-full max-w-[calc(100vw-1rem)] sm:max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-gray-100 p-4 sm:p-6 pt-8 sm:pt-10 overflow-y-auto max-h-[95vh]"
-              dir="rtl"
+              dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
             >
               <button
                 onClick={handleClose}
                 className="absolute top-2 left-2 sm:top-3 sm:left-3 p-1.5 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label="إغلاق"
+                aria-label={t('common.close')}
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
@@ -175,10 +177,10 @@ export function SpinEntryButton() {
                       <Phone className="w-8 h-8 sm:w-10 sm:h-10 text-secondary" />
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900">
-                      أدخل رقم هاتفك
+                      {t('spin.enterPhone')}
                     </h2>
                     <p className="text-xs sm:text-sm text-gray-500 font-cairo mt-2 max-w-xs mx-auto">
-                      للمشاركة في عجلة الحظ، يرجى إدخال رقم هاتفك المصري
+                      {t('spin.phonePrompt')}
                     </p>
                   </div>
 
@@ -214,7 +216,7 @@ export function SpinEntryButton() {
                     <div className="flex items-center gap-2 p-3 bg-amber-50 rounded-2xl border border-amber-200">
                       <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
                       <p className="text-[11px] text-amber-700 font-cairo">
-                        رقم الهاتف سيُستخدم مرة واحدة فقط ولن يتم تخزينه بشكل دائم
+                        {t('spin.phonePrivacy')}
                       </p>
                     </div>
 
@@ -223,7 +225,7 @@ export function SpinEntryButton() {
                       disabled={phone.length < 10}
                       className="w-full py-3 sm:py-3.5 rounded-2xl text-sm sm:text-base font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-secondary/25"
                     >
-                      استمر
+                      {t('common.continue')}
                     </button>
                   </div>
                 </>
@@ -232,15 +234,15 @@ export function SpinEntryButton() {
                   <div className="text-center mb-4 sm:mb-6">
                     <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-gradient-to-l from-secondary/10 to-blue-500/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
                       <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
-                      فرصة يومية
+                      {t('spin.dailyChance')}
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900">
-                      عجلة الحظ
+                      {t('spin.spinButton')}
                     </h2>
                     <p className="text-xs sm:text-sm text-gray-500 font-cairo mt-1">
                       {canSpin
-                        ? `لديك ${spinsRemainingToday} فرصة للفوز اليوم`
-                        : 'لقد استنفذت فرصك اليوم، عد غداً!'}
+                        ? t('spin.spinsRemaining', { count: spinsRemainingToday })
+                        : t('spin.noSpinsLeft')}
                     </p>
                   </div>
 
@@ -254,7 +256,7 @@ export function SpinEntryButton() {
 
                   <div className="mt-4 sm:mt-6 space-y-1.5">
                     <p className="text-[10px] sm:text-[11px] font-bold text-gray-400 font-cairo text-center mb-2">
-                      الجوائز
+                      {t('spin.prizes')}
                     </p>
                     <div className="flex flex-wrap justify-center gap-1 sm:gap-1.5">
                       {prizes.filter((p) => p.isActive).map((prize) => (

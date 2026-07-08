@@ -335,23 +335,32 @@ export function ProductDetailsPage() {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <Button variant="secondary" size="lg" rounded="xl" fullWidth onClick={handleAddToCart} disabled={isOutOfStock}>
+          <div className="flex flex-col sm:flex-row items-stretch gap-3">
+            <Button variant="secondary" size="lg" rounded="xl" className="flex-1" onClick={handleAddToCart} disabled={isOutOfStock}>
               <ShoppingCart className="w-5 h-5" />
               {t('products.addToCart')}
             </Button>
-            <Button variant="accent" size="lg" rounded="xl" fullWidth onClick={handleBuyNow} disabled={isOutOfStock}>
+            <Button variant="accent" size="lg" rounded="xl" className="flex-1" onClick={handleBuyNow} disabled={isOutOfStock}>
               <Check className="w-5 h-5" />
               {t('products.buyNow')}
             </Button>
-            <Button variant="outline" size="lg" rounded="xl" onClick={handleWishlistToggle} className="!px-4">
+          </div>
+
+          <div className="flex items-stretch gap-3">
+            <Button variant="outline" size="lg" rounded="xl" onClick={handleWishlistToggle} className="!px-4 shrink-0">
               <Heart className={`w-5 h-5 ${inWishlist ? 'fill-danger text-danger' : ''}`} />
             </Button>
-            <Button variant="outline" size="lg" rounded="xl" onClick={() => isInCompare(product.id) ? removeCompare(product.id) : addCompare(product)} className={cn(isInCompare(product.id) && 'text-secondary border-secondary')}>
-              <BarChart3 className="w-5 h-5" />
+            <Button
+              variant="outline"
+              size="lg"
+              rounded="xl"
+              onClick={() => (isInCompare(product.id) ? removeCompare(product.id) : addCompare(product))}
+              className={cn('flex-1', isInCompare(product.id) && 'text-secondary border-secondary')}
+            >
+              <BarChart3 className="w-5 h-5 shrink-0" />
               {isInCompare(product.id) ? t('products.removeFromCompare') : t('products.addToCompare')}
             </Button>
-            <Button variant="ghost" size="lg" rounded="xl" onClick={handleShare} className="!px-4">
+            <Button variant="ghost" size="lg" rounded="xl" onClick={handleShare} className="!px-4 shrink-0">
               <Share2 className="w-5 h-5" />
             </Button>
           </div>

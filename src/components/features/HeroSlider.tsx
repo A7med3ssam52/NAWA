@@ -1,53 +1,55 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { ArrowLeft, Sparkles, Zap, Truck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PAGES } from '@/constants';
 import { Button } from '@/components/ui';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-const slides = [
-  {
-    id: 1,
-    heading: 'تسوق بأفضل الأسعار',
-    subheading: 'أحدث المنتجات الأصلية بأقل الأسعار',
-    cta: 'تسوق الآن',
-    link: PAGES.PRODUCTS,
-    icon: Sparkles,
-    image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1920&q=80',
-    gradient: 'from-secondary/80 via-secondary/60 to-purple-600/80',
-  },
-  {
-    id: 2,
-    heading: 'خصومات تصل إلى 50%',
-    subheading: 'عروض الصيف على آلاف المنتجات',
-    cta: 'استكشف العروض',
-    link: PAGES.OFFERS,
-    icon: Zap,
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80',
-    gradient: 'from-accent/80 via-orange-500/60 to-rose-500/80',
-  },
-  {
-    id: 3,
-    heading: 'توصيل مجاني للطلبات',
-    subheading: 'أول 500 جنيه توصيل مجاني',
-    cta: 'تسوق الآن',
-    link: PAGES.PRODUCTS,
-    icon: Truck,
-    image: 'https://images.unsplash.com/photo-1553729459-afe8f2e2b8c7?w=1920&q=80',
-    gradient: 'from-emerald-500/80 via-green-500/60 to-teal-600/80',
-  },
-];
-
 export function HeroSlider() {
+  const { t, i18n } = useTranslation();
   const swiperRef = useRef<any>(null);
 
+  const slides = useMemo(() => [
+    {
+      id: 1,
+      heading: t('home.heroSlide1Title'),
+      subheading: t('home.heroSlide1Sub'),
+      cta: t('home.heroSlide1Cta'),
+      link: PAGES.PRODUCTS,
+      icon: Sparkles,
+      image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1920&q=80',
+      gradient: 'from-secondary/80 via-secondary/60 to-purple-600/80',
+    },
+    {
+      id: 2,
+      heading: t('home.heroSlide2Title'),
+      subheading: t('home.heroSlide2Sub'),
+      cta: t('home.heroSlide2Cta'),
+      link: PAGES.OFFERS,
+      icon: Zap,
+      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80',
+      gradient: 'from-accent/80 via-orange-500/60 to-rose-500/80',
+    },
+    {
+      id: 3,
+      heading: t('home.heroSlide3Title'),
+      subheading: t('home.heroSlide3Sub'),
+      cta: t('home.heroSlide3Cta'),
+      link: PAGES.PRODUCTS,
+      icon: Truck,
+      image: 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=1920&q=80',
+      gradient: 'from-emerald-500/80 via-green-500/60 to-teal-600/80',
+    },
+  ], [t]);
+
   return (
-    <div dir="rtl" className="relative">
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="relative">
       <Swiper
         onSwiper={(swiper) => (swiperRef.current = swiper)}
         modules={[Autoplay, Pagination, Navigation]}
@@ -56,7 +58,7 @@ export function HeroSlider() {
         navigation
         loop
         className="hero-slider"
-        dir="rtl"
+        dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       >
         {slides.map((slide) => {
           const Icon = slide.icon;

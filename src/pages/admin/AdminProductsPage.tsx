@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Package, Search, Plus, Edit2, Trash2, Image as ImageIcon,
   Star, AlertTriangle,
@@ -34,13 +35,8 @@ const emptyForm = {
 
 type FormData = typeof emptyForm;
 
-function stockBadge(stock: number) {
-  if (stock > 10) return { variant: 'success' as const, label: 'متوفر' };
-  if (stock > 0) return { variant: 'warning' as const, label: 'مخزون محدود' };
-  return { variant: 'danger' as const, label: 'غير متوفر' };
-}
-
 export function AdminProductsPage() {
+  const { t, i18n } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -86,6 +82,12 @@ export function AdminProductsPage() {
     setLoading(false);
   }, [search, categoryFilter, brandFilter, page]);
 
+  function stockBadge(stock: number) {
+    if (stock > 10) return { variant: 'success' as const, label: t('admin.inStock') };
+    if (stock > 0) return { variant: 'warning' as const, label: t('admin.lowStock') };
+    return { variant: 'danger' as const, label: t('admin.outOfStock') };
+  }
+
   function openAddModal() {
     setForm(emptyForm);
     setModalMode('add');
@@ -118,19 +120,19 @@ export function AdminProductsPage() {
 
   function handleSave() {
     if (!form.name.trim()) {
-      toast.error('يرجى إدخال اسم المنتج');
+      toast.error(t('admin.nameRequired'));
       return;
     }
     if (!form.slug.trim()) {
-      toast.error('يرجى إدخال الرابط المختصر');
+      toast.error(t('admin.slugRequired'));
       return;
     }
     if (!form.price || form.price <= 0) {
-      toast.error('يرجى إدخال سعر صحيح');
+      toast.error(t('admin.priceRequired'));
       return;
     }
     if (!form.sku.trim()) {
-      toast.error('يرجى إدخال كود المنتج');
+      toast.error(t('admin.skuRequired'));
       return;
     }
 
@@ -161,20 +163,20 @@ export function AdminProductsPage() {
         const created = adminService.createProduct(data);
         setProducts((prev) => [created, ...prev]);
         setTotal((t) => t + 1);
-        toast.success('تم إضافة المنتج بنجاح');
+        toast.success(t('admin.productAdded'));
       } else {
         const id = editId;
         if (!id) return;
         const updated = adminService.updateProduct(id, data);
         if (updated) {
           setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
-          toast.success('تم تحديث المنتج بنجاح');
+          toast.success(t('admin.productUpdated'));
         }
       }
       setModalMode(null);
       setForm(emptyForm);
     } catch {
-      toast.error('حدث خطأ أثناء حفظ المنتج');
+      toast.error(t('admin.saveError'));
     } finally {
       setSaving(false);
     }
@@ -187,10 +189,10 @@ export function AdminProductsPage() {
       adminService.deleteProduct(deleteTarget.id);
       setProducts((prev) => prev.filter((p) => p.id !== deleteTarget.id));
       setTotal((t) => t - 1);
-      toast.success('تم حذف المنتج بنجاح');
+      toast.success(t('admin.productDeleted'));
       setDeleteTarget(null);
     } catch {
-      toast.error('حدث خطأ أثناء حذف المنتج');
+      toast.error(t('admin.deleteError'));
     } finally {
       setDeleting(false);
     }
@@ -226,15 +228,15 @@ export function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">
-            إدارة المنتجات
+            {t('admin.products')}
           </h1>
           <p className="text-sm text-gray-500 font-cairo mt-1">
-            {total} منتج
+            {total} {t('auth.productLabel')}
           </p>
         </div>
         <Button variant="primary" size="md" onClick={openAddModal} rounded="xl">
           <Plus className="w-4 h-4" />
-          إضافة منتج جديد
+          {t('admin.addProduct')}
         </Button>
       </div>
 
@@ -244,8 +246,8 @@ export function AdminProductsPage() {
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              dir="rtl"
-              placeholder="بحث عن منتج..."
+              dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              placeholder={t('admin.searchProduct')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pr-10 pl-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all"
@@ -256,7 +258,7 @@ export function AdminProductsPage() {
               options={catOptions}
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              placeholder="كل التصنيفات"
+              placeholder={t('admin.allCategories')}
             />
           </div>
           <div className="w-full sm:w-48">
@@ -264,7 +266,7 @@ export function AdminProductsPage() {
               options={brandOptions}
               value={brandFilter}
               onChange={(e) => setBrandFilter(e.target.value)}
-              placeholder="كل الماركات"
+              placeholder={t('admin.allBrands')}
             />
           </div>
         </div>
@@ -278,9 +280,9 @@ export function AdminProductsPage() {
         ) : products.length === 0 ? (
           <EmptyState
             icon={<Package className="w-12 h-12" />}
-            title="لا توجد منتجات"
-            description={search || categoryFilter || brandFilter ? 'لا توجد نتائج للبحث' : 'لم يتم إضافة أي منتجات بعد'}
-            action={search || categoryFilter || brandFilter ? undefined : { label: 'إضافة منتج', onClick: openAddModal }}
+            title={t('admin.noProducts')}
+            description={search || categoryFilter || brandFilter ? t('admin.noSearchResults') : t('admin.noProductsDesc')}
+            action={search || categoryFilter || brandFilter ? undefined : { label: t('admin.addProduct'), onClick: openAddModal }}
           />
         ) : (
           <>
@@ -288,14 +290,14 @@ export function AdminProductsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">صورة</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">الاسم</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">السعر</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">المخزون</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">التصنيف</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">التقييم</th>
-                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">الحالة</th>
-                    <th className="text-center py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">إجراءات</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('common.image')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('common.name')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('admin.price')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('admin.stock')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('admin.category')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('products.reviews', { count: '' }).replace(' ({count})', '')}</th>
+                    <th className="text-right py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('common.status')}</th>
+                    <th className="text-center py-3 px-3 text-xs font-bold text-gray-500 font-cairo whitespace-nowrap">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -359,7 +361,7 @@ export function AdminProductsPage() {
                             {stockBadge(product.stock).label}
                           </Badge>
                           {product.isFeatured && (
-                            <Badge variant="info" size="sm">مميز</Badge>
+                            <Badge variant="info" size="sm">{t('admin.featured')}</Badge>
                           )}
                         </div>
                       </td>
@@ -442,7 +444,7 @@ export function AdminProductsPage() {
                           </div>
                           <div className="flex items-center gap-2 mt-2">
                             <Badge variant={sb.variant} size="sm">{sb.label} ({product.stock})</Badge>
-                            {product.isFeatured && <Badge variant="info" size="sm">مميز</Badge>}
+                            {product.isFeatured && <Badge variant="info" size="sm">{t('admin.featured')}</Badge>}
                             <span className="text-xs text-gray-400 font-cairo">
                               {catMap[product.category] || product.category}
                             </span>
@@ -463,24 +465,24 @@ export function AdminProductsPage() {
       <Modal
         isOpen={modalMode !== null}
         onClose={() => { setModalMode(null); setForm(emptyForm); }}
-        title={modalMode === 'add' ? 'إضافة منتج جديد' : 'تعديل المنتج'}
+        title={modalMode === 'add' ? t('admin.addProduct') : t('admin.edit')}
         size="xl"
       >
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="اسم المنتج" value={form.name} onChange={(e) => updateForm('name', e.target.value)} placeholder="اسم المنتج" />
-            <Input label="الرابط المختصر (Slug)" value={form.slug} onChange={(e) => updateForm('slug', e.target.value)} placeholder="product-slug" dir="ltr" />
+            <Input label={t('admin.productName')} value={form.name} onChange={(e) => updateForm('name', e.target.value)} placeholder={t('admin.productName')} />
+            <Input label={t('admin.productSlug')} value={form.slug} onChange={(e) => updateForm('slug', e.target.value)} placeholder="product-slug" dir="ltr" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input label="السعر" type="number" value={form.price} onChange={(e) => updateForm('price', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label="السعر القديم" type="number" value={form.oldPrice} onChange={(e) => updateForm('oldPrice', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label="الخصم (%)" type="number" value={form.discount} onChange={(e) => updateForm('discount', Number(e.target.value))} placeholder="0" min={0} max={100} />
+            <Input label={t('admin.price')} type="number" value={form.price} onChange={(e) => updateForm('price', Number(e.target.value))} placeholder="0" min={0} />
+            <Input label={t('admin.oldPrice')} type="number" value={form.oldPrice} onChange={(e) => updateForm('oldPrice', Number(e.target.value))} placeholder="0" min={0} />
+            <Input label={t('admin.discount')} type="number" value={form.discount} onChange={(e) => updateForm('discount', Number(e.target.value))} placeholder="0" min={0} max={100} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input label="المخزون" type="number" value={form.stock} onChange={(e) => updateForm('stock', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label="كود المنتج (SKU)" value={form.sku} onChange={(e) => updateForm('sku', e.target.value)} placeholder="SKU-001" />
+            <Input label={t('admin.stock')} type="number" value={form.stock} onChange={(e) => updateForm('stock', Number(e.target.value))} placeholder="0" min={0} />
+            <Input label={t('admin.sku')} value={form.sku} onChange={(e) => updateForm('sku', e.target.value)} placeholder="SKU-001" />
             <Select
-              label="التصنيف"
+              label={t('admin.category')}
               options={catOptions}
               value={form.category}
               onChange={(e) => updateForm('category', e.target.value)}
@@ -488,36 +490,36 @@ export function AdminProductsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
-              label="الماركة"
+              label={t('admin.brand')}
               options={brandOptions}
               value={form.brand}
               onChange={(e) => updateForm('brand', e.target.value)}
             />
-            <Input label="الوسوم (Tags)" value={form.tags} onChange={(e) => updateForm('tags', e.target.value)} placeholder="tag1, tag2, tag3" />
+            <Input label={t('admin.tags')} value={form.tags} onChange={(e) => updateForm('tags', e.target.value)} placeholder="tag1, tag2, tag3" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">وصف مختصر</label>
+              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">{t('admin.shortDescription')}</label>
               <textarea
-                dir="rtl"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                 value={form.shortDescription}
                 onChange={(e) => updateForm('shortDescription', e.target.value)}
-                placeholder="وصف مختصر"
+                placeholder={t('admin.shortDescription')}
                 className="w-full px-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
               />
             </div>
             <div>
-              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">وصف المنتج</label>
+              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">{t('admin.fullDescription')}</label>
               <textarea
-                dir="rtl"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                 value={form.description}
                 onChange={(e) => updateForm('description', e.target.value)}
-                placeholder="وصف المنتج"
+                placeholder={t('admin.fullDescription')}
                 className="w-full px-4 py-2.5 text-sm font-cairo bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary resize-y min-h-[80px] transition-all"
               />
             </div>
           </div>
-          <Input label="صور المنتج (روابط مفصولة بفاصلة)" value={form.images} onChange={(e) => updateForm('images', e.target.value)} placeholder="https://... , https://..." dir="ltr" />
+          <Input label={t('admin.productImages')} value={form.images} onChange={(e) => updateForm('images', e.target.value)} placeholder="https://... , https://..." dir="ltr" />
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -525,14 +527,14 @@ export function AdminProductsPage() {
               onChange={(e) => updateForm('isFeatured', e.target.checked)}
               className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary/30"
             />
-            <span className="text-sm font-medium font-cairo text-gray-700">منتج مميز</span>
+            <span className="text-sm font-medium font-cairo text-gray-700">{t('admin.featuredProduct')}</span>
           </label>
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <Button variant="ghost" onClick={() => { setModalMode(null); setForm(emptyForm); }}>
-              إلغاء
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" onClick={handleSave} loading={saving}>
-              {modalMode === 'add' ? 'إضافة' : 'حفظ التغييرات'}
+              {modalMode === 'add' ? t('common.add') : t('common.saveChanges')}
             </Button>
           </div>
         </div>
@@ -541,7 +543,7 @@ export function AdminProductsPage() {
       <Modal
         isOpen={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
-        title="تأكيد الحذف"
+        title={t('common.confirmDelete')}
         size="sm"
       >
         <div className="text-center space-y-4">
@@ -550,21 +552,21 @@ export function AdminProductsPage() {
           </div>
           <div>
             <p className="text-sm text-gray-600 font-cairo">
-              هل أنت متأكد من حذف المنتج
+              {t('admin.productDeleteConfirm')}
             </p>
             <p className="text-base font-bold font-cairo text-gray-900 mt-1">
               {deleteTarget?.name}
             </p>
             <p className="text-xs text-gray-400 font-cairo mt-1">
-              لا يمكن التراجع عن هذا الإجراء
+              {t('common.irreversibleAction')}
             </p>
           </div>
           <div className="flex justify-center gap-3">
             <Button variant="ghost" onClick={() => setDeleteTarget(null)}>
-              إلغاء
+              {t('common.cancel')}
             </Button>
             <Button variant="danger" onClick={handleDelete} loading={deleting}>
-              حذف
+              {t('common.delete')}
             </Button>
           </div>
         </div>

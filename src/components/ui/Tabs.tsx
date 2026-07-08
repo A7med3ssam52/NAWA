@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface Tab {
   id: string;
@@ -17,8 +18,10 @@ interface TabsProps {
 }
 
 export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
+  const { t, i18n } = useTranslation();
+
   return (
-    <div className={cn('flex border-b border-gray-200 gap-0', className)} dir="rtl" role="tablist">
+    <div className={cn('flex border-b border-gray-200 gap-0', className)} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} role="tablist">
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (

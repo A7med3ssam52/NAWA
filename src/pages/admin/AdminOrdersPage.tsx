@@ -1,25 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Package, Search, X, Eye, Trash2, ShoppingBag, AlertTriangle,
   CheckCircle, MapPin, CreditCard, Phone, User, Clock,
 } from 'lucide-react';
 import { formatPrice, formatDate, formatDateTime, cn, getPaymentMethodLabel } from '@/utils';
-import { ORDER_STATUS_MAP } from '@/constants';
+import { getOrderStatusMap } from '@/constants';
 import { adminService } from '@/services';
 import { Card, Button, Input, Modal, Badge, EmptyState, Spinner, Pagination, toast } from '@/components/ui';
 import { TrackingTimeline } from '@/components/features/TrackingTimeline';
 import type { Order } from '@/types';
-
-const STATUS_TABS = [
-  { value: '', label: 'الكل' },
-  { value: 'pending', label: 'قيد الانتظار' },
-  { value: 'confirmed', label: 'تم التأكيد' },
-  { value: 'processing', label: 'قيد التجهيز' },
-  { value: 'shipped', label: 'تم الشحن' },
-  { value: 'delivered', label: 'تم التوصيل' },
-  { value: 'cancelled', label: 'ملغي' },
-];
 
 const PAGE_SIZE = 10;
 
@@ -42,6 +33,7 @@ const statusFlow: Record<string, string[]> = {
 };
 
 export function AdminOrdersPage() {
+  const { t, i18n } = useTranslation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -53,6 +45,16 @@ export function AdminOrdersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
+
+  const STATUS_TABS = useMemo(() => [
+    { value: '', label: t('orders.allOrders') },
+    { value: 'pending', label: t('orders.pending') },
+    { value: 'confirmed', label: t('orders.confirmed') },
+    { value: 'processing', label: t('orders.processing') },
+    { value: 'shipped', label: t('orders.shipped') },
+    { value: 'delivered', label: t('orders.delivered') },
+    { value: 'cancelled', label: t('orders.cancelled') },
+  ], [t]);
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -98,7 +100,7 @@ export function AdminOrdersPage() {
     if (updated) {
       setSelectedOrder(updated);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
-      toast.success(`تم تحديث الحالة إلى ${ORDER_STATUS_MAP[newStatus]?.label || newStatus}`);
+      toast.success(t('orders.statusUpdated', { status: getOrderStatusMap()[newStatus]?.label || newStatus }));
     }
     setUpdating(false);
   };
@@ -110,7 +112,7 @@ export function AdminOrdersPage() {
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
       setTotal((prev) => prev - 1);
       setDeleteConfirm(null);
-      toast.success('تم حذف الطلب بنجاح');
+      toast.success(t('orders.orderDeleted'));
     }
   };
 
@@ -131,21 +133,21 @@ export function AdminOrdersPage() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
       className="p-4 lg:p-6 space-y-6"
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
     >
       {/* Header */}
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">إدارة الطلبات</h1>
-        <p className="text-sm text-gray-500 font-cairo mt-1">عرض وإدارة جميع طلبات المتجر</p>
+        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">{t('admin.ordersManagement')}</h1>
+        <p className="text-sm text-gray-500 font-cairo mt-1">{t('admin.ordersSubtitle')}</p>
       </div>
 
       {/* Stats Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'إجمالي الطلبات', value: stats.total, icon: ShoppingBag, color: 'from-blue-500 to-blue-600' },
-          { label: 'قيد الانتظار', value: stats.pending, icon: Clock, color: 'from-yellow-500 to-yellow-600' },
-          { label: 'قيد التجهيز', value: stats.processing, icon: Package, color: 'from-indigo-500 to-indigo-600' },
-          { label: 'ملغية', value: stats.cancelled, icon: X, color: 'from-red-500 to-red-600' },
+          { label: t('orders.totalOrders'), value: stats.total, icon: ShoppingBag, color: 'from-blue-500 to-blue-600' },
+          { label: t('orders.pending'), value: stats.pending, icon: Clock, color: 'from-yellow-500 to-yellow-600' },
+          { label: t('orders.processing'), value: stats.processing, icon: Package, color: 'from-indigo-500 to-indigo-600' },
+          { label: t('orders.cancelledOrders'), value: stats.cancelled, icon: X, color: 'from-red-500 to-red-600' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -175,7 +177,7 @@ export function AdminOrdersPage() {
           <form onSubmit={handleSearch} className="flex-1 relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="البحث برقم الطلب..."
+              placeholder={t('orders.searchOrder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pr-10"
@@ -208,8 +210,8 @@ export function AdminOrdersPage() {
       ) : orders.length === 0 ? (
         <EmptyState
           icon={<ShoppingBag className="w-12 h-12" />}
-          title="لا توجد طلبات"
-          description={searchQuery ? 'لا توجد نتائج للبحث' : 'لم يتم العثور على أي طلبات'}
+          title={t('orders.noOrders')}
+          description={searchQuery ? t('orders.noSearchResults') : t('orders.noOrdersFound')}
         />
       ) : (
         <>
@@ -220,12 +222,12 @@ export function AdminOrdersPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-100 bg-gray-50">
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">رقم الطلب</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">العميل</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">التاريخ</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">المبلغ</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">الحالة</th>
-                      <th className="text-left px-4 py-3 text-xs font-bold font-cairo text-gray-500">الإجراءات</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('orders.orderNumber')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('admin.customer')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('admin.date')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('admin.amount')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('common.status')}</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold font-cairo text-gray-500">{t('common.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -255,7 +257,7 @@ export function AdminOrdersPage() {
                           </td>
                           <td className="px-4 py-3.5">
                             <Badge variant={statusBadgeVariant(order.status)} size="sm">
-                              {ORDER_STATUS_MAP[order.status]?.label || order.status}
+                              {getOrderStatusMap()[order.status]?.label || order.status}
                             </Badge>
                           </td>
                           <td className="px-4 py-3.5">
@@ -302,7 +304,7 @@ export function AdminOrdersPage() {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-bold font-cairo text-gray-900">{order.orderNumber}</span>
                       <Badge variant={statusBadgeVariant(order.status)} size="sm">
-                        {ORDER_STATUS_MAP[order.status]?.label || order.status}
+                        {getOrderStatusMap()[order.status]?.label || order.status}
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between text-sm">
@@ -333,7 +335,7 @@ export function AdminOrdersPage() {
           {/* Pagination */}
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500 font-cairo">
-              إجمالي {total} طلب
+              {t('orders.totalCount', { count: total })}
             </p>
             {totalPages > 1 && (
               <div>
@@ -355,7 +357,7 @@ export function AdminOrdersPage() {
       <Modal
         isOpen={modalOpen}
         onClose={() => { setModalOpen(false); setSelectedOrder(null); }}
-        title={selectedOrder ? `تفاصيل الطلب ${selectedOrder.orderNumber}` : ''}
+        title={selectedOrder ? t('orders.orderDetails', { number: selectedOrder.orderNumber }) : ''}
         size="xl"
       >
         {selectedOrder && (
@@ -372,14 +374,14 @@ export function AdminOrdersPage() {
       <Modal
         isOpen={!!deleteConfirm}
         onClose={() => setDeleteConfirm(null)}
-        title="تأكيد الحذف"
+        title={t('common.confirmDelete')}
         size="sm"
       >
         <div className="space-y-4">
           <div className="flex items-center gap-3 p-4 bg-danger/5 rounded-xl border border-danger/10">
             <AlertTriangle className="w-6 h-6 text-danger shrink-0" />
             <p className="text-sm font-cairo text-gray-700">
-              هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.
+              {t('orders.deleteConfirm')}
             </p>
           </div>
           <div className="flex gap-3">
@@ -388,14 +390,14 @@ export function AdminOrdersPage() {
               fullWidth
               onClick={() => deleteConfirm && handleDelete(deleteConfirm)}
             >
-              حذف
+              {t('common.delete')}
             </Button>
             <Button
               variant="outline"
               fullWidth
               onClick={() => setDeleteConfirm(null)}
             >
-              إلغاء
+              {t('common.cancel')}
             </Button>
           </div>
         </div>
@@ -415,17 +417,18 @@ function OrderDetailContent({
   onDelete: () => void;
   updating: boolean;
 }) {
+  const { t, i18n } = useTranslation();
   const nextStatuses = statusFlow[order.status] || [];
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-6" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Order Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-gray-50 rounded-xl">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-base font-bold font-cairo text-gray-900">{order.orderNumber}</h3>
             <Badge variant={statusBadgeVariant(order.status)} size="sm">
-              {ORDER_STATUS_MAP[order.status]?.label || order.status}
+              {getOrderStatusMap()[order.status]?.label || order.status}
             </Badge>
           </div>
           <p className="text-xs text-gray-500 font-cairo">
@@ -441,7 +444,7 @@ function OrderDetailContent({
               loading={updating}
               onClick={() => onUpdateStatus(order.id, status)}
             >
-              {status === 'cancelled' ? 'إلغاء' : ORDER_STATUS_MAP[status]?.label || status}
+              {status === 'cancelled' ? t('common.cancel') : getOrderStatusMap()[status]?.label || status}
             </Button>
           ))}
           <Button variant="ghost" size="sm" onClick={onDelete} className="text-danger">
@@ -453,14 +456,14 @@ function OrderDetailContent({
       {/* Tracking Timeline */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
         <h3 className="text-sm font-bold font-cairo text-gray-900 mb-4 flex items-center gap-2">
-          <Package className="w-4 h-4 text-gray-400" /> تتبع الطلب
+          <Package className="w-4 h-4 text-gray-400" /> {t('orders.orderTimeline')}
         </h3>
         <TrackingTimeline events={order.tracking} currentStatus={order.status} cancelled={order.status === 'cancelled'} />
       </div>
 
       {/* Items */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
-        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-4">المنتجات</h3>
+        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-4">{t('orders.items')}</h3>
         <div className="space-y-3">
           {order.items.map((item, i) => (
             <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
@@ -486,7 +489,7 @@ function OrderDetailContent({
         {/* Customer Info */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
           <h3 className="text-sm font-bold font-cairo text-gray-900 flex items-center gap-2">
-            <User className="w-4 h-4 text-gray-400" /> معلومات العميل
+            <User className="w-4 h-4 text-gray-400" /> {t('orders.customerInfo')}
           </h3>
           {order.shippingAddress && (
             <>
@@ -509,7 +512,7 @@ function OrderDetailContent({
         {/* Payment Info */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-3">
           <h3 className="text-sm font-bold font-cairo text-gray-900 flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-gray-400" /> طريقة الدفع
+            <CreditCard className="w-4 h-4 text-gray-400" /> {t('orders.paymentInfo')}
           </h3>
           <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
             <CreditCard className="w-3.5 h-3.5 text-gray-400 shrink-0" />
@@ -518,7 +521,7 @@ function OrderDetailContent({
           {order.couponCode && (
             <div className="flex items-center gap-2 text-sm text-secondary font-cairo">
               <CheckCircle className="w-3.5 h-3.5 shrink-0" />
-              كود الخصم: {order.couponCode}
+              {t('orders.couponCode', { code: order.couponCode })}
             </div>
           )}
         </div>
@@ -526,11 +529,11 @@ function OrderDetailContent({
 
       {/* Order Totals */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft space-y-2.5">
-        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-3">ملخص الطلب</h3>
+        <h3 className="text-sm font-bold font-cairo text-gray-900 mb-3">{t('orders.orderSummary')}</h3>
         {[
-          { label: 'المجموع الفرعي', value: formatPrice(order.subtotal), color: '' },
-          { label: 'الشحن', value: order.shipping === 0 ? 'مجاني' : formatPrice(order.shipping), color: '' },
-          ...(order.discount > 0 ? [{ label: 'الخصم', value: `-${formatPrice(order.discount)}`, color: 'text-success' }] : []),
+          { label: t('cart.subtotal'), value: formatPrice(order.subtotal), color: '' },
+          { label: t('cart.shipping'), value: order.shipping === 0 ? t('common.free') : formatPrice(order.shipping), color: '' },
+          ...(order.discount > 0 ? [{ label: t('cart.discount'), value: `-${formatPrice(order.discount)}`, color: 'text-success' }] : []),
         ].map((row) => (
           <div key={row.label} className="flex justify-between items-center">
             <span className="text-sm text-gray-500 font-cairo">{row.label}</span>
@@ -541,7 +544,7 @@ function OrderDetailContent({
         ))}
         <div className="border-t border-gray-100 pt-2.5 mt-2.5">
           <div className="flex justify-between items-center">
-            <span className="text-base font-bold font-cairo text-gray-900">الإجمالي</span>
+            <span className="text-base font-bold font-cairo text-gray-900">{t('cart.total')}</span>
             <span className="text-lg font-bold font-cairo text-gray-900">{formatPrice(order.total)}</span>
           </div>
         </div>
@@ -550,7 +553,7 @@ function OrderDetailContent({
       {/* Notes */}
       {order.notes && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
-          <h3 className="text-sm font-bold font-cairo text-gray-900 mb-2">ملاحظات</h3>
+          <h3 className="text-sm font-bold font-cairo text-gray-900 mb-2">{t('orders.notes')}</h3>
           <p className="text-sm text-gray-500 font-cairo">{order.notes}</p>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
 import { Layout, AdminLayout } from '@/components/layout';
 import { Button, Spinner } from '@/components/ui';
@@ -27,6 +28,7 @@ function lazyAdmin(path: string, name: string) {
 }
 
 function RouteErrorBoundary() {
+  const { t } = useTranslation();
   const error = useRouteError();
   const isChunkError = error instanceof TypeError && `${error}`.includes('dynamically imported');
   const reload = useCallback(() => window.location.reload(), []);
@@ -34,15 +36,15 @@ function RouteErrorBoundary() {
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 px-4 text-center">
       <div className="text-5xl">⚠️</div>
       <h2 className="text-xl font-bold font-cairo text-gray-900">
-        {isChunkError ? 'حدث خطأ في تحميل الصفحة' : 'حدث خطأ غير متوقع'}
+        {isChunkError ? t('errors.chunkError') : t('errors.genericError')}
       </h2>
       <p className="text-sm text-gray-500 font-cairo max-w-md">
         {isChunkError
-          ? 'تم تحديث التطبيق مؤخراً. يرجى إعادة تحميل الصفحة.'
-          : 'يرجى المحاولة مرة أخرى.'}
+          ? t('errors.appUpdated')
+          : t('errors.tryAgain')}
       </p>
       <Button variant="primary" onClick={reload}>
-        إعادة تحميل الصفحة
+        {t('errors.reloadPage')}
       </Button>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getNewProducts, getBestSellingProducts, getDiscountedProducts, categories, brands, testimonials } from '@/data';
@@ -27,9 +28,9 @@ function useHomeProducts() {
   return useQuery({
     queryKey: ['home-products'],
     queryFn: () => ({
-      newProducts: getNewProducts(),
+      newProducts: getNewProducts().slice(0, 12),
       bestSelling: getBestSellingProducts(),
-      discounted: getDiscountedProducts(),
+      discounted: getDiscountedProducts().slice(0, 12),
     }),
     staleTime: 60000,
   });

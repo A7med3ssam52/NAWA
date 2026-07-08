@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, ChevronLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn, formatPrice, formatDate } from '@/utils';
 import type { Order } from '@/types';
-import { PAGES, ORDER_STATUS_MAP } from '@/constants';
+import { PAGES, getOrderStatusMap } from '@/constants';
 import { Badge, Divider } from '@/components/ui';
 
 interface OrderCardProps {
@@ -20,16 +21,17 @@ const statusColors: Record<string, 'success' | 'danger' | 'warning' | 'info'> = 
   cancelled: 'danger',
 };
 
-const steps = [
-  { key: 'pending', label: 'قيد الانتظار' },
-  { key: 'confirmed', label: 'تم التأكيد' },
-  { key: 'processing', label: 'قيد التجهيز' },
-  { key: 'shipped', label: 'تم الشحن' },
-  { key: 'delivered', label: 'تم التوصيل' },
-];
-
 export function OrderCard({ order, index = 0 }: OrderCardProps) {
-  const statusInfo = ORDER_STATUS_MAP[order.status];
+  const { t } = useTranslation();
+  const statusInfo = getOrderStatusMap()[order.status];
+
+  const steps = [
+    { key: 'pending', label: t('orders.pending') },
+    { key: 'confirmed', label: t('orders.confirmed') },
+    { key: 'processing', label: t('orders.processing') },
+    { key: 'shipped', label: t('orders.shipped') },
+    { key: 'delivered', label: t('orders.delivered') },
+  ];
   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
 
   return (
@@ -48,7 +50,7 @@ export function OrderCard({ order, index = 0 }: OrderCardProps) {
           <div className="flex items-start justify-between gap-3 mb-3">
             <div>
               <p className="text-xs text-gray-400 font-cairo mb-0.5">
-                رقم الطلب
+                {t('orders.orderNumber')}
               </p>
               <p className="text-sm font-bold font-cairo text-gray-900 font-mono" dir="ltr">
                 {order.orderNumber}
@@ -60,8 +62,8 @@ export function OrderCard({ order, index = 0 }: OrderCardProps) {
           </div>
 
           <div className="flex items-center gap-4 text-xs text-gray-500 font-cairo mb-4">
-            <span>تاريخ الطلب: {formatDate(order.createdAt)}</span>
-            <span>{order.items.length} منتج</span>
+            <span>{t('orders.orderDate', { date: formatDate(order.createdAt) })}</span>
+            <span>{t('orders.productCount', { count: order.items.length })}</span>
           </div>
 
           {/* Items Preview */}
@@ -121,13 +123,13 @@ export function OrderCard({ order, index = 0 }: OrderCardProps) {
           {/* Total & Action */}
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs text-gray-400 font-cairo">الإجمالي</span>
+              <span className="text-xs text-gray-400 font-cairo">{t('orders.total')}</span>
               <p className="text-base font-bold font-cairo text-gray-900">
                 {formatPrice(order.total)}
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-medium font-cairo text-secondary group-hover:gap-2.5 transition-all">
-              عرض التفاصيل
+              {t('orders.viewDetails')}
               <ChevronLeft className="w-4 h-4" />
             </div>
           </div>

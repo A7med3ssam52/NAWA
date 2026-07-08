@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Plus, Trash2, CheckCheck, Bell, Info, AlertTriangle,
   CheckCircle, XCircle, X,
@@ -12,14 +13,15 @@ import type { Notification } from '@/types';
 
 const emptyNotification: Partial<Notification> = { type: 'info', title: '', message: '' };
 
-const typeConfig: Record<string, { label: string; icon: React.ReactNode; color: string; badgeVariant: 'info' | 'success' | 'warning' | 'danger' }> = {
-  info: { label: 'معلومات', icon: <Info className="w-4 h-4" />, color: 'text-secondary bg-secondary/10 border-secondary/20', badgeVariant: 'info' },
-  success: { label: 'نجاح', icon: <CheckCircle className="w-4 h-4" />, color: 'text-success bg-success/10 border-success/20', badgeVariant: 'success' },
-  warning: { label: 'تنبيه', icon: <AlertTriangle className="w-4 h-4" />, color: 'text-accent bg-accent/10 border-accent/20', badgeVariant: 'warning' },
-  error: { label: 'خطأ', icon: <XCircle className="w-4 h-4" />, color: 'text-danger bg-danger/10 border-danger/20', badgeVariant: 'danger' },
+const typeConfig: Record<string, { labelKey: string; icon: React.ReactNode; color: string; badgeVariant: 'info' | 'success' | 'warning' | 'danger' }> = {
+  info: { labelKey: 'admin.notificationInfo', icon: <Info className="w-4 h-4" />, color: 'text-secondary bg-secondary/10 border-secondary/20', badgeVariant: 'info' },
+  success: { labelKey: 'admin.notificationSuccess', icon: <CheckCircle className="w-4 h-4" />, color: 'text-success bg-success/10 border-success/20', badgeVariant: 'success' },
+  warning: { labelKey: 'admin.notificationWarning', icon: <AlertTriangle className="w-4 h-4" />, color: 'text-accent bg-accent/10 border-accent/20', badgeVariant: 'warning' },
+  error: { labelKey: 'admin.notificationError', icon: <XCircle className="w-4 h-4" />, color: 'text-danger bg-danger/10 border-danger/20', badgeVariant: 'danger' },
 };
 
 export function AdminNotificationsPage() {
+  const { t, i18n } = useTranslation();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
@@ -46,28 +48,28 @@ export function AdminNotificationsPage() {
   }
 
   function handleSave() {
-    if (!form.title) { toast.error('يرجى إدخال عنوان الإشعار'); return; }
-    if (!form.message) { toast.error('يرجى إدخال نص الإشعار'); return; }
+    if (!form.title) { toast.error(t('admin.notificationTitleRequired')); return; }
+    if (!form.message) { toast.error(t('admin.notificationMessageRequired')); return; }
     setSaving(true);
     try {
       adminService.createNotification(form);
-      toast.success('تم إرسال الإشعار بنجاح');
+      toast.success(t('admin.notificationSent'));
       setModalOpen(false);
       setPage(1);
       fetchData();
-    } catch { toast.error('حدث خطأ أثناء الحفظ'); }
+    } catch { toast.error(t('admin.saveError5')); }
     finally { setSaving(false); }
   }
 
   function handleMarkRead(notif: Notification) {
     adminService.markNotificationRead(notif.id);
-    toast.success('تم تحديد الإشعار كمقروء');
+    toast.success(t('admin.notificationMarkedRead'));
     fetchData();
   }
 
   function handleDelete(notif: Notification) {
     adminService.deleteNotification(notif.id);
-    toast.success('تم حذف الإشعار بنجاح');
+    toast.success(t('admin.notificationDeleted'));
     setDeleteModal(null);
     fetchData();
   }
@@ -76,16 +78,16 @@ export function AdminNotificationsPage() {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">الإشعارات</h1>
-          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة وإرسال الإشعارات</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">{t('admin.notificationsTitle')}</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">{t('admin.notificationsDesc')}</p>
         </div>
-        <Button onClick={openAdd}><Plus className="w-4 h-4" /> إرسال إشعار</Button>
+        <Button onClick={openAdd}><Plus className="w-4 h-4" /> {t('admin.sendNotification')}</Button>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : notifications.length === 0 ? (
-        <EmptyState icon={<Bell className="w-16 h-16" />} title="لا توجد إشعارات" description="لم يتم إرسال أي إشعار بعد" action={{ label: 'إرسال إشعار', onClick: openAdd }} />
+        <EmptyState icon={<Bell className="w-16 h-16" />} title={t('admin.noNotifications')} description={t('admin.noNotificationsDesc')} action={{ label: t('admin.sendNotification'), onClick: openAdd }} />
       ) : (
         <div className="space-y-3">
           {notifications.map((notif, i) => {
@@ -110,17 +112,17 @@ export function AdminNotificationsPage() {
                     </div>
                     <p className="text-xs font-cairo text-gray-500 mb-2 leading-relaxed">{notif.message}</p>
                     <div className="flex items-center gap-3">
-                      <Badge variant={config.badgeVariant} size="sm">{config.label}</Badge>
+                      <Badge variant={config.badgeVariant} size="sm">{t(config.labelKey)}</Badge>
                       <span className="text-[10px] font-cairo text-gray-400">{formatDate(notif.createdAt)}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     {!notif.read && (
-                      <button onClick={() => handleMarkRead(notif)} className="p-1.5 rounded-lg text-gray-400 hover:text-success hover:bg-success/10 transition-colors" title="تحديد كمقروء">
+                      <button onClick={() => handleMarkRead(notif)} className="p-1.5 rounded-lg text-gray-400 hover:text-success hover:bg-success/10 transition-colors" title={t('admin.markAsRead')}>
                         <CheckCheck className="w-3.5 h-3.5" />
                       </button>
                     )}
-                    <button onClick={() => setDeleteModal(notif)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors" title="حذف">
+                    <button onClick={() => setDeleteModal(notif)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors" title={t('admin.deleteNotification')}>
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -146,37 +148,37 @@ export function AdminNotificationsPage() {
         </div>
       )}
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="إرسال إشعار جديد" size="md">
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={t('admin.sendNewNotification')} size="md">
         <div className="space-y-4">
           <Select
-            label="النوع"
+            label={t('admin.notificationType')}
             value={form.type || 'info'}
             onChange={(e) => setForm({ ...form, type: e.target.value })}
             options={[
-              { value: 'info', label: 'معلومات' },
-              { value: 'success', label: 'نجاح' },
-              { value: 'warning', label: 'تنبيه' },
-              { value: 'error', label: 'خطأ' },
+              { value: 'info', label: t('admin.notificationInfo') },
+              { value: 'success', label: t('admin.notificationSuccess') },
+              { value: 'warning', label: t('admin.notificationWarning') },
+              { value: 'error', label: t('admin.notificationError') },
             ]}
           />
-          <Input label="العنوان" value={form.title || ''} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="عنوان الإشعار" />
-          <Textarea label="الرسالة" value={form.message || ''} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="نص الإشعار..." />
+          <Input label={t('admin.notificationTitleInput')} value={form.title || ''} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder={t('admin.notificationTitlePlaceholder')} />
+          <Textarea label={t('admin.notificationMessage')} value={form.message || ''} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t('admin.notificationMessagePlaceholder')} />
           <div className="flex items-center gap-3 pt-2">
-            <Button variant="ghost" className="flex-1" onClick={() => setModalOpen(false)}>إلغاء</Button>
-            <Button className="flex-1" onClick={handleSave} loading={saving}>إرسال</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setModalOpen(false)}>{t('common.cancel')}</Button>
+            <Button className="flex-1" onClick={handleSave} loading={saving}>{t('common.submit')}</Button>
           </div>
         </div>
       </Modal>
 
-      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title="تأكيد الحذف" size="sm">
+      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title={t('common.confirmDelete')} size="sm">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف هذا الإشعار؟</p>
+          <p className="text-sm text-gray-600 font-cairo">{t('common.deleteNotificationConfirm')}</p>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
-            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>{t('common.cancel')}</Button>
+            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>{t('common.delete')}</Button>
           </div>
         </div>
       </Modal>

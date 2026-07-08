@@ -1,7 +1,10 @@
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 export function Toaster() {
+  const { t, i18n } = useTranslation();
+
   return (
     <HotToaster
       position="top-left"
@@ -15,7 +18,7 @@ export function Toaster() {
           padding: '12px 16px',
           fontSize: '14px',
           fontWeight: 500,
-          direction: 'rtl',
+          direction: i18n.language === 'ar' ? 'rtl' : 'ltr',
         },
         success: {
           style: {

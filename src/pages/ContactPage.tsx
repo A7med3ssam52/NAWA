@@ -8,20 +8,20 @@ import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { Button, Input, Textarea } from '@/components/ui';
 import toast from 'react-hot-toast';
 
-const contactSchema = (t: (key: string) => string) => z.object({
+const createContactSchema = (t: (key: string) => string) => z.object({
   name: z.string().min(3, t('contact.nameMin')),
   email: z.string().email(t('contact.emailInvalid')),
   subject: z.string().min(5, t('contact.subjectMin')),
   message: z.string().min(10, t('contact.messageMin')),
 });
 
-type ContactData = z.infer<typeof contactSchema>;
+type ContactData = z.infer<ReturnType<typeof createContactSchema>>;
 
 export function ContactPage() {
   const { t, i18n } = useTranslation();
   const [sending, setSending] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactData>({
-    resolver: zodResolver(contactSchema(t)),
+    resolver: zodResolver(createContactSchema(t)),
   });
 
   const onSubmit = async () => {

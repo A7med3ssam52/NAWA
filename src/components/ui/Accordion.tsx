@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface AccordionItem {
   id: string;
@@ -31,8 +32,10 @@ export function Accordion({ items, allowMultiple = false, className }: Accordion
     });
   };
 
+  const { t, i18n } = useTranslation();
+
   return (
-    <div className={cn('divide-y divide-gray-200 rounded-2xl border border-gray-200 overflow-hidden bg-white', className)} dir="rtl">
+    <div className={cn('divide-y divide-gray-200 rounded-2xl border border-gray-200 overflow-hidden bg-white', className)} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       {items.map((item) => {
         const isOpen = openIds.has(item.id);
         return (

@@ -205,7 +205,7 @@ export function LoginPage() {
               <ShoppingBag className="w-12 h-12 text-white" />
             </div>
             <h1 className="text-5xl font-bold text-white font-cairo mb-4 leading-tight">
-              {SITE_NAME}
+              {SITE_NAME()}
             </h1>
             <p className="text-xl text-white/80 font-cairo mb-8 leading-relaxed">
               {t('auth.brandSubtitle')}
@@ -248,7 +248,7 @@ export function LoginPage() {
               <ShoppingBag className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
-              {SITE_NAME}
+              {SITE_NAME()}
             </h1>
           </motion.div>
 

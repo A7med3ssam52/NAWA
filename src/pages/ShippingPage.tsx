@@ -1,57 +1,44 @@
 import { motion } from 'framer-motion';
 import { Truck, Package, Clock, Shield } from 'lucide-react';
-
-const shippingInfo = [
-  {
-    icon: Truck,
-    title: 'طرق الشحن',
-    items: [
-      'الشحن السريع (٢-٤ أيام عمل)',
-      'الشحن العادي (٥-٧ أيام عمل)',
-      'الشحن المجاني للطلبات فوق ٥٠٠ ج.م',
-    ],
-  },
-  {
-    icon: Package,
-    title: 'تكلفة الشحن',
-    items: [
-      'الشحن العادي: ٣٠ ج.م',
-      'الشحن السريع: ٦٠ ج.م',
-      'الشحن مجاني للطلبات فوق ٥٠٠ ج.م',
-    ],
-  },
-  {
-    icon: Clock,
-    title: 'مدة التوصيل',
-    items: [
-      'القاهرة والجيزة: ١-٢ يوم عمل',
-      'المحافظات: ٣-٥ أيام عمل',
-      'المناطق النائية: ٥-٧ أيام عمل',
-    ],
-  },
-  {
-    icon: Shield,
-    title: 'تتبع الطلب',
-    items: [
-      'يمكنك تتبع طلبك من خلال حسابك',
-      'سيتم إرسال رمز التتبع عبر البريد الإلكتروني',
-      'يمكنك التواصل معنا لمعرفة حالة طلبك',
-    ],
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 export function ShippingPage() {
+  const { t, i18n } = useTranslation();
+
+  const shippingInfo = [
+    {
+      icon: Truck,
+      title: t('shipping.shippingMethods'),
+      items: [t('shipping.expressShipping'), t('shipping.standardShipping'), t('shipping.freeShippingOver')],
+    },
+    {
+      icon: Package,
+      title: t('shipping.shippingCost'),
+      items: [t('shipping.standardCost'), t('shipping.expressCost'), t('shipping.freeShippingOverCost')],
+    },
+    {
+      icon: Clock,
+      title: t('shipping.deliveryTime'),
+      items: [t('shipping.cairoGiza'), t('shipping.governorates'), t('shipping.remoteAreas')],
+    },
+    {
+      icon: Shield,
+      title: t('shipping.trackOrder'),
+      items: [t('shipping.trackViaAccount'), t('shipping.trackCodeEmail'), t('shipping.contactForStatus')],
+    },
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16"
     >
       <h1 className="text-3xl lg:text-4xl font-bold font-cairo text-gray-900 mb-3">
-        الشحن والتوصيل
+        {t('shipping.title')}
       </h1>
       <div className="w-20 h-1 bg-secondary rounded-full mb-8" />
 
@@ -80,11 +67,11 @@ export function ShippingPage() {
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-        <h2 className="text-base font-bold font-cairo text-amber-800 mb-2">ملاحظات هامة</h2>
+        <h2 className="text-base font-bold font-cairo text-amber-800 mb-2">{t('shipping.importantNotes')}</h2>
         <ul className="space-y-1 pr-4">
-          <li className="text-sm font-cairo text-amber-700 list-disc">قد تختلف مدة التوصيل بناءً على الظروف العامة وحالة الطقس</li>
-          <li className="text-sm font-cairo text-amber-700 list-disc">يجب أن يكون عنوان التوصيل صحيح وكامل لضمان وصول الطلب</li>
-          <li className="text-sm font-cairo text-amber-700 list-disc">في حالة عدم الاستلام، سيتم إعادة المنتج إلينا وتطبيق رسوم إرجاع</li>
+          <li className="text-sm font-cairo text-amber-700 list-disc">{t('shipping.noteDeliveryVaries')}</li>
+          <li className="text-sm font-cairo text-amber-700 list-disc">{t('shipping.noteCorrectAddress')}</li>
+          <li className="text-sm font-cairo text-amber-700 list-disc">{t('shipping.noteNonDelivery')}</li>
         </ul>
       </div>
     </motion.div>

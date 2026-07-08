@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import {
   products as initialProducts,
   categories as initialCategories,
@@ -238,12 +239,12 @@ export const adminService = {
         {
           status,
           date: new Date().toISOString(),
-          description: status === 'confirmed' ? 'تم تأكيد الطلب'
-            : status === 'processing' ? 'جاري تجهيز الطلب'
-            : status === 'shipped' ? 'تم شحن الطلب'
-            : status === 'delivered' ? 'تم توصيل الطلب بنجاح'
-            : status === 'cancelled' ? 'تم إلغاء الطلب'
-            : `تم تحديث الحالة إلى ${status}`,
+          description: status === 'confirmed' ? i18n.t('orders.trackingConfirmed')
+            : status === 'processing' ? i18n.t('orders.trackingProcessing')
+            : status === 'shipped' ? i18n.t('orders.trackingShipped')
+            : status === 'delivered' ? i18n.t('orders.trackingDelivered')
+            : status === 'cancelled' ? i18n.t('orders.trackingCancelled')
+            : i18n.t('orders.trackingUpdated', { status }),
           completed: status === 'delivered' || status === 'cancelled',
         },
       ],
@@ -385,7 +386,7 @@ export const adminService = {
 
   // ─── Announcement Bar ──────────────────────────────
   _announcement: {
-    text: 'توصيل مجاني للطلبات فوق 500 ج.م',
+    text: i18n.t('home.freeDeliveryAnnouncement'),
     enabled: true,
     dismissible: true,
   } as AnnouncementConfig,

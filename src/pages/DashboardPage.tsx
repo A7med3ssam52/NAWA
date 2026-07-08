@@ -6,9 +6,10 @@ import {
   Percent, Eye, RefreshCw, Archive, Clock, CheckCircle,
   Truck, XCircle, ArrowUpRight, Star,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { getDashboardStats, categories, brands, coupons } from '@/data';
 import { formatPrice, formatDate, cn } from '@/utils';
-import { ORDER_STATUS_MAP } from '@/constants';
+import { getOrderStatusMap } from '@/constants';
 import { Card } from '@/components/ui';
 import type { DashboardStats } from '@/data';
 import type { Order, Product } from '@/types';
@@ -87,20 +88,21 @@ function ChartBar({ label, value, max, color }: { label: string; value: number; 
 }
 
 function RecentOrdersTable({ orders }: { orders: Order[] }) {
+  const { t } = useTranslation();
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm font-cairo">
         <thead>
           <tr className="border-b border-gray-100">
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">رقم الطلب</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">التاريخ</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">المبلغ</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">الحالة</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('orders.orderNumber')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('orders.orderDateAlt')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('orders.amount')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('common.status')}</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order, i) => {
-            const statusInfo = ORDER_STATUS_MAP[order.status] || { label: order.status, color: 'text-gray-500' };
+            const statusInfo = getOrderStatusMap()[order.status] || { label: order.status, color: 'text-gray-500' };
             return (
               <tr
                 key={order.id}
@@ -127,15 +129,16 @@ function RecentOrdersTable({ orders }: { orders: Order[] }) {
 }
 
 function TopProductsTable({ products }: { products: Product[] }) {
+  const { t } = useTranslation();
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm font-cairo">
         <thead>
           <tr className="border-b border-gray-100">
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">المنتج</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">السعر</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">المبيعات</th>
-            <th className="text-right py-3 px-2 text-gray-500 font-medium">التقييم</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('products.title')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('compare.price')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('admin.sales')}</th>
+            <th className="text-right py-3 px-2 text-gray-500 font-medium">{t('compare.rating')}</th>
           </tr>
         </thead>
         <tbody>
@@ -169,44 +172,45 @@ function TopProductsTable({ products }: { products: Product[] }) {
 }
 
 export function DashboardPage() {
+  const { t, i18n } = useTranslation();
   const stats: DashboardStats = useMemo(() => getDashboardStats(), []);
 
   const maxRevenue = Math.max(...stats.monthlyRevenue.map((m) => m.revenue), 1);
   const maxOrders = Math.max(...stats.monthlyRevenue.map((m) => m.orders), 1);
 
   return (
-    <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in"
+    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">لوحة التحكم</h1>
-          <p className="text-sm text-gray-500 font-cairo mt-1">نظرة عامة على أداء المتجر</p>
+          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900">{t('admin.dashboard')}</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">{t('admin.pageSubtitle')}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
           <Clock className="w-4 h-4" />
-          <span>آخر تحديث: {formatDate(new Date().toISOString())}</span>
+          <span>{t('admin.lastUpdate', { date: formatDate(new Date().toISOString()) })}</span>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        <StatCard title="إجمالي المنتجات" value={stats.totalProducts} icon={<Package className="w-5 h-5 text-white" />} color="from-blue-500 to-blue-600" />
-        <StatCard title="إجمالي الطلبات" value={stats.totalOrders} icon={<ShoppingCart className="w-5 h-5 text-white" />} color="from-emerald-500 to-emerald-600" />
-        <StatCard title="الإيرادات" value={formatPrice(stats.totalRevenue)} icon={<DollarSign className="w-5 h-5 text-white" />} trend="up" trendLabel={`${stats.totalOrders} طلب`} color="from-violet-500 to-violet-600" />
-        <StatCard title="المستخدمين" value={stats.totalUsers} icon={<Users className="w-5 h-5 text-white" />} color="from-orange-500 to-orange-600" />
-        <StatCard title="الطلبات المعلقة" value={stats.pendingOrders} icon={<Clock className="w-5 h-5 text-white" />} trend={stats.pendingOrders > 0 ? 'up' : 'down'} trendLabel={stats.pendingOrders > 0 ? 'بحاجة للمراجعة' : 'لا توجد'} color="from-yellow-500 to-yellow-600" />
-        <StatCard title="منتجات منخفضة" value={stats.lowStockProducts} icon={<AlertTriangle className="w-5 h-5 text-white" />} trend={stats.lowStockProducts > 0 ? 'up' : 'down'} trendLabel={stats.lowStockProducts > 0 ? 'أقل من 10 قطع' : 'مخزون كاف'} color="from-rose-500 to-rose-600" />
+        <StatCard title={t('admin.totalProducts')} value={stats.totalProducts} icon={<Package className="w-5 h-5 text-white" />} color="from-blue-500 to-blue-600" />
+        <StatCard title={t('admin.totalOrders')} value={stats.totalOrders} icon={<ShoppingCart className="w-5 h-5 text-white" />} color="from-emerald-500 to-emerald-600" />
+        <StatCard title={t('admin.revenue')} value={formatPrice(stats.totalRevenue)} icon={<DollarSign className="w-5 h-5 text-white" />} trend="up" trendLabel={t('admin.ordersCount', { count: stats.totalOrders })} color="from-violet-500 to-violet-600" />
+        <StatCard title={t('admin.users')} value={stats.totalUsers} icon={<Users className="w-5 h-5 text-white" />} color="from-orange-500 to-orange-600" />
+        <StatCard title={t('admin.pendingOrders')} value={stats.pendingOrders} icon={<Clock className="w-5 h-5 text-white" />} trend={stats.pendingOrders > 0 ? 'up' : 'down'} trendLabel={stats.pendingOrders > 0 ? t('admin.needsReview') : t('admin.none')} color="from-yellow-500 to-yellow-600" />
+        <StatCard title={t('admin.lowStock')} value={stats.lowStockProducts} icon={<AlertTriangle className="w-5 h-5 text-white" />} trend={stats.lowStockProducts > 0 ? 'up' : 'down'} trendLabel={stats.lowStockProducts > 0 ? t('admin.lessThan10') : t('admin.stockSufficient')} color="from-rose-500 to-rose-600" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Revenue Chart */}
         <Card className="lg:col-span-2" padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900">الإيرادات الشهرية</h2>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">{t('admin.monthlyRevenue')}</h2>
             <div className="flex items-center gap-2">
               <span className="text-xs font-medium text-gray-500 font-cairo bg-gray-100 px-3 py-1 rounded-full">
-                شهري
+                {t('admin.monthly')}
               </span>
             </div>
           </div>
@@ -222,19 +226,19 @@ export function DashboardPage() {
                 />
               ))
             ) : (
-              <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد بيانات</p>
+              <p className="text-sm text-gray-400 font-cairo text-center py-8">{t('admin.noData')}</p>
             )}
           </div>
         </Card>
 
         {/* Order Status Distribution */}
         <Card padding="lg">
-          <h2 className="text-lg font-bold font-cairo text-gray-900 mb-6">حالات الطلبات</h2>
+          <h2 className="text-lg font-bold font-cairo text-gray-900 mb-6">{t('admin.orderStatuses')}</h2>
           <div className="space-y-4">
             {stats.orderStatusDistribution.map((item) => {
               const total = stats.totalOrders || 1;
               const pct = Math.round((item.count / total) * 100);
-              const statusInfo = ORDER_STATUS_MAP[item.status] || { label: item.status, color: 'text-gray-500' };
+              const statusInfo = getOrderStatusMap()[item.status] || { label: item.status, color: 'text-gray-500' };
               return (
                 <div key={item.status}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -261,8 +265,8 @@ export function DashboardPage() {
         {/* Category Distribution */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900">التصنيفات</h2>
-            <Link to="/categories" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">{t('admin.categories')}</h2>
+            <Link to="/categories" className="text-xs text-secondary hover:underline font-cairo font-medium">{t('common.viewAll')}</Link>
           </div>
           <div className="space-y-3">
             {stats.categoryDistribution.map((cat) => {
@@ -288,26 +292,26 @@ export function DashboardPage() {
         {/* Recent Orders */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900">آخر الطلبات</h2>
-            <Link to="/profile/orders" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">{t('admin.recentOrders')}</h2>
+            <Link to="/profile/orders" className="text-xs text-secondary hover:underline font-cairo font-medium">{t('common.viewAll')}</Link>
           </div>
           {stats.recentOrders.length > 0 ? (
             <RecentOrdersTable orders={stats.recentOrders} />
           ) : (
-            <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد طلبات</p>
+            <p className="text-sm text-gray-400 font-cairo text-center py-8">{t('orders.noOrders')}</p>
           )}
         </Card>
 
         {/* Top Products */}
         <Card padding="lg">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold font-cairo text-gray-900">الأكثر مبيعاً</h2>
-            <Link to="/products" className="text-xs text-secondary hover:underline font-cairo font-medium">عرض الكل</Link>
+            <h2 className="text-lg font-bold font-cairo text-gray-900">{t('home.bestSelling')}</h2>
+            <Link to="/products" className="text-xs text-secondary hover:underline font-cairo font-medium">{t('common.viewAll')}</Link>
           </div>
           {stats.topProducts.length > 0 ? (
             <TopProductsTable products={stats.topProducts} />
           ) : (
-            <p className="text-sm text-gray-400 font-cairo text-center py-8">لا توجد منتجات</p>
+            <p className="text-sm text-gray-400 font-cairo text-center py-8">{t('products.noProducts')}</p>
           )}
         </Card>
       </div>
@@ -319,7 +323,7 @@ export function DashboardPage() {
             <div className="p-2 rounded-xl bg-blue-100">
               <Package className="w-4 h-4 text-blue-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 font-cairo">الماركات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">{t('brands.title')}</span>
           </div>
           <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalBrands}</p>
           <div className="flex flex-wrap gap-1 mt-2">
@@ -335,7 +339,7 @@ export function DashboardPage() {
             <div className="p-2 rounded-xl bg-emerald-100">
               <Layers className="w-4 h-4 text-emerald-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 font-cairo">التصنيفات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">{t('categories.title')}</span>
           </div>
           <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalCategories}</p>
           <div className="flex flex-wrap gap-1 mt-2">
@@ -351,7 +355,7 @@ export function DashboardPage() {
             <div className="p-2 rounded-xl bg-purple-100">
               <Percent className="w-4 h-4 text-purple-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 font-cairo">الكوبونات</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">{t('admin.coupons')}</span>
           </div>
           <p className="text-xl font-bold font-cairo text-gray-900">{stats.totalCoupons}</p>
           <div className="flex flex-wrap gap-1 mt-2">
@@ -366,10 +370,10 @@ export function DashboardPage() {
             <div className="p-2 rounded-xl bg-rose-100">
               <AlertTriangle className="w-4 h-4 text-rose-600" />
             </div>
-            <span className="text-xs font-medium text-gray-500 font-cairo">مخزون منخفض</span>
+            <span className="text-xs font-medium text-gray-500 font-cairo">{t('admin.lowStock')}</span>
           </div>
           <p className="text-xl font-bold font-cairo text-gray-900">{stats.lowStockProducts}</p>
-          <p className="text-[10px] text-gray-400 font-cairo mt-1">منتجات أقل من 10 قطع في المخزون</p>
+          <p className="text-[10px] text-gray-400 font-cairo mt-1">{t('admin.lessThan10')}</p>
         </div>
       </div>
     </div>

@@ -9,8 +9,8 @@ import { ShoppingCart, CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Ta
 import { useCart } from '@/contexts';
 import { getCouponByCode } from '@/data';
 import { formatPrice, cn } from '@/utils';
-import { PAGES, TAX_RATE, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
-import { Button, Input, Textarea, Divider } from '@/components/ui';
+import { PAGES, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, EGYPT_GOVERNORATES } from '@/constants';
+import { Button, Input, Select, Textarea, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 type ShippingData = {
@@ -19,7 +19,6 @@ type ShippingData = {
   street: string;
   city: string;
   state: string;
-  zipCode?: string;
 };
 
 export function CheckoutPage() {
@@ -36,7 +35,6 @@ export function CheckoutPage() {
     street: z.string().min(5, t('checkout.streetRequired')),
     city: z.string().min(2, t('checkout.cityRequired')),
     state: z.string().min(2, t('checkout.stateRequired')),
-    zipCode: z.string().optional(),
   }), [t]);
 
   const steps = useMemo(() => [
@@ -54,7 +52,6 @@ export function CheckoutPage() {
     if (items.length === 0) navigate(PAGES.CART);
   }, [items.length, navigate]);
 
-  const tax = useMemo(() => subtotal * TAX_RATE, [subtotal]);
   const actualShipping = useMemo(() => subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST, [subtotal]);
   const isGuest = useMemo(() => {
     try {
@@ -140,8 +137,13 @@ export function CheckoutPage() {
                     <Input label={t('checkout.street')} placeholder={t('checkout.streetPlaceholder')} error={errors.street?.message} {...register('street')} />
                   </div>
                   <Input label={t('checkout.city')} placeholder={t('checkout.cityPlaceholder')} error={errors.city?.message} {...register('city')} />
-                  <Input label={t('checkout.state')} placeholder={t('checkout.statePlaceholder')} error={errors.state?.message} {...register('state')} />
-                  <Input label={t('checkout.zipCode')} placeholder={t('checkout.zipCodePlaceholder')} {...register('zipCode')} />
+                  <Select
+                    label={t('checkout.state')}
+                    placeholder={t('checkout.statePlaceholder')}
+                    options={EGYPT_GOVERNORATES.map((g) => ({ value: g, label: g }))}
+                    error={errors.state?.message}
+                    {...register('state')}
+                  />
                 </div>
                 <div className="flex justify-start pt-2">
                   <Button type="submit" variant="secondary" size="lg" rounded="xl" className="w-full sm:w-auto">{t('common.next')} <ChevronLeft className="w-4 h-4" /></Button>
@@ -216,7 +218,6 @@ export function CheckoutPage() {
           <div className="space-y-1.5 sm:space-y-2 text-sm font-cairo">
             <div className="flex justify-between"><span className="text-gray-500">{t('cart.subtotal')}</span><span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span></div>
             <div className="flex justify-between"><span className="text-gray-500">{t('cart.shipping')}</span><span className={actualShipping === 0 ? 'text-success font-semibold' : 'text-gray-900 font-semibold'}>{actualShipping === 0 ? t('common.free') : formatPrice(actualShipping)}</span></div>
-            <div className="flex justify-between"><span className="text-gray-500">{t('cart.tax')}</span><span className="text-gray-900 font-semibold">{formatPrice(tax)}</span></div>
             {discount > 0 && <div className="flex justify-between"><span className="text-success">{t('cart.discount')}</span><span className="text-success font-semibold">-{formatPrice(discount)}</span></div>}
             <Divider />
             <div className="flex justify-between"><span className="text-base font-bold text-gray-900">{t('cart.total')}</span><span className="text-lg sm:text-lg font-bold text-gray-900">{formatPrice(total)}</span></div>

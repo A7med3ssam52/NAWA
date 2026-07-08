@@ -8,6 +8,7 @@ import {
   Check,
   Search,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils';
 import { FadeInView } from '@/components/ui';
 import type { FilterState } from '@/types';
@@ -21,12 +22,7 @@ interface FilterSidebarProps {
   className?: string;
 }
 
-const discountOptions = [
-  { value: 10, label: '10% أو أكثر' },
-  { value: 20, label: '20% أو أكثر' },
-  { value: 30, label: '30% أو أكثر' },
-  { value: 50, label: '50% أو أكثر' },
-];
+const discountValues = [10, 20, 30, 50];
 
 const ratingOptions = [4, 3, 2, 1];
 
@@ -61,6 +57,7 @@ function FilterCheckbox({ checked, onChange, label, count }: {
 }
 
 export function FilterSidebar({ filters, onFilterChange, className }: FilterSidebarProps) {
+  const { t, i18n } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<FilterState>(filters);
@@ -139,8 +136,13 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
     cat.name.toLowerCase().includes(categorySearch.toLowerCase())
   );
 
+  const discountOptions = discountValues.map((v) => ({
+    value: v,
+    label: t('products.filterMinDiscount', { value: v }),
+  }));
+
   const FilterContent = () => (
-    <div className="space-y-1" dir="rtl">
+    <div className="space-y-1" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2.5">
@@ -148,10 +150,10 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             <SlidersHorizontal className="w-5 h-5 text-secondary" />
           </div>
           <div>
-            <span className="text-base font-bold font-cairo text-gray-900">الفلاتر</span>
+            <span className="text-base font-bold font-cairo text-gray-900">{t('products.filters')}</span>
             {hasActiveFilters && (
               <span className="text-xs text-gray-400 font-cairo mr-2">
-                ({activeCount} نشط)
+                ({t('products.activeCount', { count: activeCount })})
               </span>
             )}
           </div>
@@ -162,14 +164,14 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             className="flex items-center gap-1 text-xs font-medium font-cairo text-danger hover:text-danger/80 transition-all hover:underline underline-offset-2"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            إعادة تعيين
+            {t('products.reset')}
           </button>
         )}
       </div>
 
       {/* Category Filter */}
       <FilterSection
-        title="القسم"
+        title={t('products.category').replace(':', '')}
         section="category"
         expanded={expandedSections.has('category')}
         onToggle={() => toggleSection('category')}
@@ -181,7 +183,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             type="text"
             value={categorySearch}
             onChange={(e) => setCategorySearch(e.target.value)}
-            placeholder="بحث في الأقسام..."
+            placeholder={t('products.searchCategories')}
             className="w-full py-2 pr-8 pl-3 text-xs font-cairo bg-gray-50 border border-gray-100 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-secondary/30 transition-all"
           />
           {categorySearch && (
@@ -205,14 +207,14 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               />
             ))
           ) : (
-            <p className="text-sm text-gray-400 font-cairo py-2 text-center">لا توجد نتائج</p>
+            <p className="text-sm text-gray-400 font-cairo py-2 text-center">{t('common.noResults')}</p>
           )}
         </div>
       </FilterSection>
 
       {/* Brand Filter */}
       <FilterSection
-        title="الماركة"
+        title={t('products.brand')}
         section="brand"
         expanded={expandedSections.has('brand')}
         onToggle={() => toggleSection('brand')}
@@ -232,7 +234,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
 
       {/* Price Filter */}
       <FilterSection
-        title="نطاق السعر"
+        title={t('products.priceRange')}
         section="price"
         expanded={expandedSections.has('price')}
         onToggle={() => toggleSection('price')}
@@ -243,8 +245,8 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               type="number"
               value={localFilters.priceMin || ''}
               onChange={(e) => updateFilter('priceMin', Number(e.target.value) || 0)}
-              placeholder="من"
-              dir="rtl"
+              placeholder={t('products.from')}
+              dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               className="text-sm h-10 pr-3"
               min={0}
             />
@@ -255,8 +257,8 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
               type="number"
               value={localFilters.priceMax || ''}
               onChange={(e) => updateFilter('priceMax', Number(e.target.value) || 0)}
-              placeholder="إلى"
-              dir="rtl"
+              placeholder={t('products.to')}
+              dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               className="text-sm h-10 pr-3"
               min={0}
             />
@@ -266,7 +268,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
 
       {/* Rating Filter */}
       <FilterSection
-        title="التقييم"
+        title={t('compare.rating')}
         section="rating"
         expanded={expandedSections.has('rating')}
         onToggle={() => toggleSection('rating')}
@@ -301,7 +303,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
                   ))}
                 </div>
               </div>
-              <span className="text-xs text-gray-400">وما فوق</span>
+              <span className="text-xs text-gray-400">{t('products.andAbove')}</span>
               {localFilters.rating === rating && (
                 <div className="mr-auto animate-scale-in">
                   <Check className="w-3.5 h-3.5 text-accent" />
@@ -314,7 +316,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
 
       {/* Discount Filter */}
       <FilterSection
-        title="نسبة الخصم"
+        title={t('products.discountPercent')}
         section="discount"
         expanded={expandedSections.has('discount')}
         onToggle={() => toggleSection('discount')}
@@ -356,7 +358,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
         <FilterCheckbox
           checked={localFilters.inStock}
           onChange={() => updateFilter('inStock', !localFilters.inStock)}
-          label="المتوفر فقط"
+          label={t('products.inStockOnly')}
         />
       </div>
 
@@ -370,7 +372,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             rounded="xl"
             onClick={() => setDrawerOpen(false)}
           >
-            تطبيق الفلاتر
+            {t('products.applyFilters')}
           </Button>
         </div>
       )}
@@ -403,10 +405,10 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
             : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm',
           className,
         )}
-        aria-label="فتح الفلاتر"
+        aria-label={t('products.openFilters')}
       >
         <SlidersHorizontal className="w-4 h-4" />
-        الفلاتر
+        {t('products.filters')}
         {hasActiveFilters && (
           <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-xs font-bold">
             {activeCount}
@@ -417,7 +419,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
       <Drawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        title="الفلاتر"
+        title={t('products.filters')}
       >
         <FilterContent />
       </Drawer>

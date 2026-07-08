@@ -1,13 +1,11 @@
-import { useState, memo } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Facebook,
   Instagram,
-  Twitter,
   Music2,
-  Youtube,
-  Send,
+  MessageCircle,
   Mail,
   MapPin,
   Phone,
@@ -15,8 +13,9 @@ import {
 import { cn } from '@/utils';
 import { categories } from '@/data';
 import { PAGES, SITE_NAME, SITE_DESCRIPTION } from '@/constants';
-import { Button, Input } from '@/components/ui';
 import toast from 'react-hot-toast';
+
+const WHATSAPP_NUMBER = '201037223730';
 
 const quickLinks = [
   { label: 'footer.about', href: PAGES.ABOUT },
@@ -34,11 +33,10 @@ const customerServiceLinks = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: '#', label: 'footer.facebook' },
-  { icon: Instagram, href: '#', label: 'footer.instagram' },
-  { icon: Twitter, href: '#', label: 'footer.twitter' },
-  { icon: Music2, href: '#', label: 'footer.tiktok' },
-  { icon: Youtube, href: '#', label: 'footer.youtube' },
+  { icon: Facebook, href: 'https://www.facebook.com/share/1D3j6EgNHy/?mibextid=wwXIfr', label: 'footer.facebook' },
+  { icon: Instagram, href: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', label: 'footer.instagram' },
+  { icon: Music2, href: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', label: 'footer.tiktok' },
+  { icon: MessageCircle, href: `https://wa.me/${WHATSAPP_NUMBER}`, label: 'footer.whatsapp' },
 ];
 
 const paymentMethods = [
@@ -53,24 +51,9 @@ const paymentMethods = [
 
 export const Footer = memo(function Footer() {
   const { t, i18n } = useTranslation();
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 800));
-    const existing = JSON.parse(localStorage.getItem('newsletter_emails') || '[]');
-    if (existing.includes(email.trim())) {
-      toast.error(t('common.warning'));
-    } else {
-      existing.push(email.trim());
-      localStorage.setItem('newsletter_emails', JSON.stringify(existing));
-      toast.success(t('nav.newsletterSuccess'));
-    }
-    setEmail('');
-    setLoading(false);
+  const handleWhatsApp = () => {
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}`, '_blank');
   };
 
   return (
@@ -87,21 +70,14 @@ export const Footer = memo(function Footer() {
                 {t('nav.newsletterDesc')}
               </p>
             </div>
-            <form onSubmit={handleNewsletterSubmit} className="flex items-center gap-2 w-full lg:w-auto">
-              <div className="flex-1 lg:w-80">
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('nav.newsletterPlaceholder')}
-                  dir="rtl"
-                />
-              </div>
-              <Button type="submit" variant="primary" size="md" loading={loading} rounded="xl">
-                <Send className="w-4 h-4" />
-                {t('nav.subscribe')}
-              </Button>
-            </form>
+            <button
+              type="button"
+              onClick={handleWhatsApp}
+              className="inline-flex items-center justify-center gap-2 bg-secondary text-white hover:bg-secondary/90 shadow-lg whitespace-nowrap h-12 px-6 rounded-xl font-cairo font-bold text-base transition-all duration-200"
+            >
+              <MessageCircle className="w-5 h-5" />
+              {t('nav.subscribe')}
+            </button>
           </div>
         </div>
       </div>
@@ -112,10 +88,10 @@ export const Footer = memo(function Footer() {
           {/* Logo & Description */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to={PAGES.HOME} className="inline-block mb-3">
-              <img src="/images/zahilogo.png" alt={SITE_NAME} className="h-10 w-auto" />
+              <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-16 sm:h-20 w-auto" />
             </Link>
             <p className="text-sm text-gray-500 font-cairo leading-relaxed mb-4">
-              {SITE_DESCRIPTION}
+              {SITE_DESCRIPTION()}
             </p>
             <div className="space-y-2.5">
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
@@ -124,11 +100,11 @@ export const Footer = memo(function Footer() {
               </div>
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Phone className="w-4 h-4 shrink-0 text-secondary" />
-                <span dir="ltr">+20 100 123 4567</span>
+                <span dir="ltr">+20 103 722 3730</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Mail className="w-4 h-4 shrink-0 text-secondary" />
-                <span>info@zahi.store</span>
+                <span dir="ltr">sales@zahieg.com</span>
               </div>
             </div>
           </div>

@@ -28,3 +28,4 @@ export { IosButton } from './IosButton';
 export { IosCard } from './IosCard';
 export { IosBottomSheet } from './IosBottomSheet';
 export { FadeInView } from './FadeInView';
+export { LanguageSwitcher } from './LanguageSwitcher';

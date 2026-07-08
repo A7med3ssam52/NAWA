@@ -1,39 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Plus, Search, Edit3, Trash2, Gift, Sparkles, X,
 } from 'lucide-react';
+import { cn } from '@/utils';
 import { adminService } from '@/services';
 import { Button, Input, Select, Modal, Badge, EmptyState, Spinner, Tabs } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { SpinPrize, SpinPrizeType } from '@/types';
 
-const PRIZE_TYPE_OPTIONS = [
-  { value: 'percentage', label: 'نسبة مئوية' },
-  { value: 'fixed', label: 'قيمة ثابتة' },
-  { value: 'freeShipping', label: 'شحن مجاني' },
-  { value: 'tryAgain', label: 'حظ أوفر' },
-];
-
-const emptyForm: Partial<SpinPrize> = {
-  label: '',
-  type: 'percentage',
-  value: 10,
-  color: '#2563EB',
-  weight: 10,
-  isActive: true,
-};
-
-const defaultColors = ['#2563EB', '#22C55E', '#F59E0B', '#EF4444', '#A855F7', '#EC4899', '#F97316', '#06B6D4', '#64748B', '#3B82F6'];
-
 export function AdminSpinPrizesPage() {
+  const { t, i18n } = useTranslation();
   const [prizes, setPrizes] = useState<SpinPrize[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState<SpinPrize | null>(null);
   const [editing, setEditing] = useState<SpinPrize | null>(null);
-  const [form, setForm] = useState<Partial<SpinPrize>>(emptyForm);
+  const [form, setForm] = useState<Partial<SpinPrize>>({
+    label: '',
+    type: 'percentage',
+    value: 10,
+    color: '#2563EB',
+    weight: 10,
+    isActive: true,
+  });
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('prizes');
 
@@ -50,11 +42,24 @@ export function AdminSpinPrizesPage() {
     p.label.toLowerCase().includes(search.toLowerCase())
   );
 
+  const PRIZE_TYPE_OPTIONS = [
+    { value: 'percentage', label: t('spin.prizeTypePercentage') },
+    { value: 'fixed', label: t('spin.prizeTypeFixed') },
+    { value: 'freeShipping', label: t('spin.prizeTypeFreeShipping') },
+    { value: 'tryAgain', label: t('spin.prizeTypeTryAgain') },
+  ];
+
+  const defaultColors = ['#2563EB', '#22C55E', '#F59E0B', '#EF4444', '#A855F7', '#EC4899', '#F97316', '#06B6D4', '#64748B', '#3B82F6'];
+
   function openAdd() {
     setEditing(null);
     setForm({
-      ...emptyForm,
+      label: '',
+      type: 'percentage',
+      value: 10,
       color: defaultColors[prizes.length % defaultColors.length],
+      weight: 10,
+      isActive: true,
     });
     setModalOpen(true);
   }
@@ -73,26 +78,26 @@ export function AdminSpinPrizesPage() {
   }
 
   function handleSave() {
-    if (!form.label) { toast.error('يرجى إدخال اسم الجائزة'); return; }
-    if (!form.weight || form.weight < 1) { toast.error('الوزن يجب أن يكون 1 على الأقل'); return; }
+    if (!form.label) { toast.error(t('admin.prizeLabelRequired')); return; }
+    if (!form.weight || form.weight < 1) { toast.error(t('admin.prizeWeightMin')); return; }
     setSaving(true);
     try {
       if (editing) {
         adminService.updateSpinPrize(editing.id, form);
-        toast.success('تم تحديث الجائزة بنجاح');
+        toast.success(t('admin.prizeUpdated'));
       } else {
         adminService.createSpinPrize(form);
-        toast.success('تم إضافة الجائزة بنجاح');
+        toast.success(t('admin.prizeAdded'));
       }
       setModalOpen(false);
       fetchData();
-    } catch { toast.error('حدث خطأ أثناء الحفظ'); }
+    } catch { toast.error(t('admin.saveError2')); }
     finally { setSaving(false); }
   }
 
   function handleDelete(prize: SpinPrize) {
     adminService.deleteSpinPrize(prize.id);
-    toast.success('تم حذف الجائزة بنجاح');
+    toast.success(t('admin.prizeDeleted'));
     setDeleteModal(null);
     fetchData();
   }
@@ -100,24 +105,24 @@ export function AdminSpinPrizesPage() {
   function toggleActive(prize: SpinPrize) {
     adminService.updateSpinPrize(prize.id, { isActive: !prize.isActive });
     fetchData();
-    toast.success(prize.isActive ? 'تم تعطيل الجائزة' : 'تم تفعيل الجائزة');
+    toast.success(prize.isActive ? t('admin.prizeToggled') : t('admin.prizeToggledActive'));
   }
 
   const totalWeight = prizes.filter((p) => p.isActive).reduce((s, p) => s + p.weight, 0);
 
   const tabs = [
-    { id: 'prizes', label: 'الجوائز' },
-    { id: 'stats', label: 'إحصائيات' },
+    { id: 'prizes', label: t('admin.prizeTabs') },
+    { id: 'stats', label: t('admin.statsTab') },
   ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">جوائز عجلة الحظ</h1>
-          <p className="text-sm text-gray-500 font-cairo mt-1">إدارة جوائز وفرص عجلة الحظ</p>
+          <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">{t('admin.spinPrizesTitle')}</h1>
+          <p className="text-sm text-gray-500 font-cairo mt-1">{t('admin.spinPrizesManagement')}</p>
         </div>
-        <Button onClick={openAdd}><Plus className="w-4 h-4" /> إضافة جائزة</Button>
+        <Button onClick={openAdd}><Plus className="w-4 h-4" /> {t('admin.addPrize')}</Button>
       </div>
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
@@ -127,7 +132,7 @@ export function AdminSpinPrizesPage() {
           <div className="relative w-full sm:w-72">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="بحث عن جائزة..."
+              placeholder={t('admin.searchPrize')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pr-10"
@@ -139,9 +144,9 @@ export function AdminSpinPrizesPage() {
           ) : filtered.length === 0 ? (
             <EmptyState
               icon={<Gift className="w-16 h-16" />}
-              title="لا توجد جوائز"
-              description={search ? 'لا توجد نتائج للبحث' : 'لم يتم إضافة أي جائزة بعد'}
-              action={!search ? { label: 'إضافة جائزة', onClick: openAdd } : undefined}
+              title={t('admin.noPrizes')}
+              description={search ? t('admin.noSearchResults') : t('admin.noPrizesDesc')}
+              action={!search ? { label: t('admin.addPrize'), onClick: openAdd } : undefined}
             />
           ) : (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
@@ -149,13 +154,13 @@ export function AdminSpinPrizesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-100">
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الجائزة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">النوع</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">القيمة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الوزن</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الفرصة</th>
-                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الحالة</th>
-                      <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeName')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeType')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeValue')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeWeight')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeChance')}</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.prizeStatus')}</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.tableActions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -176,16 +181,16 @@ export function AdminSpinPrizesPage() {
                           </td>
                           <td className="px-4 py-3">
                             <span className="text-xs font-cairo text-gray-500">
-                              {prize.type === 'percentage' ? 'نسبة مئوية'
-                                : prize.type === 'fixed' ? 'قيمة ثابتة'
-                                : prize.type === 'freeShipping' ? 'شحن مجاني'
-                                : 'حظ أوفر'}
+                              {prize.type === 'percentage' ? t('spin.prizeTypePercentage')
+                                : prize.type === 'fixed' ? t('spin.prizeTypeFixed')
+                                : prize.type === 'freeShipping' ? t('spin.prizeTypeFreeShipping')
+                                : t('spin.prizeTypeTryAgain')}
                             </span>
                           </td>
                           <td className="px-4 py-3">
                             <span className="text-sm font-cairo text-gray-600">
                               {prize.type === 'percentage' ? `${prize.value}%`
-                                : prize.type === 'fixed' ? `${prize.value?.toLocaleString('ar-EG')} ج.م`
+                                : prize.type === 'fixed' ? `${prize.value?.toLocaleString('ar-EG')} ${t('common.currency')}`
                                 : prize.type === 'freeShipping' ? '—'
                                 : '—'}
                             </span>
@@ -210,7 +215,7 @@ export function AdminSpinPrizesPage() {
                           <td className="px-4 py-3">
                             <button onClick={() => toggleActive(prize)}>
                               <Badge variant={prize.isActive ? 'success' : 'secondary'} size="sm">
-                                {prize.isActive ? 'نشط' : 'معطل'}
+                                {prize.isActive ? t('admin.active') : t('admin.inactive')}
                               </Badge>
                             </button>
                           </td>
@@ -250,7 +255,7 @@ export function AdminSpinPrizesPage() {
               </div>
             </div>
             <p className="text-2xl font-bold font-cairo text-gray-900">{prizes.length}</p>
-            <p className="text-xs font-cairo text-gray-500 mt-0.5">إجمالي الجوائز</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">{t('admin.totalPrizes')}</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
@@ -261,7 +266,7 @@ export function AdminSpinPrizesPage() {
             <p className="text-2xl font-bold font-cairo text-gray-900">
               {prizes.filter((p) => p.isActive && p.type !== 'tryAgain').length}
             </p>
-            <p className="text-xs font-cairo text-gray-500 mt-0.5">جوائز قابلة للفوز</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">{t('admin.winnablePrizes')}</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
@@ -270,7 +275,7 @@ export function AdminSpinPrizesPage() {
               </div>
             </div>
             <p className="text-2xl font-bold font-cairo text-gray-900">{totalWeight}</p>
-            <p className="text-xs font-cairo text-gray-500 mt-0.5">الوزن الإجمالي</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">{t('admin.totalWeight')}</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
             <div className="flex items-center gap-3 mb-3">
@@ -281,23 +286,22 @@ export function AdminSpinPrizesPage() {
             <p className="text-2xl font-bold font-cairo text-gray-900">
               {prizes.filter((p) => !p.isActive).length}
             </p>
-            <p className="text-xs font-cairo text-gray-500 mt-0.5">جوائز معطلة</p>
+            <p className="text-xs font-cairo text-gray-500 mt-0.5">{t('admin.disabledPrizes')}</p>
           </div>
         </div>
       )}
 
-      {/* Add/Edit Modal */}
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? 'تعديل الجائزة' : 'إضافة جائزة'} size="md">
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? t('admin.editPrize') : t('admin.addPrize')} size="md">
         <div className="space-y-4">
           <Input
-            label="اسم الجائزة"
+            label={t('admin.prizeLabel')}
             value={form.label || ''}
             onChange={(e) => setForm({ ...form, label: e.target.value })}
-            placeholder="10% خصم"
+            placeholder={t('admin.prizeNamePlaceholder')}
           />
 
           <Select
-            label="نوع الجائزة"
+            label={t('admin.prizeType')}
             value={form.type || 'percentage'}
             onChange={(e) => setForm({ ...form, type: e.target.value as SpinPrizeType })}
             options={PRIZE_TYPE_OPTIONS}
@@ -305,34 +309,33 @@ export function AdminSpinPrizesPage() {
 
           {form.type !== 'tryAgain' && form.type !== 'freeShipping' && (
             <Input
-              label="القيمة"
+              label={t('admin.prizeValue')}
               type="number"
               value={form.value || ''}
               onChange={(e) => setForm({ ...form, value: Number(e.target.value) })}
-              placeholder={form.type === 'percentage' ? '10' : '50'}
+              placeholder={form.type === 'percentage' ? t('admin.percentagePlaceholder') : t('admin.fixedPlaceholder')}
             />
           )}
 
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="اللون"
+              label={t('admin.prizeColor')}
               type="color"
               value={form.color || '#2563EB'}
               onChange={(e) => setForm({ ...form, color: e.target.value })}
               className="h-10 p-1"
             />
             <Input
-              label="الوزن (الفرصة)"
+              label={t('admin.prizeWeightLabel')}
               type="number"
               value={form.weight || ''}
               onChange={(e) => setForm({ ...form, weight: Math.max(1, Number(e.target.value)) })}
-              placeholder="10"
+              placeholder={t('admin.weightPlaceholder')}
             />
           </div>
 
-          {/* Color presets */}
           <div>
-            <p className="text-xs font-cairo text-gray-500 mb-2">ألوان مقترحة</p>
+            <p className="text-xs font-cairo text-gray-500 mb-2">{t('admin.suggestedColors')}</p>
             <div className="flex flex-wrap gap-2">
               {defaultColors.map((color) => (
                 <button
@@ -350,33 +353,28 @@ export function AdminSpinPrizesPage() {
           </div>
 
           <div className="flex items-center gap-3 pt-2">
-            <Button variant="ghost" className="flex-1" onClick={() => setModalOpen(false)}>إلغاء</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setModalOpen(false)}>{t('common.cancel')}</Button>
             <Button className="flex-1" onClick={handleSave} loading={saving}>
-              {editing ? 'حفظ التغييرات' : 'إضافة'}
+              {editing ? t('common.saveChanges') : t('common.add')}
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Delete Modal */}
-      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title="تأكيد الحذف" size="sm">
+      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title={t('common.confirmDelete')} size="sm">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
           <p className="text-sm text-gray-600 font-cairo">
-            هل أنت متأكد من حذف الجائزة <strong className="text-gray-900">{deleteModal?.label}</strong>؟
+            {t('admin.deletePrizeConfirm', { name: deleteModal?.label || '' })}
           </p>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
-            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>{t('common.cancel')}</Button>
+            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>{t('common.delete')}</Button>
           </div>
         </div>
       </Modal>
     </motion.div>
   );
-}
-
-function cn(...classes: (string | boolean | undefined | null)[]) {
-  return classes.filter(Boolean).join(' ');
 }

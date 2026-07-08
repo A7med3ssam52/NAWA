@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '@/api';
-import { SORT_OPTIONS, PAGE_SIZE } from '@/constants';
+import { getSortOptions, PAGE_SIZE } from '@/constants';
 import type { FilterState } from '@/types';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { FilterSidebar } from '@/components/features/FilterSidebar';
@@ -66,7 +66,7 @@ export function ProductsPage() {
         </h1>
         <div className="w-48">
           <Select
-            options={SORT_OPTIONS}
+            options={getSortOptions()}
             value={filters.sort}
             onChange={(e) => handleSortChange(e.target.value)}
           />

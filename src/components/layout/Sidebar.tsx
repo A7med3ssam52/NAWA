@@ -23,6 +23,7 @@ import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
 import { categories } from '@/data';
 import { PAGES } from '@/constants';
+import { LanguageSwitcher } from '@/components/ui';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -315,6 +316,16 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <div className="w-full border-t border-gray-100" />
                 </div>
               </div>
+
+              {/* Language Switcher */}
+              <motion.div className="mb-4 px-3.5" variants={itemVariants}>
+                <div className="px-3.5 mb-3">
+                  <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('profile.language')}</span>
+                </div>
+                <div className="px-3.5">
+                  <LanguageSwitcher />
+                </div>
+              </motion.div>
 
               {/* Contact Info */}
               <motion.div className="mb-4" variants={itemVariants}>

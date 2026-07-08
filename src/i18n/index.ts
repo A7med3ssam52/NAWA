@@ -13,8 +13,10 @@ i18n
       ar: { translation: ar },
     },
     fallbackLng: 'ar',
+    supportedLngs: ['ar', 'en'],
+    nonExplicitSupportedLngs: true,
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
     },

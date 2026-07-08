@@ -88,7 +88,7 @@ export function SearchPage() {
 
       {debouncedQuery && data && (
         <p className="text-sm text-gray-500 font-cairo mb-4 text-center">
-          {data.total} نتيجة لـ &quot;{debouncedQuery}&quot;
+          {t('search.noResults', { query: debouncedQuery })}
         </p>
       )}
 

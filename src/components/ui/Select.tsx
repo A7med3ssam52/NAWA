@@ -1,6 +1,7 @@
 import { type SelectHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/utils';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SelectOption {
   value: string;
@@ -15,7 +16,8 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, label, error, options, placeholder = 'اختر...', id, dir = 'rtl', ...props }, ref) => {
+  ({ className, label, error, options, placeholder, id, dir = 'rtl', ...props }, ref) => {
+    const { t, i18n } = useTranslation();
     const selectId = id || label?.replace(/\s+/g, '-').toLowerCase();
 
     return (

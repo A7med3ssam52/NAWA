@@ -2,6 +2,7 @@ import { type ReactNode, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 interface DrawerProps {
   isOpen: boolean;
@@ -39,6 +40,8 @@ export function Drawer({
   width = 'max-w-md',
   className,
 }: DrawerProps) {
+  const { t, i18n } = useTranslation();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -83,7 +86,7 @@ export function Drawer({
             initial="hidden"
             animate="visible"
             exit="exit"
-            dir="rtl"
+            dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
           >
             {/* Decorative gradient */}
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
@@ -96,7 +99,7 @@ export function Drawer({
                 <button
                   onClick={onClose}
                   className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors active:scale-90"
-                  aria-label="إغلاق"
+                  aria-label={t('common.close')}
                 >
                   <X className="w-5 h-5" />
                 </button>

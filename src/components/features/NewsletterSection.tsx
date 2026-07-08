@@ -1,25 +1,18 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Mail } from 'lucide-react';
-import { Input, Button } from '@/components/ui';
-import toast from 'react-hot-toast';
+import { MessageCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
+const WHATSAPP_NUMBER = '201037223730';
 
 export function NewsletterSection() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { t, i18n } = useTranslation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    toast.success('تم الاشتراك في النشرة البريدية بنجاح!');
-    setEmail('');
-    setLoading(false);
+  const handleWhatsApp = () => {
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}`, '_blank');
   };
 
   return (
-    <section dir="rtl" className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-secondary via-secondary/80 to-accent">
+    <section dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-secondary via-secondary/80 to-accent">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]" aria-hidden="true">
         <div
@@ -45,47 +38,34 @@ export function NewsletterSection() {
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm mb-5">
-            <Mail className="w-7 h-7 text-white" />
+            <MessageCircle className="w-7 h-7 text-white" />
           </div>
           <h2 className="text-2xl lg:text-3xl font-bold font-cairo text-white mb-2">
-            اشترك في النشرة البريدية
+            {t('nav.newsletter')}
           </h2>
           <p className="text-base text-white/80 font-cairo max-w-lg mx-auto mb-6">
-            كن أول من يعرف عن أحدث المنتجات والعروض الحصرية والتخفيضات الكبيرة
+            {t('nav.newsletterDesc')}
           </p>
         </motion.div>
 
-        <motion.form
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto"
         >
-          <div className="w-full sm:flex-1">
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="أدخل بريدك الإلكتروني"
-              className="bg-white/90 border-white/20 text-gray-900 placeholder-gray-400 h-12"
-              dir="rtl"
-            />
-          </div>
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            rounded="xl"
-            loading={loading}
-            className="bg-white text-secondary hover:bg-white/90 shadow-lg whitespace-nowrap h-12"
+          <button
+            type="button"
+            onClick={handleWhatsApp}
+            className="inline-flex items-center justify-center gap-2 bg-white text-secondary hover:bg-white/90 shadow-lg whitespace-nowrap h-12 px-6 rounded-xl font-cairo font-bold text-base transition-all duration-200"
           >
-            <Send className="w-4 h-4" />
-            اشتراك
-          </Button>
-        </motion.form>
+            <MessageCircle className="w-5 h-5" />
+            {t('nav.subscribe')}
+          </button>
+        </motion.div>
       </motion.div>
     </section>
   );
 }
+

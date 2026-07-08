@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { User, Address } from '@/types';
 import { users, getUserAddresses } from '@/data';
+import i18n from '@/i18n';
 
 function simpleHash(str: string): string {
   let hash = 0;
@@ -99,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const registeredUser = registered.find((u) => u.email === email);
     if (registeredUser) {
       if (registeredUser.password !== password && simpleHash(password) !== registeredUser.password) {
-        return { success: false, error: 'كلمة المرور غير صحيحة' };
+        return { success: false, error: i18n.t('auth.invalidPassword') };
       }
       const existingUser = users.find((u) => u.email === email);
       if (existingUser) {
@@ -126,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'LOGIN', payload: user });
       return { success: true };
     }
-    return { success: false, error: 'البريد الإلكتروني غير مسجل' };
+    return { success: false, error: i18n.t('auth.emailNotRegistered') };
   }, [dispatch]);
 
   const register = useCallback(async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
@@ -134,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const registered: { name: string; email: string; password: string }[] = stored ? JSON.parse(stored) : [];
 
     if (registered.some((u) => u.email === email) || users.some((u) => u.email === email)) {
-      return { success: false, error: 'البريد الإلكتروني مسجل بالفعل' };
+      return { success: false, error: i18n.t('auth.emailAlreadyRegistered') };
     }
 
     registered.push({ name, email, password: simpleHash(password) });

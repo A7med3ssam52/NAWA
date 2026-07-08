@@ -2,6 +2,7 @@ import { type InputHTMLAttributes, forwardRef } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/utils';
 import { AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -11,6 +12,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, dir = 'rtl', icon: Icon, ...props }, ref) => {
+    const { t, i18n } = useTranslation();
     const inputId = id || label?.replace(/\s+/g, '-').toLowerCase();
 
     return (

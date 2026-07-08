@@ -1,7 +1,8 @@
 import { CURRENCY } from '@/constants';
+import i18n from '@/i18n';
 
 export function formatPrice(price: number): string {
-  return `${price.toLocaleString('ar-EG')} ${CURRENCY}`;
+  return `${price.toLocaleString('ar-EG')} ${CURRENCY()}`;
 }
 
 export function formatDiscount(discount: number): string {
@@ -40,20 +41,20 @@ export function getTimeAgo(dateStr: string): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return 'الآن';
-  if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
-  if (diffHours < 24) return `منذ ${diffHours} ساعة`;
-  if (diffDays < 7) return `منذ ${diffDays} يوم`;
+  if (diffMins < 1) return i18n.t('utils.timeAgo.now');
+  if (diffMins < 60) return i18n.t('utils.timeAgo.minutes', { count: diffMins });
+  if (diffHours < 24) return i18n.t('utils.timeAgo.hours', { count: diffHours });
+  if (diffDays < 7) return i18n.t('utils.timeAgo.days', { count: diffDays });
   return formatDate(dateStr);
 }
 
 export function getPaymentMethodLabel(method: string): string {
   const labels: Record<string, string> = {
-    cod: 'الدفع عند الاستلام',
-    card: 'بطاقة ائتمان',
-    'vodafone-cash': 'فودافون كاش',
-    fawry: 'فوري',
-    instapay: 'انستا باي',
+    cod: i18n.t('utils.paymentMethods.cod'),
+    card: i18n.t('utils.paymentMethods.card'),
+    'vodafone-cash': i18n.t('utils.paymentMethods.vodafoneCash'),
+    fawry: i18n.t('utils.paymentMethods.fawry'),
+    instapay: i18n.t('utils.paymentMethods.instapay'),
   };
   return labels[method] || method;
 }

@@ -27,7 +27,7 @@ import { useMediaQuery } from '@/hooks';
 import { useDebounce } from '@/hooks';
 import { categories } from '@/data';
 import { PAGES, SITE_NAME } from '@/constants';
-import { Button, Badge } from '@/components/ui';
+import { Button, Badge, LanguageSwitcher } from '@/components/ui';
 import { Sidebar } from './Sidebar';
 import { SearchSuggestions, NotificationPopover, MobileSearchOverlay } from '@/components/features';
 import { AnnouncementBar } from './AnnouncementBar';
@@ -195,12 +195,12 @@ export const Navbar = memo(function Navbar() {
           'border-b transition-all duration-300',
           scrolled
             ? 'bg-white/95 backdrop-blur-2xl border-gray-200/80'
-            : 'bg-white/80 backdrop-blur-md border-transparent'
+            : 'bg-white border-transparent'
         )}
         style={{ top: announcementDismissed ? '0' : '36px', paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-20 lg:h-24">
             {/* Left group: Menu + Logo */}
             <div className="flex items-center gap-2">
               <button
@@ -215,19 +215,19 @@ export const Navbar = memo(function Navbar() {
                 className="shrink-0"
                 aria-label={t('nav.homePage')}
               >
-                <img src="/images/zahilogo.png" alt={SITE_NAME} className="h-8 sm:h-10 lg:h-12 w-auto" />
+                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-14 sm:h-16 lg:h-20 w-auto" />
               </Link>
             </div>
 
             {/* Right group: Search + Actions */}
-            <div className="flex items-center gap-1 lg:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Mobile Search Button */}
               <button
                 onClick={() => setMobileSearchOpen(true)}
-                className="lg:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
+                className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
                 aria-label={t('nav.searchLabel')}
               >
-                <Search className="w-5 h-5" />
+                <Search className="w-6 h-6 sm:w-7 sm:h-7" />
               </button>
 
               {/* Desktop Navigation */}
@@ -371,42 +371,45 @@ export const Navbar = memo(function Navbar() {
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex items-center gap-0 sm:gap-1 lg:gap-2">
-              {/* Wishlist - Desktop only */}
-              <Link
-                to={PAGES.WISHLIST}
-                className="hidden lg:flex relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label={t('nav.wishlistLabel')}
-              >
-                <Heart className="w-5 h-5" />
-                {wishlistCount > 0 && (
-                  <Badge
-                    variant="danger"
-                    size="sm"
-                    className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                  >
-                    {wishlistCount > 99 ? '99+' : wishlistCount}
-                  </Badge>
-                )}
-              </Link>
+              {/* Language Switcher - Mobile */}
+              <div className="lg:hidden">
+                <LanguageSwitcher iconOnly />
+              </div>
 
-              {/* Compare - Desktop only */}
-              <Link
-                to={PAGES.COMPARE}
-                className="hidden lg:flex relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label={t('nav.compareLabel')}
-              >
-                <BarChart3 className="w-5 h-5" />
-              </Link>
+              {/* Desktop-only: Wishlist, Compare, Language, Notifications */}
+              <div className="hidden lg:flex items-center gap-1">
+                <Link
+                  to={PAGES.WISHLIST}
+                  className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+                  aria-label={t('nav.wishlistLabel')}
+                >
+                  <Heart className="w-5 h-5" />
+                  {wishlistCount > 0 && (
+                    <Badge
+                      variant="danger"
+                      size="sm"
+                      className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                    >
+                      {wishlistCount > 99 ? '99+' : wishlistCount}
+                    </Badge>
+                  )}
+                </Link>
+
+                <Link
+                  to={PAGES.COMPARE}
+                  className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+                  aria-label={t('nav.compareLabel')}
+                >
+                  <BarChart3 className="w-5 h-5" />
+                </Link>
+
+                <LanguageSwitcher />
+
+                <NotificationPopover />
+              </div>
 
               {/* Cart with Preview */}
               <CartPreview />
-
-              {/* Notifications - Desktop only */}
-              <div className="hidden lg:block">
-                <NotificationPopover />
-              </div>
 
               {/* User Menu */}
               <div ref={userMenuRef} className="relative">
@@ -414,11 +417,11 @@ export const Navbar = memo(function Navbar() {
                   <>
                     <button
                       onClick={() => setShowUserMenu(!showUserMenu)}
-                      className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 transition-colors"
+                      className="flex items-center gap-2 p-1 sm:p-1.5 rounded-xl hover:bg-gray-100 transition-colors"
                       aria-expanded={showUserMenu}
                       aria-haspopup="true"
                     >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -490,10 +493,10 @@ export const Navbar = memo(function Navbar() {
                   <>
                     <Link
                       to="/login"
-                      className="lg:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+                      className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
                       aria-label={t('nav.loginLabel')}
                     >
-                      <UserCircle className="w-5 h-5" />
+                      <UserCircle className="w-6 h-6 sm:w-7 sm:h-7" />
                     </Link>
                     <Link to="/login" className="hidden lg:block">
                       <Button variant="primary" size="sm" rounded="full" className="shadow-none hover:shadow-none">
@@ -503,7 +506,6 @@ export const Navbar = memo(function Navbar() {
                   </>
                 )}
               </div>
-              </div>
             </div>
           </div>
         </div>
@@ -512,7 +514,7 @@ export const Navbar = memo(function Navbar() {
       </header>
 
       {/* Spacer for fixed header */}
-      <div className={cn(announcementDismissed ? 'h-16 lg:h-20' : 'h-[100px] lg:h-[116px]')} />
+      <div className={cn(announcementDismissed ? 'h-20 lg:h-24' : 'h-[116px] lg:h-[132px]')} />
 
       {/* Premium Bottom Navigation for Mobile */}
       <nav className={cn(

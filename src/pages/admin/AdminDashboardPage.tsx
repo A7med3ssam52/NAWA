@@ -7,7 +7,7 @@ import {
   Star, Tag, ChevronLeft,
 } from 'lucide-react';
 import { formatPrice, formatDate, cn } from '@/utils';
-import { ORDER_STATUS_MAP, SITE_NAME } from '@/constants';
+import { getOrderStatusMap, SITE_NAME } from '@/constants';
 import { adminService } from '@/services';
 import { Badge } from '@/components/ui';
 import type { Order, Product } from '@/types';
@@ -102,7 +102,7 @@ export function AdminDashboardPage() {
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <h1 className="text-lg lg:text-2xl font-bold font-cairo text-gray-900 truncate">لوحة التحكم</h1>
-          <p className="text-xs lg:text-sm text-gray-500 font-cairo mt-0.5 lg:mt-1 truncate">{SITE_NAME} - نظرة عامة على المتجر</p>
+          <p className="text-xs lg:text-sm text-gray-500 font-cairo mt-0.5 lg:mt-1 truncate">{SITE_NAME()} - نظرة عامة على المتجر</p>
         </div>
       </div>
 
@@ -132,7 +132,7 @@ export function AdminDashboardPage() {
               const count = orders.items.filter((o) => o.status === s).length;
               const total = stats.totalOrders || 1;
               const pct = Math.round((count / total) * 100);
-              const info = ORDER_STATUS_MAP[s] || { label: s, color: 'text-gray-500' };
+              const info = getOrderStatusMap()[s] || { label: s, color: 'text-gray-500' };
               return (
                 <div key={s}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -198,7 +198,7 @@ export function AdminDashboardPage() {
                   <p className="text-[10px] lg:text-xs text-gray-400 font-cairo">{formatDate(order.createdAt)}</p>
                 </div>
                 <Badge variant={order.status === 'delivered' ? 'success' : order.status === 'cancelled' ? 'danger' : order.status === 'pending' ? 'warning' : 'info'} size="sm">
-                  {ORDER_STATUS_MAP[order.status]?.label || order.status}
+                  {getOrderStatusMap()[order.status]?.label || order.status}
                 </Badge>
               </motion.div>
             ))}

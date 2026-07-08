@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   User, MapPin, Package, Heart, Bell, Settings, Star, Camera,
   Save, Plus, Trash2, LogOut, Shield, Mail, Phone,
@@ -18,7 +19,7 @@ import {
   Tabs, Button, Input, Modal, Badge, EmptyState, Divider, Spinner, Select, Textarea,
 } from '@/components/ui';
 import { formatPrice, formatDate, formatDateTime, getTimeAgo, cn } from '@/utils';
-import { PAGES, ORDER_STATUS_MAP } from '@/constants';
+import { PAGES, getOrderStatusMap, EGYPT_GOVERNORATES } from '@/constants';
 import toast from 'react-hot-toast';
 import type { Tab } from '@/components/ui/Tabs';
 import type { Address, Order, Notification as NotifType } from '@/types';
@@ -28,10 +29,11 @@ function generateId() {
 }
 
 function MemberSinceBadge({ date }: { date: string }) {
+  const { t } = useTranslation();
   return (
     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/5 text-secondary text-xs font-cairo font-medium">
       <Calendar className="w-3.5 h-3.5" />
-      عضو منذ {formatDate(date)}
+      {t('profile.memberSince', { date: formatDate(date) })}
     </div>
   );
 }
@@ -54,6 +56,7 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
 }
 
 function PasswordSection() {
+  const { t } = useTranslation();
   const [showForm, setShowForm] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -63,10 +66,10 @@ function PasswordSection() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleChangePassword = () => {
-    if (!currentPassword) return toast.error('يرجى إدخال كلمة المرور الحالية');
-    if (newPassword.length < 6) return toast.error('كلمة المرور الجديدة يجب أن تكون 6 أحرف على الأقل');
-    if (newPassword !== confirmPassword) return toast.error('كلمة المرور الجديدة غير متطابقة');
-    toast.success('تم تغيير كلمة المرور بنجاح');
+    if (!currentPassword) return toast.error(t('profile.currentPasswordRequired'));
+    if (newPassword.length < 6) return toast.error(t('auth.passwordMin'));
+    if (newPassword !== confirmPassword) return toast.error(t('profile.newPasswordMismatch'));
+    toast.success(t('profile.passwordChanged'));
     setShowForm(false);
     setCurrentPassword('');
     setNewPassword('');
@@ -81,12 +84,12 @@ function PasswordSection() {
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm font-bold font-cairo text-gray-900">كلمة المرور</h3>
-            <p className="text-xs text-gray-400 font-cairo">تغيير كلمة المرور الخاصة بك</p>
+            <h3 className="text-sm font-bold font-cairo text-gray-900">{t('profile.password')}</h3>
+            <p className="text-xs text-gray-400 font-cairo">{t('profile.changePasswordDesc')}</p>
           </div>
         </div>
         <Button variant="outline" size="sm" rounded="xl" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'إلغاء' : 'تغيير'}
+          {showForm ? t('common.cancel') : t('profile.changePassword')}
         </Button>
       </div>
       <AnimatePresence>
@@ -102,57 +105,54 @@ function PasswordSection() {
             <div className="space-y-3">
               <div className="relative">
                 <Input
-                  label="كلمة المرور الحالية"
+                  label={t('profile.currentPassword')}
                   type={showCurrent ? 'text' : 'password'}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  dir="rtl"
                 />
                 <button
                   type="button"
                   onClick={() => setShowCurrent(!showCurrent)}
                   className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showCurrent ? 'إخفاء' : 'إظهار'}
+                  aria-label={showCurrent ? t('profile.hide') : t('profile.show')}
                 >
                   {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               <div className="relative">
                 <Input
-                  label="كلمة المرور الجديدة"
+                  label={t('profile.newPassword')}
                   type={showNew ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  dir="rtl"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNew(!showNew)}
                   className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showNew ? 'إخفاء' : 'إظهار'}
+                  aria-label={showNew ? t('profile.hide') : t('profile.show')}
                 >
                   {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               <div className="relative">
                 <Input
-                  label="تأكيد كلمة المرور الجديدة"
+                  label={t('profile.confirmNewPassword')}
                   type={showConfirm ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  dir="rtl"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
                   className="absolute left-3 top-[38px] text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showConfirm ? 'إخفاء' : 'إظهار'}
+                  aria-label={showConfirm ? t('profile.hide') : t('profile.show')}
                 >
                   {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               <Button variant="secondary" size="md" rounded="xl" onClick={handleChangePassword} fullWidth>
-                <Shield className="w-4 h-4" /> حفظ كلمة المرور الجديدة
+                <Shield className="w-4 h-4" /> {t('profile.saveNewPassword')}
               </Button>
             </div>
           </motion.div>
@@ -173,6 +173,7 @@ function AddressFormModal({
   onSave: (address: Address) => void;
   editAddress: Address | null;
 }) {
+  const { t } = useTranslation();
   const [label, setLabel] = useState(editAddress?.label || '');
   const [fullName, setFullName] = useState(editAddress?.fullName || '');
   const [phone, setPhone] = useState(editAddress?.phone || '');
@@ -182,14 +183,14 @@ function AddressFormModal({
   const [isDefault, setIsDefault] = useState(editAddress?.isDefault || false);
 
   const labelOptions = [
-    { value: 'المنزل', label: 'المنزل' },
-    { value: 'العمل', label: 'العمل' },
-    { value: 'أخرى', label: 'أخرى' },
+    { value: 'home', label: t('profile.labelHome') },
+    { value: 'work', label: t('profile.labelWork') },
+    { value: 'other', label: t('profile.labelOther') },
   ];
 
   const handleSubmit = () => {
     if (!label || !fullName || !phone || !street || !city || !state) {
-      return toast.error('يرجى ملء جميع الحقول المطلوبة');
+      return toast.error(t('profile.requiredFields'));
     }
     onSave({
       id: editAddress?.id || generateId(),
@@ -205,22 +206,28 @@ function AddressFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={editAddress ? 'تعديل العنوان' : 'إضافة عنوان جديد'} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={editAddress ? t('addresses.editAddress') : t('addresses.addNewAddress')} size="lg">
       <div className="space-y-4">
         <Select
-          label="تصنيف العنوان"
+          label={t('profile.addressLabel')}
           options={labelOptions}
           value={label}
           onChange={(e) => setLabel(e.target.value)}
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="الاسم الكامل" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-          <Input label="رقم الهاتف" value={phone} onChange={(e) => setPhone(e.target.value)} dir="ltr" />
+          <Input label={t('profile.fullName')} value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Input label={t('nav.phone')} value={phone} onChange={(e) => setPhone(e.target.value)} dir="ltr" />
         </div>
-        <Textarea label="العنوان بالتفصيل" value={street} onChange={(e) => setStreet(e.target.value)} rows={2} />
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Input label="المدينة" value={city} onChange={(e) => setCity(e.target.value)} />
-          <Input label="المنطقة / المحافظة" value={state} onChange={(e) => setState(e.target.value)} />
+        <Textarea label={t('profile.addressDetail')} value={street} onChange={(e) => setStreet(e.target.value)} rows={2} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input label={t('checkout.city')} value={city} onChange={(e) => setCity(e.target.value)} />
+          <Select
+            label={t('profile.region')}
+            placeholder={t('checkout.statePlaceholder')}
+            options={EGYPT_GOVERNORATES.map((g) => ({ value: g, label: g }))}
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+          />
         </div>
         <label className="flex items-center gap-3 cursor-pointer">
           <input
@@ -229,14 +236,14 @@ function AddressFormModal({
             onChange={(e) => setIsDefault(e.target.checked)}
             className="w-4 h-4 rounded border-gray-300 text-secondary focus:ring-secondary"
           />
-          <span className="text-sm font-cairo text-gray-700">تعيين كعنوان افتراضي</span>
+          <span className="text-sm font-cairo text-gray-700">{t('profile.setAsDefaultCheckbox')}</span>
         </label>
         <div className="flex gap-3 pt-2">
           <Button variant="secondary" size="md" rounded="xl" onClick={handleSubmit} fullWidth>
-            <Check className="w-4 h-4" /> {editAddress ? 'حفظ التعديلات' : 'إضافة العنوان'}
+            <Check className="w-4 h-4" /> {editAddress ? t('profile.saveChanges') : t('addresses.addAddress')}
           </Button>
           <Button variant="ghost" size="md" rounded="xl" onClick={onClose} fullWidth>
-            إلغاء
+            {t('common.cancel')}
           </Button>
         </div>
       </div>
@@ -249,6 +256,7 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
   onMarkRead: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   const typeIcons: Record<string, React.ReactNode> = {
     order: <Package className="w-4 h-4" />,
     promo: <Tag className="w-4 h-4" />,
@@ -298,7 +306,7 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
                 <button
                   onClick={() => onMarkRead(notif.id)}
                   className="p-1.5 rounded-lg text-secondary hover:bg-secondary/5 transition-colors"
-                  aria-label="تحديد كمقروء"
+                  aria-label={t('admin.markAsRead')}
                 >
                   <CheckCircle className="w-4 h-4" />
                 </button>
@@ -306,7 +314,7 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
               <button
                 onClick={() => onDelete(notif.id)}
                 className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors"
-                aria-label="حذف الإشعار"
+                aria-label={t('admin.deleteNotification')}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -319,17 +327,8 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
   );
 }
 
-const orderStatusFilters = [
-  { value: 'all', label: 'الكل' },
-  { value: 'pending', label: 'قيد الانتظار' },
-  { value: 'confirmed', label: 'مؤكدة' },
-  { value: 'processing', label: 'قيد التجهيز' },
-  { value: 'shipped', label: 'تم الشحن' },
-  { value: 'delivered', label: 'تم التوصيل' },
-  { value: 'cancelled', label: 'ملغية' },
-];
-
 export function ProfilePage() {
+  const { t, i18n } = useTranslation();
   const { user, addresses: userAddresses, updateProfile, addAddress, removeAddress, setDefaultAddress, logout } = useAuth();
   const { items: wishlistItems, removeItem } = useWishlist();
   const navigate = useNavigate();
@@ -356,15 +355,15 @@ export function ProfilePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        dir="rtl"
+        dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
         className="min-h-[70vh] flex items-center justify-center px-4"
       >
         <EmptyState
           icon={<User className="w-20 h-20" />}
-          title="يرجى تسجيل الدخول"
-          description="قم بتسجيل الدخول لعرض الملف الشخصي وإدارة طلباتك"
+          title={t('notifications.loginRequired')}
+          description={t('profile.loginRequiredDesc')}
           action={{
-            label: 'تسجيل الدخول',
+            label: t('nav.login'),
             onClick: () => navigate('/login'),
           }}
         />
@@ -381,55 +380,65 @@ export function ProfilePage() {
   const userReviews = allReviews.filter((r) => r.userId === user.id);
   const unreadNotifs = notifications.filter((n) => !n.read);
 
+  const orderStatusFilters = [
+    { value: 'all', label: t('orders.allOrders') },
+    { value: 'pending', label: t('orders.pending') },
+    { value: 'confirmed', label: t('orders.confirmed') },
+    { value: 'processing', label: t('orders.processing') },
+    { value: 'shipped', label: t('orders.shipped') },
+    { value: 'delivered', label: t('orders.delivered') },
+    { value: 'cancelled', label: t('orders.cancelled') },
+  ];
+
   const tabs: Tab[] = [
-    { id: 'profile', label: 'الملف الشخصي', icon: <User className="w-4 h-4" /> },
-    { id: 'addresses', label: 'عناويني', icon: <MapPin className="w-4 h-4" />, count: userAddresses.length },
-    { id: 'orders', label: 'طلباتي', icon: <Package className="w-4 h-4" />, count: orders.length },
-    { id: 'wishlist', label: 'المفضلة', icon: <Heart className="w-4 h-4" />, count: wishlistItems.length },
-    { id: 'notifications', label: 'الإشعارات', icon: <Bell className="w-4 h-4" />, count: unreadNotifs.length },
-    { id: 'reviews', label: 'التقييمات', icon: <MessageSquare className="w-4 h-4" />, count: userReviews.length },
-    { id: 'settings', label: 'الإعدادات', icon: <Settings className="w-4 h-4" /> },
+    { id: 'profile', label: t('profile.title'), icon: <User className="w-4 h-4" /> },
+    { id: 'addresses', label: t('profile.myAddresses'), icon: <MapPin className="w-4 h-4" />, count: userAddresses.length },
+    { id: 'orders', label: t('profile.myOrders'), icon: <Package className="w-4 h-4" />, count: orders.length },
+    { id: 'wishlist', label: t('profile.wishlist'), icon: <Heart className="w-4 h-4" />, count: wishlistItems.length },
+    { id: 'notifications', label: t('profile.notifications'), icon: <Bell className="w-4 h-4" />, count: unreadNotifs.length },
+    { id: 'reviews', label: t('profile.reviews'), icon: <MessageSquare className="w-4 h-4" />, count: userReviews.length },
+    { id: 'settings', label: t('profile.settings'), icon: <Settings className="w-4 h-4" /> },
   ];
 
   const handleSaveProfile = () => {
     updateProfile({ name, email, phone });
-    toast.success('تم حفظ التغييرات بنجاح');
+    toast.success(t('profile.profileUpdated'));
   };
 
   const handleAddAddress = (address: Address) => {
     addAddress(address);
-    toast.success('تم إضافة العنوان بنجاح');
+    toast.success(t('profile.addressAdded'));
   };
 
   const handleDeleteAddress = (id: string) => {
     removeAddress(id);
-    toast.success('تم حذف العنوان');
+    toast.success(t('profile.addressDeleted'));
   };
 
   const handleSetDefault = (id: string) => {
     setDefaultAddress(id);
-    toast.success('تم تعيين العنوان الافتراضي');
+    toast.success(t('profile.defaultSet'));
   };
 
   const handleMarkRead = (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    toast.success('تم تحديد الإشعار كمقروء');
+    toast.success(t('profile.notifMarkedRead'));
   };
 
   const handleDeleteNotif = (id: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
-    toast.success('تم حذف الإشعار');
+    toast.success(t('profile.notifDeleted'));
   };
 
   const handleMarkAllRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    toast.success('تم تحديد الكل كمقروء');
+    toast.success(t('profile.allMarkedRead'));
   };
 
   const handleLogout = () => {
     logout();
     navigate(PAGES.HOME);
-    toast.success('تم تسجيل الخروج');
+    toast.success(t('profile.loggedOut'));
   };
 
   return (
@@ -438,7 +447,7 @@ export function ProfilePage() {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      dir="rtl"
+      dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
       className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12"
     >
       {/* Profile Header */}
@@ -459,7 +468,7 @@ export function ProfilePage() {
             </div>
             <button
               className="absolute -bottom-1 -left-1 w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-secondary hover:border-secondary shadow-soft transition-all duration-200 opacity-0 group-hover:opacity-100"
-              aria-label="تغيير الصورة"
+              aria-label={t('profile.changePhoto')}
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -486,25 +495,25 @@ export function ProfilePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-gray-100">
           <StatCard
             icon={<Package className="w-5 h-5 text-white" />}
-            label="الطلبات"
+            label={t('profile.statsOrders')}
             value={orders.length}
             color="bg-gradient-to-br from-secondary to-blue-500"
           />
           <StatCard
             icon={<Heart className="w-5 h-5 text-white" />}
-            label="المفضلة"
+            label={t('profile.statsWishlist')}
             value={wishlistItems.length}
             color="bg-gradient-to-br from-danger to-red-400"
           />
           <StatCard
             icon={<Star className="w-5 h-5 text-white" />}
-            label="التقييمات"
+            label={t('profile.statsReviews')}
             value={userReviews.length}
             color="bg-gradient-to-br from-accent to-yellow-400"
           />
           <StatCard
             icon={<Bell className="w-5 h-5 text-white" />}
-            label="الإشعارات"
+            label={t('profile.statsNotifications')}
             value={unreadNotifs.length}
             color="bg-gradient-to-br from-success to-green-400"
           />
@@ -531,17 +540,17 @@ export function ProfilePage() {
                   <User className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900">البيانات الشخصية</h2>
-                  <p className="text-xs text-gray-400 font-cairo">قم بتحديث معلوماتك الشخصية</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.personalInfo')}</h2>
+                  <p className="text-xs text-gray-400 font-cairo">{t('profile.personalInfoDesc')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                <Input label="الاسم الكامل" value={name} onChange={(e) => setName(e.target.value)} icon={User} />
-                <Input label="البريد الإلكتروني" value={email} onChange={(e) => setEmail(e.target.value)} dir="ltr" icon={Mail} />
-                <Input label="رقم الهاتف" value={phone} onChange={(e) => setPhone(e.target.value)} icon={Phone} />
+                <Input label={t('profile.fullName')} value={name} onChange={(e) => setName(e.target.value)} icon={User} />
+                <Input label={t('nav.email')} value={email} onChange={(e) => setEmail(e.target.value)} dir="ltr" icon={Mail} />
+                <Input label={t('nav.phone')} value={phone} onChange={(e) => setPhone(e.target.value)} icon={Phone} />
               </div>
               <Button variant="secondary" size="md" rounded="xl" onClick={handleSaveProfile}>
-                <Save className="w-4 h-4" /> حفظ التغييرات
+                <Save className="w-4 h-4" /> {t('common.saveChanges')}
               </Button>
             </div>
             <PasswordSection />
@@ -563,12 +572,12 @@ export function ProfilePage() {
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900">عناويني</h2>
-                  <p className="text-xs text-gray-400 font-cairo">إدارة عناوين التوصيل الخاصة بك</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.myAddresses')}</h2>
+                  <p className="text-xs text-gray-400 font-cairo">{t('profile.addressesDesc')}</p>
                 </div>
               </div>
               <Button variant="secondary" size="md" rounded="xl" onClick={() => { setEditingAddress(null); setAddressModal(true); }}>
-                <Plus className="w-4 h-4" /> إضافة عنوان
+                <Plus className="w-4 h-4" /> {t('profile.addAddress')}
               </Button>
             </div>
             {userAddresses.length > 0 ? (
@@ -589,23 +598,22 @@ export function ProfilePage() {
                     {addr.isDefault && (
                       <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-cairo font-medium">
                         <Star className="w-3 h-3 fill-secondary" />
-                        افتراضي
+                        {t('profile.default')}
                       </div>
                     )}
                     <div className="flex items-center gap-2 mb-3">
                       <div className={cn(
                         'flex items-center justify-center w-8 h-8 rounded-lg',
-                        addr.label === 'العمل' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
+                        addr.label === 'work' ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
                       )}>
-                        {addr.label === 'العمل' ? <Briefcase className="w-4 h-4" /> : <Home className="w-4 h-4" />}
+                        {addr.label === 'work' ? <Briefcase className="w-4 h-4" /> : <Home className="w-4 h-4" />}
                       </div>
-                      <span className="text-sm font-bold font-cairo text-gray-900">{addr.label}</span>
+                      <span className="text-sm font-bold font-cairo text-gray-900">{addr.label === 'home' ? t('profile.labelHome') : addr.label === 'work' ? t('profile.labelWork') : t('profile.labelOther')}</span>
                     </div>
                     <div className="space-y-1 text-xs text-gray-500 font-cairo">
                       <p className="flex items-center gap-1.5"><User className="w-3.5 h-3.5" /> {addr.fullName}</p>
                       <p className="flex items-center gap-1.5" dir="ltr"><Phone className="w-3.5 h-3.5" /> {addr.phone}</p>
                       <p className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {addr.street}، {addr.city}، {addr.state}</p>
-
                     </div>
                     <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-100">
                       <Button
@@ -614,17 +622,17 @@ export function ProfilePage() {
                         rounded="xl"
                         onClick={() => { setEditingAddress(addr); setAddressModal(true); }}
                       >
-                        <Edit3 className="w-3.5 h-3.5" /> تعديل
+                        <Edit3 className="w-3.5 h-3.5" /> {t('profile.editAddress')}
                       </Button>
                       {!addr.isDefault && (
                         <Button variant="ghost" size="sm" rounded="xl" onClick={() => handleSetDefault(addr.id)}>
-                          <Star className="w-3.5 h-3.5" /> تعيين كافتراضي
+                          <Star className="w-3.5 h-3.5" /> {t('profile.setAsDefault')}
                         </Button>
                       )}
                       <button
                         onClick={() => handleDeleteAddress(addr.id)}
                         className="mr-auto p-2 rounded-xl text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors"
-                        aria-label="حذف العنوان"
+                        aria-label={t('profile.deleteAddress')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -635,9 +643,9 @@ export function ProfilePage() {
             ) : (
               <EmptyState
                 icon={<MapPin className="w-16 h-16" />}
-                title="لا توجد عناوين"
-                description="أضف عنواناً لتتمكن من الشحن إليه"
-                action={{ label: 'إضافة عنوان', onClick: () => { setEditingAddress(null); setAddressModal(true); } }}
+                title={t('profile.noAddressesTitle')}
+                description={t('profile.noAddressesDesc')}
+                action={{ label: t('profile.addAddress'), onClick: () => { setEditingAddress(null); setAddressModal(true); } }}
               />
             )}
             <AddressFormModal
@@ -664,8 +672,8 @@ export function ProfilePage() {
                   <Package className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900">طلباتي</h2>
-                  <p className="text-xs text-gray-400 font-cairo">متابعة وتتبع جميع طلباتك</p>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.ordersTitle')}</h2>
+                  <p className="text-xs text-gray-400 font-cairo">{t('profile.ordersDesc')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
@@ -688,13 +696,13 @@ export function ProfilePage() {
             {filteredOrders.length > 0 ? (
               <div className="space-y-4">
                 {filteredOrders.map((order, i) => {
-                  const statusInfo = ORDER_STATUS_MAP[order.status];
+                  const statusInfo = getOrderStatusMap()[order.status];
                   const steps = [
-                    { key: 'pending', label: 'قيد الانتظار' },
-                    { key: 'confirmed', label: 'تم التأكيد' },
-                    { key: 'processing', label: 'قيد التجهيز' },
-                    { key: 'shipped', label: 'تم الشحن' },
-                    { key: 'delivered', label: 'تم التوصيل' },
+                    { key: 'pending', label: t('orders.pending') },
+                    { key: 'confirmed', label: t('orders.confirmed') },
+                    { key: 'processing', label: t('orders.processing') },
+                    { key: 'shipped', label: t('orders.shipped') },
+                    { key: 'delivered', label: t('orders.delivered') },
                   ];
                   const currentStepIndex = steps.findIndex((s) => s.key === order.status);
                   const isCancelled = order.status === 'cancelled';
@@ -713,7 +721,7 @@ export function ProfilePage() {
                         <div className="p-5">
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div>
-                              <p className="text-xs text-gray-400 font-cairo mb-0.5">رقم الطلب</p>
+                              <p className="text-xs text-gray-400 font-cairo mb-0.5">{t('profile.orderNumber')}</p>
                               <p className="text-sm font-bold font-cairo text-gray-900 font-mono" dir="ltr">
                                 {order.orderNumber}
                               </p>
@@ -731,7 +739,7 @@ export function ProfilePage() {
                           </div>
                           <div className="flex items-center gap-4 text-xs text-gray-500 font-cairo mb-4">
                             <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {formatDate(order.createdAt)}</span>
-                            <span>{order.items.length} منتج</span>
+                            <span>{order.items.length} {t('orders.productCount', { count: order.items.length }).replace(/^\d+ /, '')}</span>
                             <span>{formatPrice(order.total)}</span>
                           </div>
                           <div className="flex items-center gap-2 mb-4">
@@ -773,7 +781,7 @@ export function ProfilePage() {
                           )}
                           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                             <div className="flex items-center gap-1.5 text-sm font-medium font-cairo text-secondary group-hover:gap-2.5 transition-all">
-                              عرض التفاصيل
+                              {t('profile.viewDetails')}
                               <ChevronLeft className="w-4 h-4" />
                             </div>
                             <div className="text-xs text-gray-400 font-cairo flex items-center gap-1">
@@ -790,9 +798,9 @@ export function ProfilePage() {
             ) : (
               <EmptyState
                 icon={<Package className="w-16 h-16" />}
-                title={orderFilter === 'all' ? 'لا توجد طلبات' : 'لا توجد طلبات بهذه الحالة'}
-                description={orderFilter === 'all' ? 'لم تقم بأي طلبات بعد' : 'جرب تغيير فلتر البحث'}
-                action={{ label: 'تسوق الآن', onClick: () => navigate(PAGES.PRODUCTS) }}
+                title={orderFilter === 'all' ? t('profile.noOrders') : t('profile.noOrdersFiltered')}
+                description={orderFilter === 'all' ? t('profile.noOrdersDesc') : t('profile.noOrdersFilteredDesc')}
+                action={{ label: t('profile.shopNow'), onClick: () => navigate(PAGES.PRODUCTS) }}
               />
             )}
           </motion.div>
@@ -812,8 +820,8 @@ export function ProfilePage() {
                 <Heart className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900">المفضلة</h2>
-                <p className="text-xs text-gray-400 font-cairo">المنتجات التي أعجبتك</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.wishlist')}</h2>
+                <p className="text-xs text-gray-400 font-cairo">{t('profile.wishlistDesc')}</p>
               </div>
             </div>
             {wishlistItems.length > 0 ? (
@@ -840,9 +848,9 @@ export function ProfilePage() {
                           </div>
                         )}
                         <button
-                          onClick={(e) => { e.preventDefault(); removeItem(product.id); toast.success('تمت الإزالة من المفضلة'); }}
+                          onClick={(e) => { e.preventDefault(); removeItem(product.id); toast.success(t('profile.removeFromWishlist')); }}
                           className="absolute top-3 left-3 p-2 rounded-xl bg-white/80 backdrop-blur-sm text-danger hover:bg-danger hover:text-white transition-all duration-200 shadow-soft"
-                          aria-label="إزالة من المفضلة"
+                          aria-label={t('products.removeFromWishlist')}
                         >
                           <Heart className="w-4 h-4 fill-current" />
                         </button>
@@ -868,9 +876,9 @@ export function ProfilePage() {
             ) : (
               <EmptyState
                 icon={<Heart className="w-16 h-16" />}
-                title="المفضلة فارغة"
-                description="أضف منتجات إلى المفضلة لتتمكن من مشاهدتها هنا"
-                action={{ label: 'تصفح المنتجات', onClick: () => navigate(PAGES.PRODUCTS) }}
+                title={t('profile.wishlistEmpty')}
+                description={t('profile.wishlistEmptyDesc')}
+                action={{ label: t('profile.browseProducts'), onClick: () => navigate(PAGES.PRODUCTS) }}
               />
             )}
           </motion.div>
@@ -891,15 +899,15 @@ export function ProfilePage() {
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold font-cairo text-gray-900">الإشعارات</h2>
+                  <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.notifications')}</h2>
                   <p className="text-xs text-gray-400 font-cairo">
-                    {unreadNotifs.length > 0 ? `لديك ${unreadNotifs.length} إشعار غير مقروء` : 'جميع الإشعارات مقروءة'}
+                    {unreadNotifs.length > 0 ? t('profile.youHaveUnread', { count: unreadNotifs.length }) : t('profile.allRead')}
                   </p>
                 </div>
               </div>
               {unreadNotifs.length > 0 && (
                 <Button variant="ghost" size="sm" rounded="xl" onClick={handleMarkAllRead}>
-                  <CheckCircle className="w-4 h-4" /> تحديد الكل مقروء
+                  <CheckCircle className="w-4 h-4" /> {t('profile.markAllRead')}
                 </Button>
               )}
             </div>
@@ -919,8 +927,8 @@ export function ProfilePage() {
             ) : (
               <EmptyState
                 icon={<Bell className="w-16 h-16" />}
-                title="لا توجد إشعارات"
-                description="ستظهر الإشعارات هنا عندما تصلك"
+                title={t('profile.noNotificationsTitle')}
+                description={t('profile.noNotificationsDesc')}
               />
             )}
           </motion.div>
@@ -940,8 +948,8 @@ export function ProfilePage() {
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900">تقييماتي</h2>
-                <p className="text-xs text-gray-400 font-cairo">جميع تقييماتك على المنتجات</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.reviews')}</h2>
+                <p className="text-xs text-gray-400 font-cairo">{t('profile.reviewsDesc')}</p>
               </div>
             </div>
             {userReviews.length > 0 ? (
@@ -989,9 +997,9 @@ export function ProfilePage() {
             ) : (
               <EmptyState
                 icon={<MessageSquare className="w-16 h-16" />}
-                title="لا توجد تقييمات"
-                description="عندما تقوم بتقييم منتج سيظهر هنا"
-                action={{ label: 'تصفح المنتجات', onClick: () => navigate(PAGES.PRODUCTS) }}
+                title={t('profile.noReviewsYet')}
+                description={t('profile.noReviewsDesc')}
+                action={{ label: t('profile.browseProducts'), onClick: () => navigate(PAGES.PRODUCTS) }}
               />
             )}
           </motion.div>
@@ -1012,8 +1020,8 @@ export function ProfilePage() {
                 <Settings className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold font-cairo text-gray-900">الإعدادات</h2>
-                <p className="text-xs text-gray-400 font-cairo">تخصيص إعدادات الحساب والتطبيق</p>
+                <h2 className="text-lg font-bold font-cairo text-gray-900">{t('profile.settings')}</h2>
+                <p className="text-xs text-gray-400 font-cairo">{t('profile.settingsDesc')}</p>
               </div>
             </div>
 
@@ -1025,8 +1033,8 @@ export function ProfilePage() {
                       <Bell className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات الطلبات</p>
-                      <p className="text-xs text-gray-400 font-cairo">إشعارات حالة الطلبات والتوصيل</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">{t('profile.orderNotifications')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.orderNotificationsDesc')}</p>
                     </div>
                   </div>
                   <button
@@ -1037,7 +1045,7 @@ export function ProfilePage() {
                     )}
                     role="switch"
                     aria-checked={orderNotif}
-                    aria-label="إشعارات الطلبات"
+                    aria-label={t('profile.orderNotificationAria')}
                   >
                     <div className={cn(
                       'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200',
@@ -1052,8 +1060,8 @@ export function ProfilePage() {
                       <Tag className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold font-cairo text-gray-900">إشعارات العروض</p>
-                      <p className="text-xs text-gray-400 font-cairo">إشعارات العروض والتخفيضات</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">{t('profile.promoNotifications')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.promoNotificationsDesc')}</p>
                     </div>
                   </div>
                   <button
@@ -1064,7 +1072,7 @@ export function ProfilePage() {
                     )}
                     role="switch"
                     aria-checked={promoNotif}
-                    aria-label="إشعارات العروض"
+                    aria-label={t('profile.promoNotificationAria')}
                   >
                     <div className={cn(
                       'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200',
@@ -1084,8 +1092,8 @@ export function ProfilePage() {
                       <Shield className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-gray-900">سياسة الخصوصية</p>
-                      <p className="text-xs text-gray-400 font-cairo">تعرف على كيفية حماية بياناتك</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">{t('profile.privacyPolicy')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.privacyPolicyDesc')}</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1100,8 +1108,8 @@ export function ProfilePage() {
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-gray-900">الشروط والأحكام</p>
-                      <p className="text-xs text-gray-400 font-cairo">شروط استخدام المتجر</p>
+                      <p className="text-sm font-semibold font-cairo text-gray-900">{t('profile.termsLink')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.termsDesc')}</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1116,8 +1124,8 @@ export function ProfilePage() {
                       <LogOut className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-danger">تسجيل الخروج</p>
-                      <p className="text-xs text-gray-400 font-cairo">تسجيل الخروج من الحساب</p>
+                      <p className="text-sm font-semibold font-cairo text-danger">{t('profile.logout')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.logoutDesc')}</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1129,8 +1137,8 @@ export function ProfilePage() {
                       <Trash2 className="w-5 h-5" />
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold font-cairo text-danger">حذف الحساب</p>
-                      <p className="text-xs text-gray-400 font-cairo">حذف الحساب وجميع البيانات نهائياً</p>
+                      <p className="text-sm font-semibold font-cairo text-danger">{t('profile.deleteAccount')}</p>
+                      <p className="text-xs text-gray-400 font-cairo">{t('profile.deleteAccountDesc')}</p>
                     </div>
                   </div>
                   <ChevronLeft className="w-4 h-4 text-gray-400" />
@@ -1138,7 +1146,7 @@ export function ProfilePage() {
               </div>
 
               <p className="text-xs text-gray-400 font-cairo text-center pt-4">
-                زاهي - الإصدار 1.0.0
+                {t('profile.appVersion')}
               </p>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
   currentPage: number;
@@ -9,6 +10,8 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, onPageChange, className }: PaginationProps) {
+  const { t, i18n } = useTranslation();
+
   if (totalPages <= 1) return null;
 
   const pages: (number | 'dots')[] = [];
@@ -27,12 +30,12 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
     'inline-flex items-center justify-center w-9 h-9 rounded-lg text-sm font-cairo font-medium transition-all duration-200';
 
   return (
-    <nav className={cn('flex items-center justify-center gap-1', className)} aria-label="التنقل بين الصفحات" dir="rtl">
+    <nav className={cn('flex items-center justify-center gap-1', className)} aria-label={t('nav.sidebarLabel')} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       <button
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
         className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
-        aria-label="الصفحة الأولى"
+        aria-label={t('common.start')}
       >
         <ChevronsRight className="w-4 h-4" />
       </button>
@@ -40,7 +43,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
-        aria-label="الصفحة السابقة"
+        aria-label={t('common.previous')}
       >
         <ChevronRight className="w-4 h-4" />
       </button>
@@ -61,7 +64,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
                 : 'text-gray-600 hover:bg-gray-100'
             )}
             aria-current={page === currentPage ? 'page' : undefined}
-            aria-label={`الصفحة ${page}`}
+            aria-label={`${t('common.all')} ${page}`}
           >
             {page}
           </button>
@@ -72,7 +75,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
-        aria-label="الصفحة التالية"
+        aria-label={t('common.next')}
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -80,7 +83,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
         className={cn(btnBase, 'text-gray-400 hover:text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed')}
-        aria-label="آخر صفحة"
+        aria-label={t('common.later')}
       >
         <ChevronsLeft className="w-4 h-4" />
       </button>

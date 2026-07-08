@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Trash2, Star, Filter, MessageSquareQuote, X,
 } from 'lucide-react';
@@ -10,6 +11,7 @@ import { toast } from '@/components/ui';
 import type { Review, Product } from '@/types';
 
 export function AdminReviewsPage() {
+  const { t, i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,7 @@ export function AdminReviewsPage() {
 
   function handleDelete(review: Review) {
     adminService.deleteReview(review.id);
-    toast.success('تم حذف التقييم بنجاح');
+    toast.success(t('admin.reviewDeleted'));
     setDeleteModal(null);
     fetchData();
   }
@@ -55,15 +57,15 @@ export function AdminReviewsPage() {
   }
 
   const productOptions = [
-    { value: '', label: 'كل المنتجات' },
+    { value: '', label: t('admin.allProducts') },
     ...products.map((p) => ({ value: p.id, label: p.name })),
   ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 lg:p-6 space-y-6">
       <div>
-        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">التقييمات</h1>
-        <p className="text-sm text-gray-500 font-cairo mt-1">إدارة تقييمات المنتجات</p>
+        <h1 className="text-xl lg:text-2xl font-bold font-cairo text-gray-900">{t('admin.reviewsManagement')}</h1>
+        <p className="text-sm text-gray-500 font-cairo mt-1">{t('admin.reviewsDesc')}</p>
       </div>
 
       <div className="w-full sm:w-72">
@@ -71,26 +73,26 @@ export function AdminReviewsPage() {
           value={productFilter}
           onChange={(e) => setProductFilter(e.target.value)}
           options={productOptions}
-          placeholder="كل المنتجات"
+          placeholder={t('admin.allProducts')}
         />
       </div>
 
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : reviews.length === 0 ? (
-        <EmptyState icon={<MessageSquareQuote className="w-16 h-16" />} title="لا توجد تقييمات" description="لا توجد تقييمات لعرضها" />
+        <EmptyState icon={<MessageSquareQuote className="w-16 h-16" />} title={t('admin.noReviews')} description={t('admin.noReviewsDesc')} />
       ) : (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">المنتج</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">المستخدم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التقييم</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التعليق</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">التاريخ</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">الإجراءات</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.reviewProduct')}</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.reviewUser')}</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.reviewRating')}</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.reviewComment')}</th>
+                  <th className="text-right px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.reviewDate')}</th>
+                  <th className="text-left px-4 py-3 text-xs font-bold text-gray-500 font-cairo">{t('admin.tableActions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,12 +145,12 @@ export function AdminReviewsPage() {
         </div>
       )}
 
-      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title="تأكيد الحذف" size="sm">
+      <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title={t('common.confirmDelete')} size="sm">
         <div className="text-center space-y-4">
           <div className="w-16 h-16 mx-auto rounded-full bg-danger/10 flex items-center justify-center">
             <Trash2 className="w-6 h-6 text-danger" />
           </div>
-          <p className="text-sm text-gray-600 font-cairo">هل أنت متأكد من حذف هذا التقييم؟</p>
+          <p className="text-sm text-gray-600 font-cairo">{t('admin.deleteReviewConfirm')}</p>
           {deleteModal && (
             <div className="bg-gray-50 rounded-xl p-3 text-right">
               <div className="flex justify-center mb-2">{renderStars(deleteModal.rating)}</div>
@@ -156,8 +158,8 @@ export function AdminReviewsPage() {
             </div>
           )}
           <div className="flex items-center gap-3">
-            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>إلغاء</Button>
-            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>حذف</Button>
+            <Button variant="ghost" className="flex-1" onClick={() => setDeleteModal(null)}>{t('common.cancel')}</Button>
+            <Button variant="danger" className="flex-1" onClick={() => deleteModal && handleDelete(deleteModal)}>{t('common.delete')}</Button>
           </div>
         </div>
       </Modal>

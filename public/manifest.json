@@ -7,7 +7,7 @@
   "background_color": "#F8FAFC",
   "theme_color": "#F8FAFC",
   "orientation": "portrait",
-  "dir": "rtl",
+  "dir": "auto",
   "lang": "ar",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }

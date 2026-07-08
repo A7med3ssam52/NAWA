@@ -33,10 +33,10 @@ export function CartPreview() {
       {/* Cart Button */}
       <Link
         to={PAGES.CART}
-        className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+        className="relative p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         aria-label={t('nav.cartLabel')}
       >
-        <ShoppingCart className="w-5 h-5" />
+        <ShoppingCart className="w-6 h-6 sm:w-7 sm:h-7" />
         {itemsCount > 0 && (
           <span
             className={cn(
@@ -120,7 +120,7 @@ export function CartPreview() {
                             </button>
                           </div>
                           <span className="text-xs font-bold text-gray-900">
-                            {item.product.price.toLocaleString('ar-EG')} {CURRENCY}
+                            {item.product.price.toLocaleString('ar-EG')} {CURRENCY()}
                           </span>
                         </div>
                       </div>
@@ -146,7 +146,7 @@ export function CartPreview() {
                       {t('cart.total')}
                     </span>
                     <span className="text-sm font-bold text-secondary">
-                      {subtotal.toLocaleString('ar-EG')} {CURRENCY}
+                      {subtotal.toLocaleString('ar-EG')} {CURRENCY()}
                     </span>
                   </div>
                   <Link

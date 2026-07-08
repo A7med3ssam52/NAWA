@@ -1,4 +1,5 @@
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from '@/constants';
+import i18n from '@/i18n';
 
 interface SEOProps {
   title?: string;
@@ -10,12 +11,14 @@ interface SEOProps {
 
 export function getSEO({
   title,
-  description = SITE_DESCRIPTION,
+  description,
   image = `${SITE_URL}/og-image.jpg`,
   url = SITE_URL,
   type = 'website',
 }: SEOProps = {}) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} | ${SITE_DESCRIPTION}`;
+  const siteName = SITE_NAME();
+  const siteDesc = description || SITE_DESCRIPTION();
+  const fullTitle = title ? `${title} | ${siteName}` : `${siteName} | ${siteDesc}`;
 
   return {
     title: fullTitle,

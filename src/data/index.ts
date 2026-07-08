@@ -1,3 +1,4 @@
+import i18n from '@/i18n';
 import products from './products.json';
 import categories from './categories.json';
 import brands from './brands.json';
@@ -118,7 +119,7 @@ export const getDashboardStats = () => {
   const lowStockProducts = products.filter((p) => p.stock < 10).length;
 
   const monthlyRevenue: { month: string; revenue: number; orders: number }[] = [];
-  const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  const months = i18n.t('utils.months', { returnObjects: true }) as string[];
   const monthMap = new Map<string, { revenue: number; orders: number }>();
 
   orders.forEach((o) => {

@@ -18,62 +18,50 @@ export function PrivacyPage() {
       <div className="w-20 h-1 bg-secondary rounded-full mb-8" />
 
       <div className="prose prose-sm max-w-none font-cairo text-gray-600 space-y-6 leading-relaxed">
-        <p>
-          نحن في زاهي نلتزم بحماية خصوصية زوارنا وعملائنا. توضح سياسة الخصوصية هذه كيفية جمع واستخدام وحماية المعلومات الشخصية التي تقدمها عند استخدام موقعنا.
-        </p>
+        <p>{t('privacy.intro')}</p>
 
-        <h2 className="text-lg font-bold text-gray-900">المعلومات التي نجمعها</h2>
-        <p>قد نجمع الأنواع التالية من المعلومات:</p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section1Title')}</h2>
+        <p>{t('privacy.section1Content')}</p>
         <ul className="list-disc pr-5 space-y-1">
-          <li>المعلومات الشخصية: الاسم، البريد الإلكتروني، رقم الهاتف، عنوان التوصيل</li>
-          <li>معلومات الدفع: بيانات بطاقات الائتمان (يتم معالجتها بشكل آمن عبر بوابة دفع معتمدة)</li>
-          <li>معلومات التصفح: عنوان IP، نوع المتصفح، صفحات الزيارة، مدة التصفح</li>
-          <li>سجل الطلبات: المنتجات المشتراة، المبالغ، تواريخ الطلبات</li>
+          <li>{t('privacy.section1Item1')}</li>
+          <li>{t('privacy.section1Item2')}</li>
+          <li>{t('privacy.section1Item3')}</li>
+          <li>{t('privacy.section1Item4')}</li>
         </ul>
 
-        <h2 className="text-lg font-bold text-gray-900">كيف نستخدم معلوماتك</h2>
-        <p>نستخدم المعلومات التي نجمعها للأغراض التالية:</p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section2Title')}</h2>
+        <p>{t('privacy.section2Content')}</p>
         <ul className="list-disc pr-5 space-y-1">
-          <li>معالجة وتنفيذ الطلبات</li>
-          <li>التواصل معك بشأن طلباتك واستفساراتك</li>
-          <li>تحسين خدماتنا وتجربة المستخدم</li>
-          <li>إرسال عروض ترويجية وتحديثات (بموافقتك)</li>
-          <li>الامتثال للمتطلبات القانونية</li>
+          <li>{t('privacy.section2Item1')}</li>
+          <li>{t('privacy.section2Item2')}</li>
+          <li>{t('privacy.section2Item3')}</li>
+          <li>{t('privacy.section2Item4')}</li>
+          <li>{t('privacy.section2Item5')}</li>
         </ul>
 
-        <h2 className="text-lg font-bold text-gray-900">حماية المعلومات</h2>
-        <p>
-          نستخدم إجراءات أمنية متقدمة لحماية معلوماتك الشخصية من الوصول غير المصرح به أو التعديل أو الكشف. تشمل هذه الإجراءات التشفير، جدران الحماية، وبروتوكولات الأمان SSL.
-        </p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section3Title')}</h2>
+        <p>{t('privacy.section3Content')}</p>
 
-        <h2 className="text-lg font-bold text-gray-900">مشاركة المعلومات</h2>
-        <p>
-          نحن لا نبيع أو نؤجر أو نشارك معلوماتك الشخصية مع أطراف ثالثة لأغراض تسويقية دون موافقتك. قد نشارك المعلومات مع شركاء التوصيل وخدمات الدفع لتنفيذ طلباتك فقط.
-        </p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section4Title')}</h2>
+        <p>{t('privacy.section4Content')}</p>
 
-        <h2 className="text-lg font-bold text-gray-900">ملفات تعريف الارتباط (Cookies)</h2>
-        <p>
-          نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح، تخصيص المحتوى، وتحليل حركة المرور. يمكنك التحكم في إعدادات ملفات تعريف الارتباط من خلال إعدادات المتصفح الخاص بك.
-        </p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section5Title')}</h2>
+        <p>{t('privacy.section5Content')}</p>
 
-        <h2 className="text-lg font-bold text-gray-900">حقوقك</h2>
-        <p>لديك الحق في:</p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section6Title')}</h2>
+        <p>{t('privacy.section6Content')}</p>
         <ul className="list-disc pr-5 space-y-1">
-          <li>الوصول إلى بياناتك الشخصية وتصحيحها</li>
-          <li>طلب حذف بياناتك الشخصية</li>
-          <li>الاعتراض على معالجة بياناتك</li>
-          <li>سحب الموافقة في أي وقت</li>
+          <li>{t('privacy.section6Item1')}</li>
+          <li>{t('privacy.section6Item2')}</li>
+          <li>{t('privacy.section6Item3')}</li>
+          <li>{t('privacy.section6Item4')}</li>
         </ul>
 
-        <h2 className="text-lg font-bold text-gray-900">التحديثات على سياسة الخصوصية</h2>
-        <p>
-          قد نقوم بتحديث هذه السياسة من وقت لآخر. سنقوم بإشعارك بأي تغييرات جوهرية عبر البريد الإلكتروني أو من خلال إشعار على موقعنا.
-        </p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section7Title')}</h2>
+        <p>{t('privacy.section7Content')}</p>
 
-        <h2 className="text-lg font-bold text-gray-900">اتصل بنا</h2>
-        <p>
-          إذا كان لديك أي استفسار حول سياسة الخصوصية هذه، يرجى التواصل معنا عبر البريد الإلكتروني: info@zahi.store
-        </p>
+        <h2 className="text-lg font-bold text-gray-900">{t('privacy.section8Title')}</h2>
+        <p>{t('privacy.section8Content')}</p>
 
         <p className="text-xs text-gray-400">{t('privacy.lastUpdated')}</p>
       </div>

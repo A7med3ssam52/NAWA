@@ -1,9 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import { Languages } from 'lucide-react';
 
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  iconOnly?: boolean;
+}
+
+export function LanguageSwitcher({ iconOnly }: LanguageSwitcherProps) {
   const { i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
+
+  if (iconOnly) {
+    return (
+      <button
+        onClick={() => i18n.changeLanguage(isArabic ? 'en' : 'ar')}
+        className="p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+        title={isArabic ? 'English' : 'العربية'}
+      >
+        <Languages className="w-6 h-6 sm:w-7 sm:h-7" />
+      </button>
+    );
+  }
 
   return (
     <button

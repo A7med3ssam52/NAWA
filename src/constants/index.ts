@@ -1,5 +1,7 @@
-export const SITE_NAME = 'زاهي';
-export const SITE_DESCRIPTION = 'زاهي - أناقة تزهو بك';
+import i18n from '@/i18n';
+
+export const SITE_NAME = () => i18n.t('common.siteName');
+export const SITE_DESCRIPTION = () => i18n.t('common.siteDescription');
 export const SITE_URL = 'https://zahi.store';
 
 export const API_BASE_URL = '/api';
@@ -34,29 +36,34 @@ export const PAGES = {
   INVOICE: '/profile/orders/:orderId/invoice',
 } as const;
 
-export const ORDER_STATUS_MAP: Record<string, { label: string; color: string; icon: string }> = {
-  pending: { label: 'قيد الانتظار', color: 'text-yellow-500', icon: 'Clock' },
-  confirmed: { label: 'تم التأكيد', color: 'text-blue-500', icon: 'CheckCircle' },
-  processing: { label: 'قيد التجهيز', color: 'text-indigo-500', icon: 'Package' },
-  shipped: { label: 'تم الشحن', color: 'text-purple-500', icon: 'Truck' },
-  delivered: { label: 'تم التوصيل', color: 'text-green-500', icon: 'PackageCheck' },
-  cancelled: { label: 'ملغي', color: 'text-red-500', icon: 'XCircle' },
-};
+export function getOrderStatusMap(): Record<string, { label: string; color: string; icon: string }> {
+  return {
+    pending: { label: i18n.t('orders.pending'), color: 'text-yellow-500', icon: 'Clock' },
+    confirmed: { label: i18n.t('orders.confirmed'), color: 'text-blue-500', icon: 'CheckCircle' },
+    processing: { label: i18n.t('orders.processing'), color: 'text-indigo-500', icon: 'Package' },
+    shipped: { label: i18n.t('orders.shipped'), color: 'text-purple-500', icon: 'Truck' },
+    delivered: { label: i18n.t('orders.delivered'), color: 'text-green-500', icon: 'PackageCheck' },
+    cancelled: { label: i18n.t('orders.cancelled'), color: 'text-red-500', icon: 'XCircle' },
+  };
+}
 
-export const SORT_OPTIONS = [
-  { value: 'newest', label: 'الأحدث' },
-  { value: 'price-asc', label: 'السعر: من الأقل للأعلى' },
-  { value: 'price-desc', label: 'السعر: من الأعلى للأقل' },
-  { value: 'rating', label: 'التقييم' },
-  { value: 'popular', label: 'الأكثر مبيعاً' },
-  { value: 'discount', label: 'أعلى خصم' },
-];
+export function getSortOptions() {
+  return [
+    { value: 'newest', label: i18n.t('products.sortNewest') },
+    { value: 'price-asc', label: i18n.t('products.sortPriceAsc') },
+    { value: 'price-desc', label: i18n.t('products.sortPriceDesc') },
+    { value: 'rating', label: i18n.t('products.sortRating') },
+    { value: 'popular', label: i18n.t('products.sortPopular') },
+    { value: 'discount', label: i18n.t('products.sortDiscount') },
+  ];
+}
 
 export const PAGE_SIZE = 12;
 
-export const CURRENCY = 'ج.م';
+export const CURRENCY = () => i18n.t('common.currency');
 export const FREE_SHIPPING_THRESHOLD = 500;
 export const SHIPPING_COST = 30;
+export const TAX_RATE = 0.14;
 
 
 export const COLORS = {
@@ -68,3 +75,33 @@ export const COLORS = {
   background: '#F8FAFC',
   card: '#FFFFFF',
 } as const;
+
+export const EGYPT_GOVERNORATES = [
+  'القاهرة',
+  'الجيزة',
+  'الإسكندرية',
+  'الدقهلية',
+  'البحيرة',
+  'الشرقية',
+  'الغربية',
+  'المنوفية',
+  'القليوبية',
+  'كفر الشيخ',
+  'دمياط',
+  'الإسماعيلية',
+  'بورسعيد',
+  'السويس',
+  'شمال سيناء',
+  'جنوب سيناء',
+  'بني سويف',
+  'الفيوم',
+  'المنيا',
+  'أسيوط',
+  'سوهاج',
+  'قنا',
+  'الأقصر',
+  'أسوان',
+  'البحر الأحمر',
+  'الوادي الجديد',
+  'مطروح',
+] as const;

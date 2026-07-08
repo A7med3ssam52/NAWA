@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface BreadcrumbItem {
   label: string;
@@ -14,8 +15,10 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ items, className }: BreadcrumbProps) {
+  const { t, i18n } = useTranslation();
+
   return (
-    <nav className={cn('flex items-center gap-1', className)} aria-label="مسار التنقل" dir="rtl">
+    <nav className={cn('flex items-center gap-1', className)} aria-label={t('nav.sidebarLabel')} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
       <ol className="flex items-center gap-1 flex-wrap">
         {items.map((item, idx) => {
           const isLast = idx === items.length - 1;

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Search, ArrowRight, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDebounce } from '@/hooks';
 import { PAGES } from '@/constants';
 import { SearchSuggestions } from './SearchSuggestions';
@@ -12,6 +13,7 @@ interface MobileSearchOverlayProps {
 }
 
 export function MobileSearchOverlay({ isOpen, onClose, initialQuery = '' }: MobileSearchOverlayProps) {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [query, setQuery] = useState(initialQuery);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -61,7 +63,7 @@ export function MobileSearchOverlay({ isOpen, onClose, initialQuery = '' }: Mobi
           <button
             onClick={onClose}
             className="shrink-0 p-2 -mr-1 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors active:scale-90"
-            aria-label="إغلاق"
+            aria-label={t('common.close')}
           >
             <ArrowRight className="w-5 h-5" />
           </button>
@@ -78,16 +80,16 @@ export function MobileSearchOverlay({ isOpen, onClose, initialQuery = '' }: Mobi
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                placeholder="ابحث عن منتجات..."
+                placeholder={t('common.searchPlaceholder')}
                 className="w-full h-11 pr-10 pl-10 text-sm font-cairo bg-gray-100 border-2 border-transparent focus:border-secondary/40 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
-                dir="rtl"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               />
               {query && (
                 <button
                   type="button"
                   onClick={handleClear}
                   className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
-                  aria-label="مسح"
+                  aria-label={t('nav.clearSearch')}
                 >
                   <X className="w-4 h-4" />
                 </button>

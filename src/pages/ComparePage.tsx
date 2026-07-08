@@ -112,7 +112,7 @@ export function ComparePage() {
               </tr>
             ))}
             <tr className="border-t border-gray-100">
-              <td className="p-3 text-sm font-bold font-cairo text-gray-900">الوسوم</td>
+              <td className="p-3 text-sm font-bold font-cairo text-gray-900">{t('compare.tags')}</td>
               {items.map((p) => (
                 <td key={p.id} className="p-3 text-center text-sm font-cairo text-gray-600">{p.tags.join(', ') || '-'}</td>
               ))}

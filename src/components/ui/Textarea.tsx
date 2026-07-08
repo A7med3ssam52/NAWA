@@ -1,5 +1,6 @@
 import { type TextareaHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -8,6 +9,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, label, error, id, dir = 'rtl', ...props }, ref) => {
+    const { t, i18n } = useTranslation();
     const textareaId = id || label?.replace(/\s+/g, '-').toLowerCase();
 
     return (

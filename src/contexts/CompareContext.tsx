@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo, type ReactNode } from 'react';
 import type { Product } from '@/types';
 import toast from 'react-hot-toast';
+import i18n from '@/i18n';
 
 const MAX_COMPARE = 4;
 const STORAGE_KEY = 'compare_items';
@@ -36,17 +37,17 @@ export function CompareProvider({ children }: { children: ReactNode }) {
     setItems((prev) => {
       if (prev.some((p) => p.id === product.id)) return prev;
       if (prev.length >= MAX_COMPARE) {
-        toast.error(`يمكن مقارنة ${MAX_COMPARE} منتجات كحد أقصى`);
+        toast.error(i18n.t('compare.maxItems', { count: MAX_COMPARE }));
         return prev;
       }
-      toast.success('تمت إضافة المنتج للمقارنة');
+      toast.success(i18n.t('compare.addedToCompare'));
       return [...prev, product];
     });
   }, []);
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((p) => p.id !== id));
-    toast.success('تمت إزالة المنتج من المقارنة');
+    toast.success(i18n.t('compare.removedFromCompare'));
   }, []);
 
   const clearAll = useCallback(() => {
