@@ -118,8 +118,10 @@ export function AdminLayout() {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
+    } else if (user && user.role !== 'admin') {
+      navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
     if (mobileOpen) {

@@ -59,7 +59,7 @@ export function AdminOrdersPage() {
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     await new Promise((r) => setTimeout(r, 300));
-    const result = adminService.getOrders(
+    const result = await adminService.getOrders(
       statusFilter || undefined,
       searchQuery || undefined,
       page,
@@ -86,7 +86,7 @@ export function AdminOrdersPage() {
   };
 
   const openOrderModal = async (orderId: string) => {
-    const order = adminService.getOrder(orderId);
+    const order = await adminService.getOrder(orderId);
     if (order) {
       setSelectedOrder(order);
       setModalOpen(true);
@@ -96,7 +96,7 @@ export function AdminOrdersPage() {
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     setUpdating(true);
     await new Promise((r) => setTimeout(r, 500));
-    const updated = adminService.updateOrderStatus(orderId, newStatus as Order['status']);
+    const updated = await adminService.updateOrderStatus(orderId, newStatus as Order['status']);
     if (updated) {
       setSelectedOrder(updated);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
@@ -107,7 +107,7 @@ export function AdminOrdersPage() {
 
   const handleDelete = async (orderId: string) => {
     await new Promise((r) => setTimeout(r, 300));
-    const success = adminService.deleteOrder(orderId);
+    const success = await adminService.deleteOrder(orderId);
     if (success) {
       setOrders((prev) => prev.filter((o) => o.id !== orderId));
       setTotal((prev) => prev - 1);
@@ -116,15 +116,12 @@ export function AdminOrdersPage() {
     }
   };
 
-  const stats = useMemo(() => {
-    const all = adminService.getOrders();
-    return {
-      total: all.total,
-      pending: all.items.filter((o) => o.status === 'pending').length,
-      processing: all.items.filter((o) => o.status === 'processing').length,
-      cancelled: all.items.filter((o) => o.status === 'cancelled').length,
-    };
-  }, [orders]);
+  const stats = useMemo(() => ({
+    total,
+    pending: orders.filter((o) => o.status === 'pending').length,
+    processing: orders.filter((o) => o.status === 'processing').length,
+    cancelled: orders.filter((o) => o.status === 'cancelled').length,
+  }), [orders, total]);
 
   return (
     <motion.div

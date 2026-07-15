@@ -32,9 +32,9 @@ export function AdminNotificationsPage() {
   const [saving, setSaving] = useState(false);
   const pageSize = 20;
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const result = adminService.getNotifications(page, pageSize);
+    const result = await adminService.getNotifications(page, pageSize);
     setNotifications(result.items);
     setTotalPages(result.totalPages);
     setLoading(false);
@@ -47,12 +47,12 @@ export function AdminNotificationsPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.title) { toast.error(t('admin.notificationTitleRequired')); return; }
     if (!form.message) { toast.error(t('admin.notificationMessageRequired')); return; }
     setSaving(true);
     try {
-      adminService.createNotification(form);
+      await adminService.createNotification(form);
       toast.success(t('admin.notificationSent'));
       setModalOpen(false);
       setPage(1);
@@ -61,14 +61,14 @@ export function AdminNotificationsPage() {
     finally { setSaving(false); }
   }
 
-  function handleMarkRead(notif: Notification) {
-    adminService.markNotificationRead(notif.id);
+  async function handleMarkRead(notif: Notification) {
+    await adminService.markNotificationRead(notif.id);
     toast.success(t('admin.notificationMarkedRead'));
     fetchData();
   }
 
-  function handleDelete(notif: Notification) {
-    adminService.deleteNotification(notif.id);
+  async function handleDelete(notif: Notification) {
+    await adminService.deleteNotification(notif.id);
     toast.success(t('admin.notificationDeleted'));
     setDeleteModal(null);
     fetchData();

@@ -25,9 +25,9 @@ export function AdminCategoriesPage() {
   const [form, setForm] = useState<Partial<Category>>(emptyCategory);
   const [saving, setSaving] = useState(false);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = adminService.getCategories();
+    const data = await adminService.getCategories();
     setCategories(data);
     setLoading(false);
   }, []);
@@ -50,15 +50,15 @@ export function AdminCategoriesPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.name) { toast.error(t('admin.categoryNameRequired')); return; }
     setSaving(true);
     try {
       if (editing) {
-        adminService.updateCategory(editing.id, form);
+        await adminService.updateCategory(editing.id, form);
         toast.success(t('admin.categoryUpdated'));
       } else {
-        adminService.createCategory(form);
+        await adminService.createCategory(form);
         toast.success(t('admin.categoryAdded'));
       }
       setModalOpen(false);
@@ -67,8 +67,8 @@ export function AdminCategoriesPage() {
     finally { setSaving(false); }
   }
 
-  function handleDelete(cat: Category) {
-    adminService.deleteCategory(cat.id);
+  async function handleDelete(cat: Category) {
+    await adminService.deleteCategory(cat.id);
     toast.success(t('admin.categoryDeleted'));
     setDeleteModal(null);
     fetchData();

@@ -89,7 +89,6 @@ function spinReducer(state: SpinState, action: SpinAction): SpinState {
 const STORAGE_KEY = 'spinState';
 
 function loadInitialState(): SpinState {
-  const prizes = adminService.getSpinPrizes();
   const today = getTodayKey();
   let dailyState: DailySpinState = { lastSpinDate: null, spinsRemainingToday: 1 };
   let history: SpinHistoryEntry[] = [];
@@ -106,14 +105,14 @@ function loadInitialState(): SpinState {
     }
   } catch {}
   return {
-    prizes,
+    prizes: [],
     lastSpinDate: dailyState.lastSpinDate,
     spinsRemainingToday: dailyState.spinsRemainingToday,
     isSpinning: false,
     currentPrize: null,
     showResult: false,
     history,
-    loaded: true,
+    loaded: false,
   };
 }
 
@@ -136,6 +135,12 @@ const SpinContext = createContext<SpinContextType | null>(null);
 
 export function SpinProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(spinReducer, undefined, loadInitialState);
+
+  useEffect(() => {
+    adminService.getSpinPrizes().then((prizes) => {
+      dispatch({ type: 'UPDATE_PRIZES', payload: prizes });
+    });
+  }, []);
 
   useEffect(() => {
     if (state.loaded) {
@@ -194,7 +199,7 @@ export function SpinProvider({ children }: { children: ReactNode }) {
         usedCount: 0,
       } : null;
       if (coupon) {
-        adminService.createCoupon(coupon);
+        adminService.createCoupon(coupon).then(() => {});
       }
     }
     dispatch({ type: 'DISMISS_RESULT' });
@@ -205,8 +210,9 @@ export function SpinProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshPrizes = useCallback(() => {
-    const prizes = adminService.getSpinPrizes();
-    dispatch({ type: 'UPDATE_PRIZES', payload: prizes });
+    adminService.getSpinPrizes().then((prizes) => {
+      dispatch({ type: 'UPDATE_PRIZES', payload: prizes });
+    });
   }, []);
 
   const value = useMemo(() => ({

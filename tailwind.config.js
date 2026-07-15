@@ -5,13 +5,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#0F172A',
-        secondary: '#2563EB',
-        accent: '#F59E0B',
-        success: '#22C55E',
-        danger: '#EF4444',
-        background: '#F8FAFC',
-        card: '#FFFFFF',
+        primary: 'rgb(var(--color-primary) / <alpha-value>)',
+        secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+        accent: 'rgb(var(--color-accent) / <alpha-value>)',
+        success: 'rgb(var(--color-success) / <alpha-value>)',
+        danger: 'rgb(var(--color-danger) / <alpha-value>)',
+        background: 'rgb(var(--color-background) / <alpha-value>)',
+        card: 'rgb(var(--color-card) / <alpha-value>)',
         ios: {
           background: '#F2F2F7',
           card: '#FFFFFF',

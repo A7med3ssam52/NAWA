@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -10,7 +10,7 @@ import { formatPrice, formatDate, cn } from '@/utils';
 import { getOrderStatusMap, SITE_NAME } from '@/constants';
 import { adminService } from '@/services';
 import { Badge } from '@/components/ui';
-import type { Order, Product } from '@/types';
+import type { Order, Product, Category } from '@/types';
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-500', confirmed: 'bg-blue-500', processing: 'bg-indigo-500',
@@ -70,10 +70,17 @@ function ChartBar({ label, value, max, color }: { label: string; value: number; 
 }
 
 export function AdminDashboardPage() {
-  const [orders, setOrders] = useState(() => adminService.getOrders());
-  const stats = useMemo(() => adminService.getStats(), []);
-  const products = useMemo(() => adminService.getProducts(), []);
-  const allCategories = useMemo(() => adminService.getCategories(), []);
+  const [orders, setOrders] = useState<{ items: Order[] }>({ items: [] });
+  const [stats, setStats] = useState({ totalProducts: 0, totalOrders: 0, totalRevenue: 0, totalUsers: 0, totalCategories: 0, totalBrands: 0, totalCoupons: 0, pendingOrders: 0, lowStockProducts: 0 });
+  const [products, setProducts] = useState<{ items: Product[] }>({ items: [] });
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    adminService.getOrders().then((res) => setOrders(res));
+    adminService.getStats().then((res) => setStats(res));
+    adminService.getProducts().then((res) => setProducts(res));
+    adminService.getCategories().then((res) => setAllCategories(res));
+  }, []);
 
   const maxRevenue = Math.max(...orders.items.reduce((acc: number[], o) => {
     const month = new Date(o.createdAt).getMonth();

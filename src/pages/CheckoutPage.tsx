@@ -11,6 +11,7 @@ import { getCouponByCode } from '@/data';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, EGYPT_GOVERNORATES } from '@/constants';
 import { Button, Input, Select, Textarea, Divider } from '@/components/ui';
+import { supabase } from '@/lib/supabase';
 import toast from 'react-hot-toast';
 
 type ShippingData = {
@@ -71,9 +72,9 @@ export function CheckoutPage() {
     setProcessing(true);
     await new Promise((r) => setTimeout(r, 1500));
     const orderId = crypto.randomUUID();
-    const orderEmail = JSON.parse(localStorage.getItem('order_emails') || '[]');
-    orderEmail.push({ orderId, email: 'guest@zahi.store', createdAt: new Date().toISOString(), total: total });
-    localStorage.setItem('order_emails', JSON.stringify(orderEmail));
+    await supabase.from('order_emails').insert({
+      order_id: orderId, email: 'guest@zahieg.com', created_at: new Date().toISOString(), total,
+    });
     toast.success(t('checkout.emailConfirmationSent'));
     clearCart();
     navigate(PAGES.ORDER_SUCCESS.replace(':orderId', orderId));

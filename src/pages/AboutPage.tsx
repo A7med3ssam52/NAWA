@@ -1,22 +1,19 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Target, Eye, Users, ShoppingBag, Package, HeadphonesIcon, Award } from 'lucide-react';
+import { getAboutStats } from '@/data';
 
 export function AboutPage() {
   const { t, i18n } = useTranslation();
 
-  const stats = [
-    { icon: Users, value: '٥٠,٠٠٠+', label: t('about.customers') },
-    { icon: ShoppingBag, value: '١٠٠,٠٠٠+', label: t('about.productsSold') },
-    { icon: Package, value: '١٠,٠٠٠+', label: t('about.productsAvailable') },
-    { icon: Award, value: '٩٨%', label: t('about.satisfaction') },
-  ];
+  const { customers, productsAvailable, productsSold, satisfaction } = getAboutStats();
+  const formatNumber = (n: number) => n.toLocaleString(i18n.language === 'ar' ? 'ar-EG' : 'en-US');
 
-  const team = [
-    { name: 'أحمد محمد', role: t('about.ceo'), avatar: 'A' },
-    { name: 'سارة خالد', role: t('about.marketingManager'), avatar: 'S' },
-    { name: 'محمد علي', role: t('about.cto'), avatar: 'M' },
-    { name: 'نورة أحمد', role: t('about.customerServiceManager'), avatar: 'N' },
+  const stats = [
+    { icon: Users, value: `${formatNumber(customers)}+`, label: t('about.customers') },
+    { icon: ShoppingBag, value: `${formatNumber(productsSold)}+`, label: t('about.productsSold') },
+    { icon: Package, value: `${formatNumber(productsAvailable)}+`, label: t('about.productsAvailable') },
+    { icon: Award, value: `${formatNumber(satisfaction)}%`, label: t('about.satisfaction') },
   ];
 
   return (
@@ -80,28 +77,6 @@ export function AboutPage() {
               </motion.div>
             );
           })}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-bold font-cairo text-gray-900 text-center mb-8">{t('about.team')}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6">
-          {team.map((member, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="text-center"
-            >
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-2xl font-bold font-cairo mx-auto mb-3">
-                {member.avatar}
-              </div>
-              <p className="text-sm font-bold font-cairo text-gray-900">{member.name}</p>
-              <p className="text-xs text-gray-500 font-cairo mt-0.5">{member.role}</p>
-            </motion.div>
-          ))}
         </div>
       </section>
     </motion.div>

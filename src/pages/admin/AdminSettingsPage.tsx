@@ -1,40 +1,49 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Store, Truck, Megaphone, Phone, Palette, Save } from 'lucide-react';
 import { cn } from '@/utils';
 import { Card, Button, Input, Textarea } from '@/components/ui';
-import { SITE_NAME, SITE_DESCRIPTION, SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
+import { SITE_NAME, SITE_DESCRIPTION } from '@/constants';
 import { adminService } from '@/services';
 import { toast } from '@/components/ui';
 
 export function AdminSettingsPage() {
   const { t, i18n } = useTranslation();
   const [storeInfo, setStoreInfo] = useState({ name: SITE_NAME(), description: SITE_DESCRIPTION() });
-  const [shipping, setShipping] = useState({
-    cost: SHIPPING_COST.toString(),
-    freeThreshold: FREE_SHIPPING_THRESHOLD.toString(),
+  const [shipping, setShipping] = useState({ cost: '30', freeThreshold: '500' });
+  const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@zahieg.com', address: t('nav.location') });
+  const [announcement, setAnnouncement] = useState<{ text: string; enabled: boolean; dismissible: boolean }>({ text: '', enabled: false, dismissible: true });
 
+  useEffect(() => {
+    adminService.getAnnouncement().then(setAnnouncement);
+    adminService.getStoreSettings().then((s) => {
+      if (s) {
+        setStoreInfo({ name: s.name || SITE_NAME(), description: s.description || SITE_DESCRIPTION() });
+        setShipping({ cost: String(s.shippingCost || 30), freeThreshold: String(s.freeShippingThreshold || 500) });
+        setContact({ phone: s.phone || '+201234567890', email: s.email || 'info@zahieg.com', address: s.address || t('nav.location') });
+      }
+    });
+  }, []);
 
-  });
-  const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@zahi.store', address: t('nav.location') });
-  const [announcement, setAnnouncement] = useState(() => adminService.getAnnouncement());
-
-  function handleSaveAnnouncement() {
-    adminService.updateAnnouncement(announcement);
+  async function handleSaveAnnouncement() {
+    await adminService.updateAnnouncement(announcement);
     window.dispatchEvent(new CustomEvent('announcement-update'));
     toast.success(t('admin.saveAnnouncement'));
   }
 
-  function handleSaveStore() {
+  async function handleSaveStore() {
+    await adminService.updateStoreSettings({ name: storeInfo.name, description: storeInfo.description });
     toast.success(t('admin.saveStoreInfo'));
   }
 
-  function handleSaveShipping() {
+  async function handleSaveShipping() {
+    await adminService.updateStoreSettings({ shippingCost: Number(shipping.cost), freeShippingThreshold: Number(shipping.freeThreshold) });
     toast.success(t('admin.saveShipping'));
   }
 
-  function handleSaveContact() {
+  async function handleSaveContact() {
+    await adminService.updateStoreSettings(contact);
     toast.success(t('admin.saveContact'));
   }
 

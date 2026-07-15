@@ -26,9 +26,9 @@ export function AdminCouponsPage() {
   const [form, setForm] = useState<Partial<Coupon>>(emptyCoupon);
   const [saving, setSaving] = useState(false);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = adminService.getCoupons();
+    const data = await adminService.getCoupons();
     setCoupons(data);
     setLoading(false);
   }, []);
@@ -63,7 +63,7 @@ export function AdminCouponsPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.code) { toast.error(t('admin.couponCodeRequired')); return; }
     if (!form.discount || form.discount <= 0) { toast.error(t('admin.discountRequired')); return; }
     setSaving(true);
@@ -73,10 +73,10 @@ export function AdminCouponsPage() {
         expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : new Date(Date.now() + 365 * 86400000).toISOString(),
       };
       if (editing) {
-        adminService.updateCoupon(editing.id, payload);
+        await adminService.updateCoupon(editing.id, payload);
         toast.success(t('admin.couponUpdated'));
       } else {
-        adminService.createCoupon(payload);
+        await adminService.createCoupon(payload);
         toast.success(t('admin.couponAdded'));
       }
       setModalOpen(false);
@@ -85,8 +85,8 @@ export function AdminCouponsPage() {
     finally { setSaving(false); }
   }
 
-  function handleDelete(coupon: Coupon) {
-    adminService.deleteCoupon(coupon.id);
+  async function handleDelete(coupon: Coupon) {
+    await adminService.deleteCoupon(coupon.id);
     toast.success(t('admin.couponDeleted'));
     setDeleteModal(null);
     fetchData();

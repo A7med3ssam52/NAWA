@@ -25,9 +25,9 @@ export function AdminBrandsPage() {
   const [form, setForm] = useState<Partial<Brand>>(emptyBrand);
   const [saving, setSaving] = useState(false);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = adminService.getBrands();
+    const data = await adminService.getBrands();
     setBrands(data);
     setLoading(false);
   }, []);
@@ -50,15 +50,15 @@ export function AdminBrandsPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.name) { toast.error(t('admin.brandNameRequired')); return; }
     setSaving(true);
     try {
       if (editing) {
-        adminService.updateBrand(editing.id, form);
+        await adminService.updateBrand(editing.id, form);
         toast.success(t('admin.brandUpdated'));
       } else {
-        adminService.createBrand(form);
+        await adminService.createBrand(form);
         toast.success(t('admin.brandAdded'));
       }
       setModalOpen(false);
@@ -67,8 +67,8 @@ export function AdminBrandsPage() {
     finally { setSaving(false); }
   }
 
-  function handleDelete(brand: Brand) {
-    adminService.deleteBrand(brand.id);
+  async function handleDelete(brand: Brand) {
+    await adminService.deleteBrand(brand.id);
     toast.success(t('admin.brandDeleted'));
     setDeleteModal(null);
     fetchData();

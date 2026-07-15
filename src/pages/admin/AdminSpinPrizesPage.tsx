@@ -29,9 +29,9 @@ export function AdminSpinPrizesPage() {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('prizes');
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = adminService.getSpinPrizes();
+    const data = await adminService.getSpinPrizes();
     setPrizes(data);
     setLoading(false);
   }, []);
@@ -77,16 +77,16 @@ export function AdminSpinPrizesPage() {
     setModalOpen(true);
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.label) { toast.error(t('admin.prizeLabelRequired')); return; }
     if (!form.weight || form.weight < 1) { toast.error(t('admin.prizeWeightMin')); return; }
     setSaving(true);
     try {
       if (editing) {
-        adminService.updateSpinPrize(editing.id, form);
+        await adminService.updateSpinPrize(editing.id, form);
         toast.success(t('admin.prizeUpdated'));
       } else {
-        adminService.createSpinPrize(form);
+        await adminService.createSpinPrize(form);
         toast.success(t('admin.prizeAdded'));
       }
       setModalOpen(false);
@@ -95,15 +95,15 @@ export function AdminSpinPrizesPage() {
     finally { setSaving(false); }
   }
 
-  function handleDelete(prize: SpinPrize) {
-    adminService.deleteSpinPrize(prize.id);
+  async function handleDelete(prize: SpinPrize) {
+    await adminService.deleteSpinPrize(prize.id);
     toast.success(t('admin.prizeDeleted'));
     setDeleteModal(null);
     fetchData();
   }
 
-  function toggleActive(prize: SpinPrize) {
-    adminService.updateSpinPrize(prize.id, { isActive: !prize.isActive });
+  async function toggleActive(prize: SpinPrize) {
+    await adminService.updateSpinPrize(prize.id, { isActive: !prize.isActive });
     fetchData();
     toast.success(prize.isActive ? t('admin.prizeToggled') : t('admin.prizeToggledActive'));
   }

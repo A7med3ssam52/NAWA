@@ -1,18 +1,31 @@
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Megaphone } from 'lucide-react';
 import { adminService } from '@/services';
+import type { AnnouncementConfig } from '@/types';
 
 interface AnnouncementBarProps {
   onDismiss: () => void;
 }
 
-function subscribe(cb: () => void) {
-  window.addEventListener('announcement-update', cb);
-  return () => window.removeEventListener('announcement-update', cb);
-}
-
 export function AnnouncementBar({ onDismiss }: AnnouncementBarProps) {
-  const config = useSyncExternalStore(subscribe, () => adminService.getAnnouncement());
+  const { i18n } = useTranslation();
+  const [config, setConfig] = useState<AnnouncementConfig>({ text: '', enabled: false, dismissible: true });
+
+  useEffect(() => {
+    adminService.getAnnouncement().then(setConfig);
+  }, []);
+
+  useEffect(() => {
+    const cb = () => adminService.getAnnouncement().then(setConfig);
+    window.addEventListener('announcement-update', cb);
+    return () => window.removeEventListener('announcement-update', cb);
+  }, []);
+
+  useEffect(() => {
+    adminService.getAnnouncement().then(setConfig);
+  }, [i18n.language]);
+
   const [dismissed, setDismissed] = useState(() => {
     try { return localStorage.getItem('announcement-dismissed') === 'true'; }
     catch { return false; }

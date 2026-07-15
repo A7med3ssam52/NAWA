@@ -18,23 +18,23 @@ export function AdminReviewsPage() {
   const [productFilter, setProductFilter] = useState('');
   const [deleteModal, setDeleteModal] = useState<Review | null>(null);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const result = adminService.getReviews(productFilter || undefined);
+    const result = await adminService.getReviews(productFilter || undefined);
     setReviews(result.items);
     setLoading(false);
   }, [productFilter]);
 
-  const fetchProducts = useCallback(() => {
-    const result = adminService.getProducts();
+  const fetchProducts = useCallback(async () => {
+    const result = await adminService.getProducts();
     setProducts(result.items);
   }, []);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  function handleDelete(review: Review) {
-    adminService.deleteReview(review.id);
+  async function handleDelete(review: Review) {
+    await adminService.deleteReview(review.id);
     toast.success(t('admin.reviewDeleted'));
     setDeleteModal(null);
     fetchData();

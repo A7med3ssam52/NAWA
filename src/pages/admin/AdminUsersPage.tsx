@@ -20,9 +20,9 @@ export function AdminUsersPage() {
   const [search, setSearch] = useState('');
   const [viewModal, setViewModal] = useState<UserWithOrders | null>(null);
 
-  const fetchData = useCallback(() => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = adminService.getUsers(search || undefined) as UserWithOrders[];
+    const data = await adminService.getUsers(search || undefined) as UserWithOrders[];
     setUsers(data);
     setLoading(false);
   }, [search]);

@@ -15,6 +15,7 @@ import {
   getUserOrders, getUserNotifications, getUserAddresses,
   orders as allOrders, reviews as allReviews,
 } from '@/data';
+import { adminService } from '@/services';
 import {
   Tabs, Button, Input, Modal, Badge, EmptyState, Divider, Spinner, Select, Textarea,
 } from '@/components/ui';
@@ -420,17 +421,22 @@ export function ProfilePage() {
     toast.success(t('profile.defaultSet'));
   };
 
-  const handleMarkRead = (id: string) => {
+  const handleMarkRead = async (id: string) => {
+    await adminService.markNotificationRead(id);
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
     toast.success(t('profile.notifMarkedRead'));
   };
 
-  const handleDeleteNotif = (id: string) => {
+  const handleDeleteNotif = async (id: string) => {
+    await adminService.deleteNotification(id);
     setNotifications((prev) => prev.filter((n) => n.id !== id));
     toast.success(t('profile.notifDeleted'));
   };
 
-  const handleMarkAllRead = () => {
+  const handleMarkAllRead = async () => {
+    for (const n of notifications.filter((n) => !n.read)) {
+      await adminService.markNotificationRead(n.id);
+    }
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     toast.success(t('profile.allMarkedRead'));
   };

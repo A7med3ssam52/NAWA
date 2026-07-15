@@ -72,6 +72,7 @@ export interface WishlistItem {
 
 export interface Address {
   id: string;
+  userId?: string;
   label: string;
   fullName: string;
   phone: string;
@@ -83,6 +84,7 @@ export interface Address {
 
 export interface Order {
   id: string;
+  userId?: string;
   orderNumber: string;
   status: string;
   items: OrderItem[];
@@ -122,6 +124,7 @@ export interface User {
   email: string;
   phone: string;
   avatar: string;
+  role: 'admin' | 'customer';
   addresses: string[];
   orders: string[];
   wishlist: string[];
@@ -130,6 +133,7 @@ export interface User {
 
 export interface Notification {
   id: string;
+  userId?: string;
   type: string;
   title: string;
   message: string;

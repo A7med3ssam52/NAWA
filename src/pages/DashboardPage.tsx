@@ -173,7 +173,7 @@ function TopProductsTable({ products }: { products: Product[] }) {
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation();
-  const stats: DashboardStats = useMemo(() => getDashboardStats(), []);
+  const stats: DashboardStats = useMemo(() => getDashboardStats(), [i18n.language]);
 
   const maxRevenue = Math.max(...stats.monthlyRevenue.map((m) => m.revenue), 1);
   const maxOrders = Math.max(...stats.monthlyRevenue.map((m) => m.orders), 1);

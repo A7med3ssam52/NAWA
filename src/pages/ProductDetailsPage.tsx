@@ -4,10 +4,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Share2, Check, Truck, Package, Bell, Star, MessageSquare, BarChart3 } from 'lucide-react';
 import { useProduct, useRelatedProducts } from '@/api';
 import { useRecentlyViewed } from '@/hooks';
-import { getProductReviews, categories } from '@/data';
+import { getProductReviews, categories, setReviewsData, reviews as allReviews } from '@/data';
 import { PAGES, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '@/constants';
-import { useCart, useWishlist, useCompare } from '@/contexts';
+import { useCart, useWishlist, useCompare, useAuth } from '@/contexts';
 import { formatPrice, cn } from '@/utils';
+import { supabase } from '@/lib/supabase';
+import type { Review } from '@/types';
 import { ProductGallery } from '@/components/features/ProductGallery';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { ReviewCard } from '@/components/features/ReviewCard';
@@ -34,12 +36,12 @@ function BackInStockForm({ productId, productName, onClose }: { productId: strin
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    const existing = JSON.parse(localStorage.getItem('back_in_stock') || '[]');
-    existing.push({ productId, email: email.trim(), createdAt: new Date().toISOString() });
-    localStorage.setItem('back_in_stock', JSON.stringify(existing));
+    await supabase.from('back_in_stock_requests').insert({
+      product_id: productId, email: email.trim(), created_at: new Date().toISOString(),
+    });
     setSubmitted(true);
     toast.success(t('products.willNotify'));
     setTimeout(onClose, 1500);
@@ -65,6 +67,7 @@ function BackInStockForm({ productId, productName, onClose }: { productId: strin
 
 function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () => void }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
@@ -76,22 +79,23 @@ function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () =
     e.preventDefault();
     if (rating === 0 || !comment.trim()) return;
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 500));
     const siteName = t('common.siteName');
-    const existing = JSON.parse(localStorage.getItem('product_reviews') || '[]');
-    existing.unshift({
+    const userName = name.trim() || user?.name || siteName;
+    const userAvatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=2563EB&color=fff`;
+    const newReview = {
       id: `review-${Date.now()}`,
-      productId,
-      userId: 'guest',
-      userName: name.trim() || siteName,
-      userAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim() || siteName)}&background=2563EB&color=fff`,
+      product_id: productId,
+      user_id: user?.id || 'guest',
+      user_name: userName,
+      user_avatar: userAvatar,
       rating,
       title: title.trim(),
       comment: comment.trim(),
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       likes: 0,
-    });
-    localStorage.setItem('product_reviews', JSON.stringify(existing));
+    };
+    await supabase.from('reviews').insert(newReview);
+    setReviewsData([newReview as unknown as Review, ...allReviews]);
     setSubmitting(false);
     toast.success(t('products.reviewSubmitted'));
     onSubmit();
@@ -142,10 +146,7 @@ export function ProductDetailsPage() {
 
   const reviews = useMemo(() => {
     if (!product) return [];
-    const jsonReviews = getProductReviews(product.id);
-    const stored = JSON.parse(localStorage.getItem('product_reviews') || '[]');
-    const productStored = stored.filter((r: any) => r.productId === product.id);
-    return [...productStored, ...jsonReviews];
+    return getProductReviews(product.id);
   }, [product?.id, reviewKey]);
 
   if (isLoading) {

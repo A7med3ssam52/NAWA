@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { formatPrice } from '@/utils';
 import { adminService } from '@/services';
-import { categories, brands } from '@/data';
 import {
   Button, Input, Select, Badge, Modal,
   EmptyState, Pagination, toast,
@@ -53,15 +52,17 @@ export function AdminProductsPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [catList, setCatList] = useState<{ value: string; label: string }[]>([]);
+  const [brandList, setBrandList] = useState<{ value: string; label: string }[]>([]);
 
-  const catOptions = useMemo(
-    () => categories.map((c) => ({ value: c.id, label: c.name })),
-    []
-  );
-  const brandOptions = useMemo(
-    () => brands.map((b) => ({ value: b.id, label: b.name })),
-    []
-  );
+  useEffect(() => {
+    adminService.getCategories().then((cats) =>
+      setCatList(cats.map((c) => ({ value: c.id, label: c.name })))
+    );
+    adminService.getBrands().then((brands) =>
+      setBrandList(brands.map((b) => ({ value: b.id, label: b.name })))
+    );
+  }, []);
 
   useEffect(() => {
     setPage(1);
@@ -69,17 +70,18 @@ export function AdminProductsPage() {
 
   useEffect(() => {
     setLoading(true);
-    const result = adminService.getProducts(
+    adminService.getProducts(
       search || undefined,
       categoryFilter || undefined,
       brandFilter || undefined,
       page,
       PAGE_SIZE
-    );
-    setProducts(result.items);
-    setTotal(result.total);
-    setTotalPages(result.totalPages);
-    setLoading(false);
+    ).then((result) => {
+      setProducts(result.items);
+      setTotal(result.total);
+      setTotalPages(result.totalPages);
+      setLoading(false);
+    });
   }, [search, categoryFilter, brandFilter, page]);
 
   function stockBadge(stock: number) {
@@ -118,7 +120,7 @@ export function AdminProductsPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSave() {
+  async function handleSave() {
     if (!form.name.trim()) {
       toast.error(t('admin.nameRequired'));
       return;
@@ -160,14 +162,14 @@ export function AdminProductsPage() {
       };
 
       if (modalMode === 'add') {
-        const created = adminService.createProduct(data);
+        const created = await adminService.createProduct(data);
         setProducts((prev) => [created, ...prev]);
         setTotal((t) => t + 1);
         toast.success(t('admin.productAdded'));
       } else {
         const id = editId;
         if (!id) return;
-        const updated = adminService.updateProduct(id, data);
+        const updated = await adminService.updateProduct(id, data);
         if (updated) {
           setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
           toast.success(t('admin.productUpdated'));
@@ -182,11 +184,11 @@ export function AdminProductsPage() {
     }
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      adminService.deleteProduct(deleteTarget.id);
+      await adminService.deleteProduct(deleteTarget.id);
       setProducts((prev) => prev.filter((p) => p.id !== deleteTarget.id));
       setTotal((t) => t - 1);
       toast.success(t('admin.productDeleted'));
@@ -213,9 +215,9 @@ export function AdminProductsPage() {
 
   const catMap = useMemo(() => {
     const m: Record<string, string> = {};
-    categories.forEach((c) => { m[c.id] = c.name; });
+    catList.forEach((c) => { m[c.value] = c.label; });
     return m;
-  }, []);
+  }, [catList]);
 
   return (
     <motion.div
@@ -255,7 +257,7 @@ export function AdminProductsPage() {
           </div>
           <div className="w-full sm:w-48">
             <Select
-              options={catOptions}
+              options={catList}
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
               placeholder={t('admin.allCategories')}
@@ -263,7 +265,7 @@ export function AdminProductsPage() {
           </div>
           <div className="w-full sm:w-48">
             <Select
-              options={brandOptions}
+              options={brandList}
               value={brandFilter}
               onChange={(e) => setBrandFilter(e.target.value)}
               placeholder={t('admin.allBrands')}
@@ -483,7 +485,7 @@ export function AdminProductsPage() {
             <Input label={t('admin.sku')} value={form.sku} onChange={(e) => updateForm('sku', e.target.value)} placeholder="SKU-001" />
             <Select
               label={t('admin.category')}
-              options={catOptions}
+              options={catList}
               value={form.category}
               onChange={(e) => updateForm('category', e.target.value)}
             />
@@ -491,7 +493,7 @@ export function AdminProductsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
               label={t('admin.brand')}
-              options={brandOptions}
+              options={brandList}
               value={form.brand}
               onChange={(e) => updateForm('brand', e.target.value)}
             />
