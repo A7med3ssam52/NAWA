@@ -40,7 +40,7 @@ const navLinks = [
 const contactItems = [
   { icon: MapPin, tKey: 'nav.location' as const },
   { icon: Phone, text: '+20 100 123 4567', dir: 'ltr' as const },
-  { icon: Mail, text: 'info@zahi.store' },
+  { icon: Mail, text: 'info@zahieg.com' },
 ];
 
 const catColors = [
@@ -102,7 +102,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
 
           {/* Drawer */}
           <motion.div
-            className="absolute inset-y-0 right-0 w-full max-w-sm bg-gradient-to-b from-white to-gray-50[#1a2744] shadow-2xl flex flex-col"
+            className="absolute inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl flex flex-col"
             initial={{ x: '100%' }}
             animate={{ x: 0, transition: { type: 'spring', damping: 30, stiffness: 300 } }}
             exit={{ x: '100%', transition: { duration: 0.25, ease: 'easeIn' } }}
