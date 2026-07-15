@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { categories, brands, testimonials } from '@/data';
+import { categories, testimonials } from '@/data';
 import { useNewProducts, useBestSellingProducts, useDiscountedProducts } from '@/api';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { NewsletterSection } from '@/components/features/NewsletterSection';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { CategoryCard } from '@/components/features/CategoryCard';
-import { BrandCard } from '@/components/features/BrandCard';
 import { TestimonialCard } from '@/components/features/TestimonialCard';
 import { ProductCardSkeleton } from '@/components/ui/Skeleton';
 import { useRecentlyViewed } from '@/hooks';
@@ -66,17 +65,6 @@ export function HomePage() {
             <h2 className="text-lg font-bold text-gray-900">{t('home.specialOffers')}</h2>
           </div>
           {!allLoaded ? <SectionSkeleton /> : <ProductGrid items={discounted.data!.slice(0, 12)} loading={false} animated={false} />}
-        </section>
-
-        <section className="ios-group">
-          <h2 className="ios-section-header">{t('home.brands')}</h2>
-          <div className="px-4 py-4">
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 sm:gap-4">
-              {brands.map((brand, i) => (
-                <BrandCard key={brand.id} brand={brand} index={i} />
-              ))}
-            </div>
-          </div>
         </section>
 
         <section className="ios-card px-4 py-4">

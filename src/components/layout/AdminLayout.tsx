@@ -23,7 +23,6 @@ const BASE_NAV_ITEMS: Omit<NavItem, 'badge'>[] = [
   { label: 'admin.products', href: '/admin/products', icon: <Package className="w-5 h-5" /> },
   { label: 'admin.orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { label: 'admin.categories', href: '/admin/categories', icon: <Grid3X3 className="w-5 h-5" /> },
-  { label: 'admin.brands', href: '/admin/brands', icon: <Tag className="w-5 h-5" /> },
   { label: 'admin.coupons', href: '/admin/coupons', icon: <Percent className="w-5 h-5" /> },
   { label: 'admin.users', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
   { label: 'admin.reviews', href: '/admin/reviews', icon: <Star className="w-5 h-5" /> },
