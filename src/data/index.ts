@@ -1,13 +1,10 @@
 import i18n from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import type { Product, Category, Brand, Review, Order, Notification, Coupon, Address, Testimonial, SpinPrize, User } from '@/types';
-import productsData from './products.json';
-import categoriesData from './categories.json';
-import brandsData from './brands.json';
 
-let products: Product[] = productsData as Product[];
-let categories: Category[] = categoriesData as Category[];
-let brands: Brand[] = brandsData as Brand[];
+let products: Product[] = [];
+let categories: Category[] = [];
+let brands: Brand[] = [];
 let reviews: Review[] = [];
 let users: User[] = [];
 let orders: Order[] = [];
@@ -42,13 +39,13 @@ export async function loadAllData() {
       loadTable<Testimonial>('testimonials'),
       loadTable<SpinPrize>('spin_prizes'),
     ]);
-    if (p.length > 0) products = p;
-    if (c.length > 0) categories = c;
-    if (b.length > 0) brands = b;
+    products = p;
+    categories = c;
+    brands = b;
     reviews = r; users = u; orders = o; notifications = n;
     coupons = co; addresses = a; testimonials = t; spinPrizes = s;
   } catch (e) {
-    console.warn('Supabase load failed, using local data', e);
+    console.warn('Supabase load failed', e);
   }
 }
 

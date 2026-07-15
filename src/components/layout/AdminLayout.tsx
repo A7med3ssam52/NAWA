@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  LayoutDashboard, Package, ShoppingCart, Grid3X3, Tag, Users,
+  LayoutDashboard, Package, ShoppingCart, Grid3X3, Users,
   Star, Bell, Settings, ChevronDown, Menu, X, Percent, LogOut,
   Store, Home, ChevronLeft, ChevronRight, Gift, BookOpen,
 } from 'lucide-react';

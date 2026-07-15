@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User, Address } from '@/types';
-import { users, getUserAddresses, loadAllData, setUsersData, addresses as allAddresses, setAddressesData } from '@/data';
+import { users, getUserAddresses, setUsersData, addresses as allAddresses, setAddressesData } from '@/data';
 import i18n from '@/i18n';
 
 interface AuthState {
