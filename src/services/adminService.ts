@@ -39,7 +39,7 @@ export const adminService = {
     if (brandId) query = query.eq('brand_id', brandId);
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    if (!error && data) {
+    if (!error && data !== null) {
       const mapped = (data as unknown as any[]).map(mapProduct);
       setProductsData(mapped);
       return { items: mapped, total: count || data.length, totalPages: Math.ceil((count || data.length) / pageSize), page };
@@ -128,8 +128,8 @@ export const adminService = {
 
   // ─── Categories ────────────────────────────────────
   async getCategories() {
-    const { data } = await supabase.from('categories').select('*');
-    if (data && data.length > 0) {
+    const { data, error } = await supabase.from('categories').select('*');
+    if (!error && data !== null) {
       const mapped = (data as any[]).map(mapCategory);
       setCategoriesData(mapped as Category[]);
       return (mapped as Category[]).map((c) => ({
@@ -189,8 +189,8 @@ export const adminService = {
 
   // ─── Brands ────────────────────────────────────────
   async getBrands() {
-    const { data } = await supabase.from('brands').select('*');
-    if (data && data.length > 0) {
+    const { data, error } = await supabase.from('brands').select('*');
+    if (!error && data !== null) {
       const mapped = (data as any[]).map(mapBrand);
       setBrandsData(mapped as Brand[]);
       return (mapped as Brand[]).map((b) => ({
@@ -248,8 +248,8 @@ export const adminService = {
 
   // ─── Coupons ───────────────────────────────────────
   async getCoupons() {
-    const { data } = await supabase.from('coupons').select('*');
-    if (data && data.length > 0) { setCouponsData(data as unknown as Coupon[]); return data as unknown as Coupon[]; }
+    const { data, error } = await supabase.from('coupons').select('*');
+    if (!error && data !== null) { setCouponsData(data as unknown as Coupon[]); return data as unknown as Coupon[]; }
     return [...coupons];
   },
 
@@ -312,7 +312,7 @@ export const adminService = {
     if (search) query = query.ilike('order_number', `%${search}%`);
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    if (!error && data) {
+    if (!error && data !== null) {
       const mapped = (data as unknown as any[]).map(mapOrder);
       setOrdersData(mapped);
       return { items: mapped, total: count || data.length, totalPages: Math.ceil((count || data.length) / pageSize), page };
@@ -379,7 +379,7 @@ export const adminService = {
     if (productId) query = query.eq('product_id', productId);
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    if (!error && data) {
+    if (!error && data !== null) {
       const mapped = (data as unknown as any[]).map(mapReview);
       setReviewsData(mapped);
       return { items: mapped, total: count || data.length, totalPages: Math.ceil((count || data.length) / pageSize), page };
@@ -406,7 +406,7 @@ export const adminService = {
     let query = supabase.from('notifications').select('*', { count: 'exact' }).order('created_at', { ascending: false });
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1);
-    if (!error && data && data.length > 0) {
+    if (!error && data !== null) {
       const mapped = (data as unknown as any[]).map(mapNotification);
       setNotificationsData(mapped);
       return { items: mapped, total: count || data.length, totalPages: Math.ceil((count || data.length) / pageSize), page };
@@ -455,8 +455,8 @@ export const adminService = {
 
   // ─── Users ─────────────────────────────────────────
   async getUsers(search?: string) {
-    const { data } = await supabase.from('profiles').select('*');
-    if (data && data.length > 0) {
+    const { data, error } = await supabase.from('profiles').select('*');
+    if (!error && data !== null) {
       setUsersData(data as unknown as User[]);
       let result = data as unknown as User[];
       if (search) {
@@ -475,25 +475,27 @@ export const adminService = {
 
   // ─── Stats ─────────────────────────────────────────
   async getStats() {
-    const { data: ordersData } = await supabase.from('orders').select('total,status');
+    const { data: ordersData, error: ordersError } = await supabase.from('orders').select('total,status');
     const { count: totalProducts } = await supabase.from('products').select('*', { count: 'exact', head: true });
     const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
     const { count: totalCategories } = await supabase.from('categories').select('*', { count: 'exact', head: true });
     const { count: totalBrands } = await supabase.from('brands').select('*', { count: 'exact', head: true });
     const { count: totalCoupons } = await supabase.from('coupons').select('*', { count: 'exact', head: true });
 
-    if (ordersData) {
+    const _getCount = (count: number | null, fallback: number) => count !== null ? count : fallback;
+
+    if (!ordersError && ordersData !== null) {
       const totalRevenue = ordersData.reduce((s, o) => s + (o.total || 0), 0);
       const pendingOrders = ordersData.filter((o) => o.status === 'pending').length;
       const lowStock = products.filter((p) => p.stock < 10).length;
       return {
-        totalProducts: totalProducts || products.length,
+        totalProducts: _getCount(totalProducts, products.length),
         totalOrders: ordersData.length,
         totalRevenue,
-        totalUsers: totalUsers || users.length,
-        totalCategories: totalCategories || categories.length,
-        totalBrands: totalBrands || brands.length,
-        totalCoupons: totalCoupons || coupons.length,
+        totalUsers: _getCount(totalUsers, users.length),
+        totalCategories: _getCount(totalCategories, categories.length),
+        totalBrands: _getCount(totalBrands, brands.length),
+        totalCoupons: _getCount(totalCoupons, coupons.length),
         pendingOrders,
         lowStockProducts: lowStock,
       };
@@ -512,8 +514,8 @@ export const adminService = {
 
   // ─── Spin Prizes ────────────────────────────────────
   async getSpinPrizes() {
-    const { data } = await supabase.from('spin_prizes').select('*');
-    if (data && data.length > 0) {
+    const { data, error } = await supabase.from('spin_prizes').select('*');
+    if (!error && data !== null) {
       const mapped = (data as any[]).map(mapSpinPrize);
       setSpinPrizesData(mapped);
       return mapped;

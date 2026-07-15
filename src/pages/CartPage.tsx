@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/contexts';
-import { getCouponByCode } from '@/data';
+import { adminService } from '@/services';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
@@ -33,8 +33,10 @@ export function CartPage() {
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
     setCouponLoading(true);
-    await new Promise((r) => setTimeout(r, 500));
-    const coupon = getCouponByCode(couponInput);
+    const coupons = await adminService.getCoupons();
+    const coupon = coupons.find(
+      (c) => c.code === couponInput.trim().toUpperCase() && new Date(c.expiresAt) > new Date()
+    );
     if (coupon) {
       const discAmount = coupon.type === 'percentage'
         ? Math.min(subtotal * coupon.discount / 100, coupon.maxDiscount)

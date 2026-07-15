@@ -503,7 +503,7 @@ export function ProfilePage() {
             icon={<Package className="w-5 h-5 text-white" />}
             label={t('profile.statsOrders')}
             value={orders.length}
-            color="bg-gradient-to-br from-secondary to-blue-500"
+            color="bg-gradient-to-br from-secondary to-accent"
           />
           <StatCard
             icon={<Heart className="w-5 h-5 text-white" />}
@@ -515,7 +515,7 @@ export function ProfilePage() {
             icon={<Star className="w-5 h-5 text-white" />}
             label={t('profile.statsReviews')}
             value={userReviews.length}
-            color="bg-gradient-to-br from-accent to-yellow-400"
+            color="bg-gradient-to-br from-accent to-secondary/70"
           />
           <StatCard
             icon={<Bell className="w-5 h-5 text-white" />}

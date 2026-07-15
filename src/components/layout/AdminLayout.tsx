@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, ShoppingCart, Grid3X3, Tag, Users,
   Star, Bell, Settings, ChevronDown, Menu, X, Percent, LogOut,
-  Store, Home, ChevronLeft, ChevronRight, Gift,
+  Store, Home, ChevronLeft, ChevronRight, Gift, BookOpen,
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
 import { useTranslation } from 'react-i18next';
+import { adminService } from '@/services';
 
 interface NavItem {
   label: string;
@@ -17,22 +18,22 @@ interface NavItem {
   badge?: number;
 }
 
-const navItems: NavItem[] = [
+const BASE_NAV_ITEMS: Omit<NavItem, 'badge'>[] = [
   { label: 'admin.dashboard', href: '/admin', icon: <LayoutDashboard className="w-5 h-5" /> },
   { label: 'admin.products', href: '/admin/products', icon: <Package className="w-5 h-5" /> },
-  { label: 'admin.orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" />, badge: 12 },
+  { label: 'admin.orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { label: 'admin.categories', href: '/admin/categories', icon: <Grid3X3 className="w-5 h-5" /> },
   { label: 'admin.brands', href: '/admin/brands', icon: <Tag className="w-5 h-5" /> },
   { label: 'admin.coupons', href: '/admin/coupons', icon: <Percent className="w-5 h-5" /> },
   { label: 'admin.users', href: '/admin/users', icon: <Users className="w-5 h-5" /> },
   { label: 'admin.reviews', href: '/admin/reviews', icon: <Star className="w-5 h-5" /> },
+  { label: 'admin.accounts', href: '/admin/accounts', icon: <BookOpen className="w-5 h-5" /> },
   { label: 'admin.notifications', href: '/admin/notifications', icon: <Bell className="w-5 h-5" /> },
   { label: 'admin.spinWheel', href: '/admin/spin-prizes', icon: <Gift className="w-5 h-5" /> },
   { label: 'admin.settings', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
 ];
 
 const SITE_NAME = 'Zahi';
-const bottomNavItems = navItems.filter((_, i) => [0, 1, 2, 3, 9].includes(i));
 
 const itemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -60,7 +61,7 @@ function NavLink({ item, isActive, collapsed, onClick }: {
       {isActive && (
         <motion.div
           layoutId="adminNavActive"
-          className="absolute inset-0 rounded-2xl bg-gradient-to-l from-secondary to-blue-500"
+          className="absolute inset-0 rounded-2xl bg-gradient-to-l from-secondary to-accent"
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         />
       )}
@@ -96,12 +97,29 @@ export function AdminLayout() {
   const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [pendingOrders, setPendingOrders] = useState(0);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    adminService.getStats().then((stats) => setPendingOrders(stats.pendingOrders));
+  }, []);
+
+  const navItems: NavItem[] = useMemo(() =>
+    BASE_NAV_ITEMS.map((item) =>
+      item.href === '/admin/orders' ? { ...item, badge: pendingOrders } : item
+    ),
+    [pendingOrders]
+  );
+
+  const bottomNavItems = useMemo(() =>
+    navItems.filter((_, i) => [0, 1, 2, 3, 9].includes(i)),
+    [navItems]
+  );
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -116,12 +134,13 @@ export function AdminLayout() {
   }, []);
 
   useEffect(() => {
+    if (loading) return;
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { from: pathname } });
     } else if (user && user.role !== 'admin') {
       navigate('/');
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, loading, navigate, pathname]);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -190,7 +209,7 @@ export function AdminLayout() {
           {sidebarOpen ? (
             <>
               <Link to="/admin" className="flex items-center gap-2.5 min-w-0 group">
-                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center shadow-lg shadow-secondary/30 group-hover:shadow-secondary/50 transition-shadow">
+                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center shadow-lg shadow-secondary/30 group-hover:shadow-secondary/50 transition-shadow">
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <div className="min-w-0">
@@ -244,7 +263,7 @@ export function AdminLayout() {
             )}
           >
             <div className="relative shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shadow-md">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -301,7 +320,7 @@ export function AdminLayout() {
 
               <div className="relative flex items-center justify-between p-4 border-b border-gray-100">
                 <Link to="/admin" onClick={closeMobile} className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center shadow-lg shadow-secondary/30">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center shadow-lg shadow-secondary/30">
                     <Store className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -334,7 +353,7 @@ export function AdminLayout() {
                 <Link to="/admin/settings" onClick={closeMobile}
                   className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-medium font-cairo text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -398,7 +417,7 @@ export function AdminLayout() {
                   aria-haspopup="true"
                   aria-expanded={showUserMenu}
                 >
-                  <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center text-white text-xs font-bold font-cairo overflow-hidden shrink-0 shadow-sm">
+                  <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs font-bold font-cairo overflow-hidden shrink-0 shadow-sm">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -452,7 +471,7 @@ export function AdminLayout() {
 
       {/* ─── Premium Mobile Bottom Navigation Bar ─── */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 safe-area-bottom">
-        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)][0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20">
+        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08),0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20">
           <div className="flex items-center justify-around h-16 px-1">
             {bottomNavItems.map((item) => {
               const active = isActive(item.href);

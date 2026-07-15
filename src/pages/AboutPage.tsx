@@ -1,13 +1,30 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Target, Eye, Users, ShoppingBag, Package, HeadphonesIcon, Award } from 'lucide-react';
-import { getAboutStats } from '@/data';
+import { supabase } from '@/lib/supabase';
 
 export function AboutPage() {
   const { t, i18n } = useTranslation();
+  const [siteStats, setSiteStats] = useState({ customers: 0, productsAvailable: 0, productsSold: 0, satisfaction: 98 });
 
-  const { customers, productsAvailable, productsSold, satisfaction } = getAboutStats();
+  useEffect(() => {
+    Promise.all([
+      supabase.from('profiles').select('*', { count: 'exact', head: true }),
+      supabase.from('products').select('*', { count: 'exact', head: true }),
+      supabase.from('orders').select('total'),
+    ]).then(([usersRes, productsRes, ordersRes]) => {
+      setSiteStats({
+        customers: usersRes.count || 0,
+        productsAvailable: productsRes.count || 0,
+        productsSold: ordersRes.data?.length || 0,
+        satisfaction: 98,
+      });
+    });
+  }, []);
+
   const formatNumber = (n: number) => n.toLocaleString(i18n.language === 'ar' ? 'ar-EG' : 'en-US');
+  const { customers, productsAvailable, productsSold, satisfaction } = siteStats;
 
   const stats = [
     { icon: Users, value: `${formatNumber(customers)}+`, label: t('about.customers') },

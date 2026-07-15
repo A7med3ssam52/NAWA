@@ -98,7 +98,7 @@ export function SpinWheel({ prizes, spinning, onSpinEnd, onStartSpin, disabled }
         </div>
 
         {/* Outer glow */}
-        <div className="absolute rounded-full w-[340px] h-[340px] bg-gradient-to-br from-secondary/20 to-blue-500/20 blur-2xl" />
+        <div className="absolute rounded-full w-[340px] h-[340px] bg-gradient-to-br from-secondary/20 to-accent/20 blur-2xl" />
 
         {/* Wheel */}
         <motion.div
@@ -199,7 +199,7 @@ export function SpinWheel({ prizes, spinning, onSpinEnd, onStartSpin, disabled }
           <button
             onClick={onStartSpin}
             disabled={disabled}
-            className="absolute inset-0 m-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-cairo transition-all duration-300 z-20 shadow-2xl disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed bg-gradient-to-br from-secondary to-blue-500 text-white cursor-pointer hover:scale-105 active:scale-95 hover:shadow-secondary/40"
+            className="absolute inset-0 m-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-cairo transition-all duration-300 z-20 shadow-2xl disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed bg-gradient-to-br from-secondary to-accent text-white cursor-pointer hover:scale-105 active:scale-95 hover:shadow-secondary/40"
           >
             {disabled ? 'غداً' : 'ابدأ'}
           </button>

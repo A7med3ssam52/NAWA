@@ -54,6 +54,7 @@ const HomePage = lazyPage('HomePage', 'HomePage');
 const ProductsPage = lazyPage('ProductsPage', 'ProductsPage');
 const ProductDetailsPage = lazyPage('ProductDetailsPage', 'ProductDetailsPage');
 const CategoriesPage = lazyPage('CategoriesPage', 'CategoriesPage');
+const CategoryProductsPage = lazyPage('CategoryProductsPage', 'CategoryProductsPage');
 const OffersPage = lazyPage('OffersPage', 'OffersPage');
 const SearchPage = lazyPage('SearchPage', 'SearchPage');
 const WishlistPage = lazyPage('WishlistPage', 'WishlistPage');
@@ -90,6 +91,7 @@ const AdminReviewsPage = lazyAdmin('AdminReviewsPage', 'AdminReviewsPage');
 const AdminNotificationsPage = lazyAdmin('AdminNotificationsPage', 'AdminNotificationsPage');
 const AdminSettingsPage = lazyAdmin('AdminSettingsPage', 'AdminSettingsPage');
 const AdminSpinPrizesPage = lazyAdmin('AdminSpinPrizesPage', 'AdminSpinPrizesPage');
+const AdminAccountsPage = lazyAdmin('AdminAccountsPage', 'AdminAccountsPage');
 
 function PageLoading() {
   return (
@@ -113,6 +115,7 @@ const router = createBrowserRouter([
       { path: 'products', element: <SuspenseWrapper><ProductsPage /></SuspenseWrapper> },
       { path: 'products/:slug', element: <SuspenseWrapper><ProductDetailsPage /></SuspenseWrapper> },
       { path: 'categories', element: <SuspenseWrapper><CategoriesPage /></SuspenseWrapper> },
+      { path: 'categories/:slug', element: <SuspenseWrapper><CategoryProductsPage /></SuspenseWrapper> },
       { path: 'offers', element: <SuspenseWrapper><OffersPage /></SuspenseWrapper> },
       { path: 'search', element: <SuspenseWrapper><SearchPage /></SuspenseWrapper> },
       { path: 'wishlist', element: <SuspenseWrapper><WishlistPage /></SuspenseWrapper> },
@@ -154,6 +157,7 @@ const router = createBrowserRouter([
       { path: 'notifications', element: <SuspenseWrapper><AdminNotificationsPage /></SuspenseWrapper> },
       { path: 'settings', element: <SuspenseWrapper><AdminSettingsPage /></SuspenseWrapper> },
       { path: 'spin-prizes', element: <SuspenseWrapper><AdminSpinPrizesPage /></SuspenseWrapper> },
+      { path: 'accounts', element: <SuspenseWrapper><AdminAccountsPage /></SuspenseWrapper> },
     ],
   },
   {

@@ -9,7 +9,7 @@ import { formatPrice } from '@/utils';
 import { adminService } from '@/services';
 import {
   Button, Input, Select, Badge, Modal,
-  EmptyState, Pagination, toast,
+  EmptyState, Pagination, toast, ImageUpload,
 } from '@/components/ui';
 import type { Product } from '@/types';
 
@@ -27,7 +27,7 @@ const emptyForm = {
   brand: '',
   description: '',
   shortDescription: '',
-  images: '',
+  images: [] as string[],
   isFeatured: false,
   tags: '',
 };
@@ -108,12 +108,16 @@ export function AdminProductsPage() {
       brand: product.brand,
       description: product.description,
       shortDescription: product.shortDescription,
-      images: product.images.join(', '),
+      images: [...product.images],
       isFeatured: product.isFeatured,
       tags: product.tags.join(', '),
     });
     setEditId(product.id);
     setModalMode('edit');
+  }
+
+  function handleImages(urls: string[]) {
+    setForm((prev) => ({ ...prev, images: urls }));
   }
 
   function updateForm(key: keyof FormData, value: string | boolean | number) {
@@ -152,8 +156,8 @@ export function AdminProductsPage() {
         brand: form.brand,
         description: form.description,
         shortDescription: form.shortDescription,
-        images: form.images
-          ? form.images.split(',').map((s: string) => s.trim()).filter(Boolean)
+        images: form.images.length > 0
+          ? form.images
           : ['https://picsum.photos/seed/default/600/600'],
         isFeatured: form.isFeatured,
         tags: form.tags
@@ -521,7 +525,12 @@ export function AdminProductsPage() {
               />
             </div>
           </div>
-          <Input label={t('admin.productImages')} value={form.images} onChange={(e) => updateForm('images', e.target.value)} placeholder="https://... , https://..." dir="ltr" />
+          <div>
+            <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">
+              {t('admin.productImages')}
+            </label>
+            <ImageUpload value={form.images} onChange={handleImages} bucket="products" max={5} />
+          </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"

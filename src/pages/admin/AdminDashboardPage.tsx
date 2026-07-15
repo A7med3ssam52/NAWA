@@ -127,7 +127,7 @@ export function AdminDashboardPage() {
           <h2 className="text-base lg:text-lg font-bold font-cairo text-gray-900 mb-4 lg:mb-6">الإيرادات الشهرية</h2>
           <div className="space-y-2 lg:space-y-3">
             {last6Months.map((m) => (
-              <ChartBar key={m.key} label={m.label} value={monthlyData[m.key] || 0} max={maxRevenue} color="bg-gradient-to-l from-secondary to-blue-400" />
+              <ChartBar key={m.key} label={m.label} value={monthlyData[m.key] || 0} max={maxRevenue} color="bg-gradient-to-l from-secondary to-accent" />
             ))}
           </div>
         </div>

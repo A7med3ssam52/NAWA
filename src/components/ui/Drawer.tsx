@@ -69,7 +69,7 @@ export function Drawer({
           aria-label={title}
         >
           <motion.div
-            className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/40 to-transparent backdrop-blur-sm"
+            className="fixed inset-0 bg-gradient-to-l from-black/60 via-black/40 to-transparent backdrop-blur-sm"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"

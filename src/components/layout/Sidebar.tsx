@@ -44,12 +44,12 @@ const contactItems = [
 ];
 
 const catColors = [
-  'from-secondary to-blue-400',
+  'from-secondary to-accent',
   'from-accent to-orange-400',
   'from-success to-green-400',
   'from-danger to-red-400',
   'from-purple-500 to-pink-500',
-  'from-cyan-500 to-blue-500',
+  'from-cyan-500 to-accent',
 ];
 
 const containerVariants = {
@@ -123,7 +123,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     transition={{ delay: 0.1 }}
                   >
                     <div className="relative">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-blue-400 flex items-center justify-center text-white font-bold font-cairo text-lg overflow-hidden shadow-lg shadow-secondary/20">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white font-bold font-cairo text-lg overflow-hidden shadow-lg shadow-secondary/20">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -144,7 +144,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary/20 to-blue-400/20 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary/20 to-accent/20 flex items-center justify-center">
                       <User className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
@@ -168,7 +168,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <Link
                     to="/login"
                     onClick={onClose}
-                    className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white text-sm font-bold font-cairo shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/30 transition-all"
+                    className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gradient-to-l from-secondary to-accent text-white text-sm font-bold font-cairo shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/30 transition-all"
                   >
                     <span>{t('nav.loginOrRegister')}</span>
                     <ArrowLeft className="w-4 h-4" />
@@ -304,7 +304,6 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                         )} />
                         <span>{cat.name}</span>
                       </div>
-                      <span className="text-xs text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">{cat.productsCount}</span>
                     </Link>
                   ))}
                 </div>

@@ -126,7 +126,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
               className={`w-14 h-14 sm:w-20 sm:h-20 mx-auto rounded-2xl flex items-center justify-center ${
                 isWin
-                  ? 'bg-gradient-to-br from-secondary/10 to-blue-500/10 text-secondary'
+                  ? 'bg-gradient-to-br from-secondary/10 to-accent/10 text-secondary'
                   : 'bg-gray-100 text-gray-400'
               }`}
             >
@@ -181,13 +181,13 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
             transition={{ delay: 0.4 }}
           >
             {prize.type === 'percentage' && (
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-accent text-white shadow-lg shadow-secondary/25">
                 <span className="text-2xl sm:text-3xl font-bold font-cairo">{prize.value}%</span>
                 <span className="text-[11px] sm:text-sm font-cairo opacity-90">خصم</span>
               </div>
             )}
             {prize.type === 'fixed' && (
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-blue-500 text-white shadow-lg shadow-secondary/25">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl bg-gradient-to-l from-secondary to-accent text-white shadow-lg shadow-secondary/25">
                 <span className="text-2xl sm:text-3xl font-bold font-cairo">{prize.value?.toLocaleString('ar-EG')}</span>
                 <span className="text-[11px] sm:text-sm font-cairo opacity-90">ج.م</span>
               </div>
@@ -234,7 +234,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
                 </button>
                 <button
                   onClick={onClaim}
-                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-accent shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
                 >
                   احصل عليه
                 </button>
@@ -242,7 +242,7 @@ export function SpinResultModal({ isOpen, prize, couponCode, onClaim, onClose }:
             ) : (
               <button
                 onClick={onClose}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-blue-500 shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl text-xs sm:text-sm font-bold font-cairo text-white bg-gradient-to-l from-secondary to-accent shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all"
               >
                 حسناً
               </button>

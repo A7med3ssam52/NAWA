@@ -76,7 +76,7 @@ export function Modal({
           aria-label={title}
         >
           <motion.div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
             variants={backdrop}
             initial="hidden"
             animate="visible"

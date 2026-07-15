@@ -217,3 +217,16 @@ export interface DailySpinState {
   lastSpinDate: string | null;
   spinsRemainingToday: number;
 }
+
+export type AccountingEntryType = 'income' | 'expense';
+
+export interface AccountingEntry {
+  id: string;
+  type: AccountingEntryType;
+  category: string;
+  amount: number;
+  description: string;
+  entry_date: string;
+  created_at: string;
+  updated_at: string;
+}

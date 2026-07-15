@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Input, Modal, EmptyState, Spinner } from '@/components/ui';
+import { Button, Input, Modal, EmptyState, Spinner, ImageUpload } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { Category } from '@/types';
 
@@ -175,7 +175,17 @@ export function AdminCategoriesPage() {
         <div className="space-y-4">
           <Input label={t('admin.categoryName')} value={form.name || ''} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t('admin.namePlaceholder')} />
           <Input label={t('admin.slugLabel')} value={form.slug || ''} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder={t('admin.slugPlaceholder')} />
-          <Input label={t('admin.imageUrlLabel')} value={form.image || ''} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder={t('admin.imagePlaceholder')} />
+          <div>
+            <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">
+              {t('admin.image')}
+            </label>
+            <ImageUpload
+              value={form.image ? [form.image] : []}
+              onChange={(urls) => setForm({ ...form, image: urls[0] || '' })}
+              bucket="categories"
+              max={1}
+            />
+          </div>
           <Input label={t('admin.iconLabel')} value={form.icon || ''} onChange={(e) => setForm({ ...form, icon: e.target.value })} placeholder={t('admin.iconPlaceholder')} />
           <div className="flex items-center gap-3 pt-2">
             <Button variant="secondary" className="flex-1" onClick={() => setModalOpen(false)}>{t('common.cancel')}</Button>

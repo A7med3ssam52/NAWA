@@ -62,3 +62,10 @@
 
 -- Step 18: RLS Policies (after all tables exist)
 \i '15_rls_policies.sql'
+
+-- Step 19: Accounting / Bookkeeping Module
+\i '19_accounting.sql'
+
+-- Step 20: Storage Buckets & RLS for image uploads
+-- Note: Requires service_role key; alternatively create buckets via Dashboard first
+-- \i '../uploadimages.sql'

@@ -14,33 +14,23 @@ INSERT INTO profiles (id, name, email, phone, avatar, addresses, orders, wishlis
 
 -- ─── Categories ───
 INSERT INTO categories (id, name, slug, image, icon, products_count) VALUES
-('cat-1', 'ملابس رجالي', 'mens-clothing', 'https://picsum.photos/seed/men/400/400', 'Shirt', 12),
-('cat-2', 'ملابس حريمي', 'womens-clothing', 'https://picsum.photos/seed/women/400/400', 'Shirt', 8),
-('cat-3', 'أحذية', 'shoes', 'https://picsum.photos/seed/shoes/400/400', 'Footprints', 5),
-('cat-4', 'إكسسوارات', 'accessories', 'https://picsum.photos/seed/accessories/400/400', 'Watch', 4),
-('cat-5', 'شنط', 'bags', 'https://picsum.photos/seed/bags/400/400', 'ShoppingBag', 3),
-('cat-6', 'عطور', 'perfumes', 'https://picsum.photos/seed/perfumes/400/400', 'Zap', 3),
-('cat-7', 'ساعات', 'watches', 'https://picsum.photos/seed/watches/400/400', 'Clock', 2),
-('cat-8', 'إلكترونيات', 'electronics', 'https://picsum.photos/seed/electronics/400/400', 'Smartphone', 2),
-('cat-9', 'مكياج', 'makeup', 'https://picsum.photos/seed/makeup/400/400', 'Palette', 2);
+('cat-1', 'رجالى', 'men', 'https://picsum.photos/seed/men/400/400', 'Shirt', 1),
+('cat-2', 'حريمى', 'women', 'https://picsum.photos/seed/women/400/400', 'Dress', 0);
 
 -- ─── Brands ───
 INSERT INTO brands (id, name, slug, logo, products_count) VALUES
-('brand-1', 'ZARA', 'zara', 'https://picsum.photos/seed/zara/200/100', 6),
-('brand-2', 'H&M', 'hm', 'https://picsum.photos/seed/hm/200/100', 5),
-('brand-3', 'Nike', 'nike', 'https://picsum.photos/seed/nike/200/100', 4),
-('brand-4', 'Adidas', 'adidas', 'https://picsum.photos/seed/adidas/200/100', 3),
-('brand-5', 'Gucci', 'gucci', 'https://picsum.photos/seed/gucci/200/100', 3),
-('brand-6', 'Puma', 'puma', 'https://picsum.photos/seed/puma/200/100', 2),
-('brand-7', 'Samsung', 'samsung', 'https://picsum.photos/seed/samsung/200/100', 2),
-('brand-8', 'Apple', 'apple', 'https://picsum.photos/seed/apple/200/100', 2);
+('brand-1', 'ZARA', 'zara', 'https://picsum.photos/seed/zara/200/100', 1),
+('brand-2', 'H&M', 'hm', 'https://picsum.photos/seed/hm/200/100', 0),
+('brand-3', 'Nike', 'nike', 'https://picsum.photos/seed/nike/200/100', 0),
+('brand-4', 'Adidas', 'adidas', 'https://picsum.photos/seed/adidas/200/100', 0),
+('brand-5', 'Gucci', 'gucci', 'https://picsum.photos/seed/gucci/200/100', 0),
+('brand-6', 'Puma', 'puma', 'https://picsum.photos/seed/puma/200/100', 1),
+('brand-7', 'Samsung', 'samsung', 'https://picsum.photos/seed/samsung/200/100', 0),
+('brand-8', 'Apple', 'apple', 'https://picsum.photos/seed/apple/200/100', 0);
 
 -- ─── Products (sample - add all from products.json) ───
 INSERT INTO products (id, name, slug, description, short_description, price, old_price, discount, images, category, brand, rating, reviews_count, stock, sku, specifications, tags, is_new, is_featured, created_at) VALUES
-('prod-1', 'تيشيرت قطن رجالي', 'mens-cotton-tshirt', 'تيشيرت قطن عالي الجودة مناسب للارتداء اليومي', 'تيشيرت قطن مريح', 299, 399, 25, '{https://picsum.photos/seed/prod1a/600/600,https://picsum.photos/seed/prod1b/600/600}', 'cat-1', 'brand-1', 4.5, 128, 50, 'TCH-001', '[{"label":"المادة","value":"قطن 100%"}]', '{تيشيرت,قطن,رجالي}', true, true, '2025-01-15T00:00:00Z'),
-('prod-2', 'فستان صيفي', 'summer-dress', 'فستان صيفي أنيق بقصة مريحة', 'فستان صيفي أنيق', 549, 699, 21, '{https://picsum.photos/seed/prod2a/600/600,https://picsum.photos/seed/prod2b/600/600}', 'cat-2', 'brand-2', 4.3, 89, 30, 'DRS-001', '[{"label":"المادة","value":"بوليستر"}]', '{فستان,صيفي,حريمي}', true, true, '2025-02-01T00:00:00Z'),
-('prod-3', 'حذاء رياضي', 'running-shoes', 'حذاء رياضي مريح للجري والتمارين', 'حذاء رياضي مريح', 899, 1199, 25, '{https://picsum.photos/seed/prod3a/600/600,https://picsum.photos/seed/prod3b/600/600}', 'cat-3', 'brand-3', 4.7, 256, 20, 'SHO-001', '[{"label":"المادة","value":"جلد+قماش"}]', '{حذاء,رياضي,نيوك,رجالي}', false, true, '2025-01-10T00:00:00Z'),
-('prod-4', 'ساعة أنيقة', 'elegant-watch', 'ساعة أنيقة بسوار من الستانلس ستيل', 'ساعة أنيقة', 1299, 1599, 19, '{https://picsum.photos/seed/prod4a/600/600,https://picsum.photos/seed/prod4b/600/600}', 'cat-7', 'brand-5', 4.6, 67, 15, 'WAT-001', '[{"label":"النوع","value":"ساعة يد"}]', '{ساعة,أنيقة,رجالي}', false, true, '2025-02-15T00:00:00Z');
+('prod-1', 'تيشيرت قطن رجالي', 'mens-1', 'ملابس رجالية عالية الجودة. تيشيرت قطن رجالي بتصميم عصري وأنيق مناسب لجميع الأذواق.', 'تيشيرت قطن رجالي - ملابس رجالية عالية الجودة', 840, 1075, 28, '{https://loremflickr.com/600/600/mens,cloth,shirt?lock=10,https://loremflickr.com/600/600/mens,cloth,shirt?lock=11}', 'cat-1', 'brand-6', 4.5, 312, 164, '10001', '[{"label":"المادة","value":"قطن 100%"}]', '{رجالي,ملابس,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z');
 
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES

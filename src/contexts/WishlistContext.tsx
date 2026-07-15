@@ -55,19 +55,21 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   }, [user?.id, isAuthenticated]);
 
   async function loadWishlistFromProfile() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) return;
-    const { data } = await supabase.from('profiles').select('wishlist').eq('auth_id', session.user.id).single();
-    if (data?.wishlist && Array.isArray(data.wishlist) && data.wishlist.length > 0) {
-      const { data: products } = await supabase.from('products').select('*').in('id', data.wishlist);
+    if (!user?.id) return;
+    const { data } = await supabase.from('wishlist_items').select('product_id').eq('user_id', user.id);
+    if (data && data.length > 0) {
+      const productIds = data.map((item) => item.product_id);
+      const { data: products } = await supabase.from('products').select('*').in('id', productIds);
       if (products) dispatch({ type: 'SET', payload: products as unknown as Product[] });
     }
   }
 
   async function syncWishlistToProfile(productIds: string[]) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await supabase.from('profiles').update({ wishlist: productIds }).eq('auth_id', session.user.id);
+    if (!user?.id) return;
+    await supabase.from('wishlist_items').delete().eq('user_id', user.id);
+    if (productIds.length > 0) {
+      const inserts = productIds.map((product_id) => ({ user_id: user.id, product_id }));
+      await supabase.from('wishlist_items').insert(inserts);
     }
   }
 

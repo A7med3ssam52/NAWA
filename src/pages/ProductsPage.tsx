@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
+import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useProducts } from '@/api';
-import { getSortOptions, PAGE_SIZE } from '@/constants';
+import { getSortOptions, PAGE_SIZE, PAGES } from '@/constants';
 import type { FilterState } from '@/types';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { FilterSidebar } from '@/components/features/FilterSidebar';
-import { Pagination, Select } from '@/components/ui';
+import { Pagination, Select, Button } from '@/components/ui';
 
 const defaultFilters: FilterState = {
   category: [],
@@ -56,6 +57,7 @@ export function ProductsPage() {
   }, []);
 
   const totalPages = data?.totalPages || 1;
+  const isWomenCategory = filters.category.includes('cat-2');
 
   return (
     <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"
@@ -78,27 +80,45 @@ export function ProductsPage() {
 
         <div className="flex-1 min-w-0">
 
-          {data && (
-            <p className="text-sm text-gray-500 font-cairo mb-4">
-              {t('categories.productsCount', { count: data.total })}
-            </p>
-          )}
-
-          <ProductGrid
-            items={data?.items || []}
-            loading={isLoading}
-            error={error}
-            onRetry={refetch}
-          />
-
-          {totalPages > 1 && (
-            <div className="mt-8 lg:mt-10">
-              <Pagination
-                currentPage={filters.page}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+          {isWomenCategory ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-secondary/10 flex items-center justify-center">
+                <ShoppingBag className="w-10 h-10 text-secondary" />
+              </div>
+              <h2 className="text-2xl font-bold font-cairo text-gray-900 mb-3">حريمى</h2>
+              <p className="text-lg text-gray-500 font-cairo mb-8">قريباً.. عالم الأنوثة في انتظارك</p>
+              <Link to={PAGES.HOME}>
+                <Button variant="primary" size="lg" rounded="xl">
+                  <ArrowLeft className="w-4 h-4 ml-2" />
+                  {t('common.back')}
+                </Button>
+              </Link>
             </div>
+          ) : (
+            <>
+              {data && (
+                <p className="text-sm text-gray-500 font-cairo mb-4">
+                  {t('categories.productsCount', { count: data.total })}
+                </p>
+              )}
+
+              <ProductGrid
+                items={data?.items || []}
+                loading={isLoading}
+                error={error}
+                onRetry={refetch}
+              />
+
+              {totalPages > 1 && (
+                <div className="mt-8 lg:mt-10">
+                  <Pagination
+                    currentPage={filters.page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

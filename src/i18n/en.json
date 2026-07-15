@@ -253,7 +253,8 @@
     "notesPlaceholder": "Additional notes (optional)",
     "confirmOrder": "Confirm Order",
     "emailConfirmationSent": "Order confirmation has been sent to your email",
-    "shippingAddress": "Shipping Address"
+    "shippingAddress": "Shipping Address",
+    "guestRegisterPrompt": "Create an account now to easily track and manage your orders"
   },
   "orders": {
     "title": "Order Management",
@@ -929,6 +930,7 @@
     "coupons": "Coupons",
     "users": "Users",
     "reviews": "Reviews",
+    "accounts": "Accounts",
     "notifications": "Notifications",
     "spinWheel": "Spin & Win",
     "settings": "Settings",

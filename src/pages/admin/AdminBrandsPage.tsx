@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Input, Modal, EmptyState, Spinner } from '@/components/ui';
+import { Button, Input, Modal, EmptyState, Spinner, ImageUpload } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { Brand } from '@/types';
 
@@ -175,7 +175,17 @@ export function AdminBrandsPage() {
         <div className="space-y-4">
           <Input label={t('admin.brandName')} value={form.name || ''} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t('admin.namePlaceholder')} />
           <Input label={t('admin.brandSlug')} value={form.slug || ''} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="brand-slug" />
-          <Input label={t('admin.brandLogoLink')} value={form.logo || ''} onChange={(e) => setForm({ ...form, logo: e.target.value })} placeholder={t('admin.imagePlaceholder')} />
+          <div>
+            <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">
+              {t('admin.logoLabel')}
+            </label>
+            <ImageUpload
+              value={form.logo ? [form.logo] : []}
+              onChange={(urls) => setForm({ ...form, logo: urls[0] || '' })}
+              bucket="brands"
+              max={1}
+            />
+          </div>
           <div className="flex items-center gap-3 pt-2">
             <Button variant="ghost" className="flex-1" onClick={() => setModalOpen(false)}>{t('common.cancel')}</Button>
             <Button className="flex-1" onClick={handleSave} loading={saving}>{editing ? t('common.saveChanges') : t('common.add')}</Button>

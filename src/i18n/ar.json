@@ -253,7 +253,8 @@
     "notesPlaceholder": "ملاحظات إضافية (اختياري)",
     "confirmOrder": "تأكيد الطلب",
     "emailConfirmationSent": "تم إرسال تأكيد الطلب إلى بريدك الإلكتروني",
-    "shippingAddress": "عنوان الشحن"
+    "shippingAddress": "عنوان الشحن",
+    "guestRegisterPrompt": "سجل حساباً الآن لتتمكن من تتبع طلباتك وإدارتها بسهولة"
   },
   "orders": {
     "title": "إدارة الطلبات",
@@ -929,6 +930,7 @@
     "coupons": "كوبونات الخصم",
     "users": "المستخدمين",
     "reviews": "التقييمات",
+    "accounts": "الحسابات",
     "notifications": "الإشعارات",
     "spinWheel": "عجلة الحظ",
     "settings": "الإعدادات",

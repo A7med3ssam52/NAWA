@@ -13,7 +13,6 @@ import {
   Settings,
   HelpCircle,
   Home,
-  LayoutGrid,
   ShoppingBag,
   UserCircle,
   BarChart3,
@@ -32,13 +31,6 @@ import { Sidebar } from './Sidebar';
 import { SearchSuggestions, NotificationPopover, MobileSearchOverlay } from '@/components/features';
 import { AnnouncementBar } from './AnnouncementBar';
 import { CartPreview } from './CartPreview';
-
-const NAV_LINKS = [
-  { label: 'nav.home', href: PAGES.HOME, icon: Home },
-  { label: 'nav.products', href: PAGES.PRODUCTS, icon: LayoutGrid },
-  { label: 'nav.cart', href: PAGES.CART, icon: ShoppingBag, badge: true },
-  { label: 'nav.account', href: PAGES.PROFILE, icon: UserCircle },
-];
 
 const MOBILE_BOTTOM_LINKS = [
   { label: 'nav.home', href: PAGES.HOME, icon: Home },
@@ -72,7 +64,6 @@ export const Navbar = memo(function Navbar() {
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
-  const [showCategories, setShowCategories] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -83,6 +74,7 @@ export const Navbar = memo(function Navbar() {
     try { return localStorage.getItem('announcement-dismissed') === 'true'; }
     catch { return false; }
   });
+  const [announcementEnabled, setAnnouncementEnabled] = useState(true);
 
   const handleDismissAnnouncement = () => {
     setAnnouncementDismissed(true);
@@ -90,9 +82,10 @@ export const Navbar = memo(function Navbar() {
     catch {}
   };
 
+  const announcementVisible = !announcementDismissed && announcementEnabled;
+
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const debouncedSearch = useDebounce(searchQuery, 300);
 
@@ -104,7 +97,6 @@ export const Navbar = memo(function Navbar() {
     const onScroll = () => {
       const currentY = window.scrollY;
       const isScrollingDown = currentY > lastScrollY.current;
-      el.classList.toggle('shadow-lg', currentY > 10);
       if (currentY > 40) {
         setHideHeader(isScrollingDown);
       } else {
@@ -121,9 +113,6 @@ export const Navbar = memo(function Navbar() {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setShowSearchSuggestions(false);
-      }
-      if (categoriesRef.current && !categoriesRef.current.contains(e.target as Node)) {
-        setShowCategories(false);
       }
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setShowUserMenu(false);
@@ -183,7 +172,7 @@ export const Navbar = memo(function Navbar() {
   return (
     <>
       {/* Announcement Bar */}
-      {!announcementDismissed && <AnnouncementBar onDismiss={handleDismissAnnouncement} />}
+      {!announcementDismissed && <AnnouncementBar onDismiss={handleDismissAnnouncement} onVisibilityChange={setAnnouncementEnabled} />}
 
       {/* Desktop Navbar */}
       <header
@@ -194,127 +183,69 @@ export const Navbar = memo(function Navbar() {
           hideHeader && '-translate-y-full',
           'border-b transition-all duration-300',
           scrolled
-            ? 'bg-white/95 backdrop-blur-2xl border-gray-200/80'
+            ? 'bg-white/95 backdrop-blur-2xl border-gray-200/80 shadow-lg'
             : 'bg-white border-transparent'
         )}
-        style={{ top: announcementDismissed ? '0' : '36px', paddingTop: 'env(safe-area-inset-top, 0px)' }}
+        style={{ top: announcementVisible ? '36px' : '0' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 lg:h-24">
+          <div className="flex items-center justify-between h-16 lg:h-20 flex-nowrap">
             {/* Left group: Menu + Logo */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={() => setSidebarOpen(true)}
-                className="lg:hidden relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all duration-200 active:scale-90"
+                className="lg:hidden relative p-1.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-all duration-200 active:scale-90"
                 aria-label={t('nav.menuLabel')}
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <Link
                 to={PAGES.HOME}
                 className="shrink-0"
                 aria-label={t('nav.homePage')}
               >
-                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-14 sm:h-16 lg:h-20 w-auto" />
+                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-10 sm:h-12 lg:h-16 w-auto" />
               </Link>
             </div>
 
             {/* Right group: Search + Actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-0.5 sm:gap-1 lg:gap-2">
               {/* Mobile Search Button */}
               <button
                 onClick={() => setMobileSearchOpen(true)}
-                className="lg:hidden p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
+                className="lg:hidden p-1.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-all active:scale-90"
                 aria-label={t('nav.searchLabel')}
               >
-                <Search className="w-6 h-6 sm:w-7 sm:h-7" />
+                <Search className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
 
-              {/* Desktop Navigation */}
+                {/* Desktop Navigation */}
               <nav className="hidden lg:flex items-center gap-1">
-                {NAV_LINKS.map((link) => {
-                  const isActive = link.href === PAGES.HOME
-                    ? location.pathname === PAGES.HOME
-                    : location.pathname.startsWith(link.href);
-                  return (
-                    <Link
-                      key={link.href}
-                      to={link.href}
-                      className={cn(
-                        'px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
-                        isActive
-                          ? 'bg-secondary/10 text-secondary font-bold'
-                          : 'text-gray-700 hover:text-secondary hover:bg-gray-100'
-                      )}
-                    >
-                      {t(link.label)}
-                    </Link>
-                  );
-                })}
-                <div ref={categoriesRef} className="relative">
-                  <button
-                    onClick={() => setShowCategories(!showCategories)}
+                <Link
+                  to={PAGES.HOME}
+                  className={cn(
+                    'px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                    location.pathname === PAGES.HOME
+                      ? 'bg-secondary/10 text-secondary font-bold'
+                      : 'text-gray-700 hover:text-secondary hover:bg-gray-100'
+                  )}
+                >
+                  {t('nav.home')}
+                </Link>
+                {categories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
                     className={cn(
-                      'flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
-                      showCategories
+                      'px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                      location.pathname === `/categories/${cat.slug}`
                         ? 'bg-secondary/10 text-secondary font-bold'
                         : 'text-gray-700 hover:text-secondary hover:bg-gray-100'
                     )}
-                    aria-expanded={showCategories}
-                    aria-haspopup="true"
                   >
-                    {t('nav.categories')}
-                    <ChevronDown
-                      className={cn(
-                        'w-4 h-4 transition-transform duration-200',
-                        showCategories && 'rotate-180'
-                      )}
-                    />
-                  </button>
-                  {showCategories && (
-                      <div className="absolute top-full right-0 mt-2 w-[500px] lg:w-[600px] bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up">
-                        <div className="p-3">
-                          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-                            {categories.map((cat) => (
-                              <Link
-                                key={cat.id}
-                                to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
-                                onClick={() => setShowCategories(false)}
-                                className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-gray-50 transition-all group"
-                              >
-                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-secondary/10 to-accent/10 overflow-hidden shrink-0">
-                                  <img
-                                    src={cat.image}
-                                    alt={cat.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                    loading="lazy"
-                                  />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <span className="text-sm font-cairo font-medium text-gray-900 group-hover:text-secondary transition-colors block truncate">
-                                    {cat.name}
-                                  </span>
-                                  <span className="text-[11px] text-gray-400 font-cairo">
-                                    {t('categories.productsCount', { count: cat.productsCount })}
-                                  </span>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="p-3 bg-gray-50/50 border-t border-gray-100">
-                          <Link
-                            to={PAGES.CATEGORIES}
-                            onClick={() => setShowCategories(false)}
-                            className="flex items-center justify-center gap-1.5 py-2 text-sm font-medium font-cairo text-secondary hover:text-secondary/80 transition-colors rounded-xl hover:bg-gray-100"
-                          >
-                            {t('nav.viewAllCategories')}
-                            <ChevronDown className="w-3.5 h-3.5 rotate-[-90deg]" />
-                          </Link>
-                        </div>
-                      </div>
-                    )}
-                </div>
+                    {cat.name}
+                  </Link>
+                ))}
               </nav>
 
               {/* Search Bar - Desktop */}
@@ -341,7 +272,7 @@ export const Navbar = memo(function Navbar() {
                         onBlur={() => setSearchFocused(false)}
                         placeholder={t('common.searchPlaceholder')}
                         className="w-full py-2.5 pr-10 pl-12 text-sm font-cairo bg-gray-100 border border-transparent focus:border-secondary/30 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary/20 transition-all"
-                        dir="rtl"
+                        dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
                       />
                       {searchQuery ? (
                         <button
@@ -421,7 +352,7 @@ export const Navbar = memo(function Navbar() {
                       aria-expanded={showUserMenu}
                       aria-haspopup="true"
                     >
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs lg:text-sm font-bold font-cairo overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -514,7 +445,7 @@ export const Navbar = memo(function Navbar() {
       </header>
 
       {/* Spacer for fixed header */}
-      <div className={cn(announcementDismissed ? 'h-20 lg:h-24' : 'h-[116px] lg:h-[132px]')} />
+      <div className={cn(announcementVisible ? 'h-[100px] lg:h-[116px]' : 'h-16 lg:h-20')} />
 
       {/* Premium Bottom Navigation for Mobile */}
       <nav className={cn(
@@ -522,7 +453,7 @@ export const Navbar = memo(function Navbar() {
         hideHeader && 'translate-y-full',
         'ios-safe-area-inset'
       )}>
-        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)][0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20">
+        <div className="relative mx-3 mb-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08),0_-4px_20px_rgba(0,0,0,0.3)] border border-white/20">
           <div className="flex items-center justify-around h-16 px-1">
             {MOBILE_BOTTOM_LINKS.map((tab, idx) => {
               const Icon = tab.icon;

@@ -1,36 +1,27 @@
 import i18n from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import type { Product, Category, Brand, Review, Order, Notification, Coupon, Address, Testimonial, SpinPrize, User } from '@/types';
+import productsData from './products.json';
+import categoriesData from './categories.json';
+import brandsData from './brands.json';
 
-import rawProducts from './products.json';
-import rawCategories from './categories.json';
-import rawBrands from './brands.json';
-import rawReviews from './reviews.json';
-import rawUsers from './users.json';
-import rawOrders from './orders.json';
-import rawNotifications from './notifications.json';
-import rawCoupons from './coupons.json';
-import rawAddresses from './addresses.json';
-import rawTestimonials from './testimonials.json';
-import rawSpinPrizes from './spin-prizes.json';
-
-let products: Product[] = [...rawProducts] as unknown as Product[];
-let categories: Category[] = [...rawCategories] as unknown as Category[];
-let brands: Brand[] = [...rawBrands] as unknown as Brand[];
-let reviews: Review[] = [...rawReviews] as unknown as Review[];
-let users: User[] = [...rawUsers] as unknown as User[];
-let orders: Order[] = [...rawOrders] as unknown as Order[];
-let notifications: Notification[] = [...rawNotifications] as unknown as Notification[];
-let coupons: Coupon[] = [...rawCoupons] as unknown as Coupon[];
-let addresses: Address[] = [...rawAddresses] as unknown as Address[];
-let testimonials: Testimonial[] = [...rawTestimonials] as unknown as Testimonial[];
-let spinPrizes: SpinPrize[] = [...rawSpinPrizes] as unknown as SpinPrize[];
+let products: Product[] = productsData as Product[];
+let categories: Category[] = categoriesData as Category[];
+let brands: Brand[] = brandsData as Brand[];
+let reviews: Review[] = [];
+let users: User[] = [];
+let orders: Order[] = [];
+let notifications: Notification[] = [];
+let coupons: Coupon[] = [];
+let addresses: Address[] = [];
+let testimonials: Testimonial[] = [];
+let spinPrizes: SpinPrize[] = [];
 
 let loaded = false;
 
-async function loadTable<T>(table: string, fallback: T[]): Promise<T[]> {
+async function loadTable<T>(table: string): Promise<T[]> {
   const { data, error } = await supabase.from(table).select('*');
-  if (error || !data || data.length === 0) return fallback;
+  if (error || !data) return [];
   return data as unknown as T[];
 }
 
@@ -39,27 +30,27 @@ export async function loadAllData() {
   loaded = true;
   try {
     const [p, c, b, r, u, o, n, co, a, t, s] = await Promise.all([
-      loadTable<Product>('products', products as unknown as Product[]),
-      loadTable<Category>('categories', categories as unknown as Category[]),
-      loadTable<Brand>('brands', brands as unknown as Brand[]),
-      loadTable<Review>('reviews', reviews as unknown as Review[]),
-      loadTable<User>('profiles', users as unknown as User[]),
-      loadTable<Order>('orders', orders as unknown as Order[]),
-      loadTable<Notification>('notifications', notifications as unknown as Notification[]),
-      loadTable<Coupon>('coupons', coupons as unknown as Coupon[]),
-      loadTable<Address>('addresses', addresses as unknown as Address[]),
-      loadTable<Testimonial>('testimonials', testimonials as unknown as Testimonial[]),
-      loadTable<SpinPrize>('spin_prizes', spinPrizes as unknown as SpinPrize[]),
+      loadTable<Product>('products'),
+      loadTable<Category>('categories'),
+      loadTable<Brand>('brands'),
+      loadTable<Review>('reviews'),
+      loadTable<User>('profiles'),
+      loadTable<Order>('orders'),
+      loadTable<Notification>('notifications'),
+      loadTable<Coupon>('coupons'),
+      loadTable<Address>('addresses'),
+      loadTable<Testimonial>('testimonials'),
+      loadTable<SpinPrize>('spin_prizes'),
     ]);
-    products = p; categories = c; brands = b; reviews = r;
-    users = u; orders = o; notifications = n; coupons = co;
-    addresses = a; testimonials = t; spinPrizes = s;
+    if (p.length > 0) products = p;
+    if (c.length > 0) categories = c;
+    if (b.length > 0) brands = b;
+    reviews = r; users = u; orders = o; notifications = n;
+    coupons = co; addresses = a; testimonials = t; spinPrizes = s;
   } catch (e) {
-    console.warn('Supabase load failed, using fallback data', e);
+    console.warn('Supabase load failed, using local data', e);
   }
 }
-
-loadAllData();
 
 export function setProductsData(p: Product[]) { products = p; }
 export function setCategoriesData(c: Category[]) { categories = c; }
@@ -230,14 +221,6 @@ export const getDashboardStats = () => {
 };
 
 export type DashboardStats = ReturnType<typeof getDashboardStats>;
-
-export const getAboutStats = () => {
-  const customers = 30147;
-  const productsAvailable = 8423;
-  const productsSold = 128934;
-  const satisfaction = 98;
-  return { customers, productsAvailable, productsSold, satisfaction };
-};
 
 export const filterProducts = (filters: {
   category?: string[];

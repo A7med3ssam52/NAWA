@@ -68,7 +68,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
-        await loadAllData();
         const profile = await loadProfile(session.user.id, session.user.email || '');
         if (profile) dispatch({ type: 'SET_USER', payload: profile });
       }
@@ -77,7 +76,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        await loadAllData();
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           const profile = await loadProfile(session.user.id, session.user.email || '');
           if (profile) dispatch({ type: 'SET_USER', payload: profile });

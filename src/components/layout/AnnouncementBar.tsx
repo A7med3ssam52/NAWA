@@ -6,9 +6,10 @@ import type { AnnouncementConfig } from '@/types';
 
 interface AnnouncementBarProps {
   onDismiss: () => void;
+  onVisibilityChange?: (visible: boolean) => void;
 }
 
-export function AnnouncementBar({ onDismiss }: AnnouncementBarProps) {
+export function AnnouncementBar({ onDismiss, onVisibilityChange }: AnnouncementBarProps) {
   const { i18n } = useTranslation();
   const [config, setConfig] = useState<AnnouncementConfig>({ text: '', enabled: false, dismissible: true });
 
@@ -31,7 +32,13 @@ export function AnnouncementBar({ onDismiss }: AnnouncementBarProps) {
     catch { return false; }
   });
 
-  if (!config.enabled || dismissed) return null;
+  const isVisible = config.enabled && !dismissed;
+
+  useEffect(() => {
+    onVisibilityChange?.(isVisible);
+  }, [isVisible, onVisibilityChange]);
+
+  if (!isVisible) return null;
 
   const handleDismiss = () => {
     setDismissed(true);

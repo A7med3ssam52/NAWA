@@ -222,7 +222,7 @@ export function DashboardPage() {
                   label={m.month}
                   value={m.revenue}
                   max={maxRevenue}
-                  color="bg-gradient-to-l from-secondary to-blue-400"
+                  color="bg-gradient-to-l from-secondary to-accent"
                 />
               ))
             ) : (

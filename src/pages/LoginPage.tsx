@@ -54,7 +54,7 @@ function FloatingInput({ label, type, icon, error, register, name, showToggle, o
           className={cn(
             'w-full h-12 px-10 bg-gray-50 border-2 rounded-2xl text-sm font-cairo text-gray-900 placeholder-transparent transition-all duration-200',
             focused
-              ? 'border-secondary/40 shadow-[0_0_0_4px_rgba(255,107,0,0.08)][0_0_0_4px_rgba(255,107,0,0.06)]'
+              ? 'border-secondary/40 shadow-[0_0_0_4px_rgba(255,107,0,0.08),0_0_0_4px_rgba(255,107,0,0.06)]'
               : 'border-transparent hover:border-gray-200',
             error && '!border-danger/60 !shadow-[0_0_0_4px_rgba(239,68,68,0.1)]'
           )}
