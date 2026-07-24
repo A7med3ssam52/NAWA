@@ -465,7 +465,7 @@ export function ProfilePage() {
       >
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl bg-gradient-to-br from-secondary via-blue-500 to-accent flex items-center justify-center text-white text-3xl lg:text-4xl font-bold font-cairo overflow-hidden shadow-lg shadow-secondary/20">
+            <div className="w-24 h-24 lg:w-28 lg:h-28 rounded-2xl bg-secondary flex items-center justify-center text-white text-3xl lg:text-4xl font-bold font-cairo overflow-hidden shadow-lg shadow-black/20">
               {user.avatar ? (
                 <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
               ) : (
@@ -503,25 +503,25 @@ export function ProfilePage() {
             icon={<Package className="w-5 h-5 text-white" />}
             label={t('profile.statsOrders')}
             value={orders.length}
-            color="bg-gradient-to-br from-secondary to-accent"
+            color="bg-secondary"
           />
           <StatCard
             icon={<Heart className="w-5 h-5 text-white" />}
             label={t('profile.statsWishlist')}
             value={wishlistItems.length}
-            color="bg-gradient-to-br from-danger to-red-400"
+            color="bg-danger"
           />
           <StatCard
             icon={<Star className="w-5 h-5 text-white" />}
             label={t('profile.statsReviews')}
             value={userReviews.length}
-            color="bg-gradient-to-br from-accent to-secondary/70"
+            color="bg-secondary/70"
           />
           <StatCard
             icon={<Bell className="w-5 h-5 text-white" />}
             label={t('profile.statsNotifications')}
             value={unreadNotifs.length}
-            color="bg-gradient-to-br from-success to-green-400"
+            color="bg-success"
           />
         </div>
       </motion.div>

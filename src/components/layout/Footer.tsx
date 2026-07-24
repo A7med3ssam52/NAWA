@@ -59,7 +59,7 @@ export const Footer = memo(function Footer() {
   return (
     <footer dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="bg-gray-50 border-t border-gray-100">
       {/* Newsletter */}
-      <div className="bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 border-b border-gray-100">
+      <div className="bg-secondary/10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-right">

@@ -21,11 +21,9 @@ export function OffersPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-rose-600 via-accent to-orange-500 p-8 lg:p-12 mb-8 lg:mb-12"
+        className="relative overflow-hidden rounded-3xl bg-accent p-8 lg:p-12 mb-8 lg:mb-12"
       >
-        <div className="absolute inset-0 opacity-10" aria-hidden="true">
-          <div className="w-full h-full" style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px)', backgroundSize: '50px 50px' }} />
-        </div>
+        <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
         <div className="relative z-10 flex items-center gap-4 lg:gap-6">
           <div className="flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-white/20 backdrop-blur-sm">
             <Zap className="w-8 h-8 lg:w-10 lg:h-10 text-white" />

@@ -142,9 +142,9 @@ export function AdminOrdersPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
           { label: t('orders.totalOrders'), value: stats.total, icon: ShoppingBag, color: 'from-blue-500 to-blue-600' },
-          { label: t('orders.pending'), value: stats.pending, icon: Clock, color: 'from-yellow-500 to-yellow-600' },
-          { label: t('orders.processing'), value: stats.processing, icon: Package, color: 'from-indigo-500 to-indigo-600' },
-          { label: t('orders.cancelledOrders'), value: stats.cancelled, icon: X, color: 'from-red-500 to-red-600' },
+          { label: t('orders.pending'), value: stats.pending, icon: Clock, color: 'bg-yellow-500' },
+          { label: t('orders.processing'), value: stats.processing, icon: Package, color: 'bg-indigo-500' },
+          { label: t('orders.cancelledOrders'), value: stats.cancelled, icon: X, color: 'bg-red-500' },
         ].map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -160,7 +160,7 @@ export function AdminOrdersPage() {
                   {stat.value}
                 </p>
               </div>
-              <div className={cn('p-2.5 rounded-xl bg-gradient-to-br', stat.color)}>
+              <div className={cn('p-2.5 rounded-xl', stat.color)}>
                 <stat.icon className="w-4 h-4 text-white" />
               </div>
             </div>

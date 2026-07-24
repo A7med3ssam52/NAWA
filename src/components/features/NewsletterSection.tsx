@@ -12,17 +12,7 @@ export function NewsletterSection() {
   };
 
   return (
-    <section dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-secondary via-secondary/80 to-accent">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" aria-hidden="true">
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px)',
-            backgroundSize: '50px 50px',
-          }}
-        />
-      </div>
+    <section dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="relative overflow-hidden rounded-3xl bg-secondary">
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}

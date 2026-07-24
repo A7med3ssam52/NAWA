@@ -188,7 +188,7 @@ export function LoginPage() {
   return (
     <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="ios-font-smooth min-h-screen flex flex-col lg:flex-row">
       {/* Left Brand Panel - Desktop */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-secondary via-[#e85d00] to-accent overflow-hidden items-center justify-center">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-secondary overflow-hidden items-center justify-center">
         <div className="absolute inset-0">
           <div className="absolute top-20 -right-20 w-80 h-80 rounded-full bg-white/5" />
           <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-white/5" />
@@ -233,7 +233,7 @@ export function LoginPage() {
       {/* Right Form Panel */}
       <div className="flex-1 flex items-center justify-center bg-white min-h-screen relative">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-secondary/[0.02] to-transparent[0.03]" />
+          <div className="absolute top-0 left-0 right-0 h-64 bg-secondary/[0.02]" />
         </div>
 
         <div className="relative z-10 w-full max-w-md px-4 sm:px-6 ios-safe-area-inset">
@@ -244,7 +244,7 @@ export function LoginPage() {
             transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
             className="lg:hidden text-center mb-4"
           >
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-secondary to-accent rounded-2xl flex items-center justify-center shadow-lg shadow-secondary/20">
+            <div className="w-16 h-16 mx-auto mb-4 bg-secondary rounded-2xl flex items-center justify-center shadow-lg shadow-black/20">
               <ShoppingBag className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 font-cairo">
@@ -326,8 +326,8 @@ export function LoginPage() {
                     disabled={loading}
                     className={cn(
                       'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden text-nowrap',
-                      'bg-gradient-to-l from-secondary via-secondary to-accent/80 text-white',
-                      'shadow-lg shadow-secondary/30 hover:shadow-xl hover:shadow-secondary/40 active:shadow-sm',
+                      'bg-secondary text-white',
+                      'shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 active:shadow-sm',
                       'hover:-translate-y-0.5 active:translate-y-0',
                       loading && 'opacity-90 cursor-not-allowed hover:translate-y-0 hover:shadow-lg'
                     )}
@@ -411,8 +411,8 @@ export function LoginPage() {
                     disabled={loading}
                     className={cn(
                       'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden text-nowrap',
-                      'bg-gradient-to-l from-secondary via-secondary to-accent/80 text-white',
-                      'shadow-lg shadow-secondary/30 hover:shadow-xl hover:shadow-secondary/40 active:shadow-sm',
+                      'bg-secondary text-white',
+                      'shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 active:shadow-sm',
                       'hover:-translate-y-0.5 active:translate-y-0',
                       loading && 'opacity-90 cursor-not-allowed hover:translate-y-0 hover:shadow-lg'
                     )}

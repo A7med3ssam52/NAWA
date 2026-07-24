@@ -60,7 +60,7 @@ function NavLink({ item, isActive, collapsed, onClick }: {
       {isActive && (
         <motion.div
           layoutId="adminNavActive"
-          className="absolute inset-0 rounded-2xl bg-gradient-to-l from-secondary to-accent"
+          className="absolute inset-0 rounded-2xl bg-secondary"
           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
         />
       )}
@@ -208,7 +208,7 @@ export function AdminLayout() {
           {sidebarOpen ? (
             <>
               <Link to="/admin" className="flex items-center gap-2.5 min-w-0 group">
-                <div className="w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center shadow-lg shadow-secondary/30 group-hover:shadow-secondary/50 transition-shadow">
+                <div className="w-9 h-9 shrink-0 rounded-xl bg-secondary flex items-center justify-center shadow-lg shadow-black/20 transition-shadow">
                   <Store className="w-5 h-5 text-white" />
                 </div>
                 <div className="min-w-0">
@@ -262,7 +262,7 @@ export function AdminLayout() {
             )}
           >
             <div className="relative shrink-0">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shadow-md">
                 {user?.avatar ? (
                   <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -319,7 +319,7 @@ export function AdminLayout() {
 
               <div className="relative flex items-center justify-between p-4 border-b border-gray-100">
                 <Link to="/admin" onClick={closeMobile} className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center shadow-lg shadow-secondary/30">
+                  <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shadow-lg shadow-black/20">
                     <Store className="w-5 h-5 text-white" />
                   </div>
                   <div>
@@ -352,7 +352,7 @@ export function AdminLayout() {
                 <Link to="/admin/settings" onClick={closeMobile}
                   className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-sm font-medium font-cairo text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -416,7 +416,7 @@ export function AdminLayout() {
                   aria-haspopup="true"
                   aria-expanded={showUserMenu}
                 >
-                  <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs font-bold font-cairo overflow-hidden shrink-0 shadow-sm">
+                  <div className="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-secondary flex items-center justify-center text-white text-xs font-bold font-cairo overflow-hidden shrink-0 shadow-sm">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="" className="w-full h-full object-cover" />
                     ) : (

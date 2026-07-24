@@ -352,7 +352,7 @@ export const Navbar = memo(function Navbar() {
                       aria-expanded={showUserMenu}
                       aria-haspopup="true"
                     >
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-xs lg:text-sm font-bold font-cairo overflow-hidden">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full bg-secondary flex items-center justify-center text-white text-xs lg:text-sm font-bold font-cairo overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (

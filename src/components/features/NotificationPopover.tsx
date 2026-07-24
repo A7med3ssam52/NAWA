@@ -79,7 +79,7 @@ export function NotificationPopover() {
           dir="rtl"
         >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 bg-gradient-to-l from-secondary/5 to-transparent">
+            <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100 bg-secondary/5">
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-secondary" />
                 <span className="text-sm font-bold font-cairo text-gray-900">الإشعارات</span>

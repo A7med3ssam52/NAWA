@@ -28,7 +28,7 @@ export function TestimonialCard({ testimonial, index = 0 }: TestimonialCardProps
         </p>
 
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shrink-0">
+          <div className="w-11 h-11 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shrink-0">
             {testimonial.avatar ? (
               <img src={testimonial.avatar} alt={testimonial.name} className="w-full h-full object-cover" />
             ) : (

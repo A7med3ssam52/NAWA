@@ -6,8 +6,8 @@
   :root,
   [data-palette='taupe'] {
     --color-primary: 1 60 64;
-    --color-secondary: 238 204 156;
-    --color-accent: 33 68 88;
+    --color-secondary: 1 60 64;
+    --color-accent: 238 204 156;
     --color-success: 34 197 94;
     --color-danger: 239 68 68;
     --color-background: 239 237 226;
@@ -16,8 +16,8 @@
 
   [data-palette='terracotta'] {
     --color-primary: 33 68 88;
-    --color-secondary: 233 195 148;
-    --color-accent: 1 60 64;
+    --color-secondary: 33 68 88;
+    --color-accent: 233 195 148;
     --color-success: 34 197 94;
     --color-danger: 239 68 68;
     --color-background: 239 237 226;
@@ -264,27 +264,27 @@
   }
 
   .gradient-primary {
-    @apply bg-gradient-to-l from-primary to-primary/80;
+    @apply bg-primary;
   }
 
   .gradient-secondary {
-    @apply bg-gradient-to-l from-secondary to-accent;
+    @apply bg-secondary;
   }
 
   .gradient-accent {
-    @apply bg-gradient-to-l from-accent to-secondary;
+    @apply bg-accent;
   }
 
   .gradient-danger {
-    @apply bg-gradient-to-l from-danger to-red-400;
+    @apply bg-danger;
   }
 
   .gradient-success {
-    @apply bg-gradient-to-l from-success to-green-400;
+    @apply bg-success;
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-l from-secondary to-accent;
+    @apply text-secondary;
   }
 
   .shadow-card {

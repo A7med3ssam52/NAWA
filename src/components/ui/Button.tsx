@@ -12,7 +12,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary: 'bg-primary text-white hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 ios-touch-feedback',
-  secondary: 'bg-secondary text-accent hover:bg-secondary/90 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 active:scale-95 ios-touch-feedback',
+  secondary: 'bg-secondary text-white hover:bg-secondary/90 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 active:scale-95 ios-touch-feedback',
   accent: 'bg-accent text-white hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-accent/30 active:scale-95 ios-touch-feedback',
   danger: 'bg-danger text-white hover:bg-danger/90 shadow-lg shadow-danger/20 active:scale-95 ios-touch-feedback',
   ghost: 'bg-transparent text-primary hover:bg-gray-100 ios-touch-feedback',

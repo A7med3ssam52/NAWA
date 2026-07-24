@@ -111,7 +111,7 @@ export function SpinEntryButton() {
               'rounded-2xl shadow-2xl transition-all duration-300',
               'font-bold font-cairo',
               canSpin
-                ? 'bg-gradient-to-r from-secondary to-accent text-white hover:shadow-secondary/40 hover:scale-105 active:scale-95'
+                ? 'bg-secondary text-white hover:shadow-secondary/40 hover:scale-105 active:scale-95'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed',
               isMobile
                 ? 'bottom-20 left-3 px-3 py-2.5 text-xs'
@@ -173,7 +173,7 @@ export function SpinEntryButton() {
               {needsPhone ? (
                 <>
                   <div className="text-center mb-6 sm:mb-8">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl bg-secondary/10 flex items-center justify-center mb-4">
                       <Phone className="w-8 h-8 sm:w-10 sm:h-10 text-secondary" />
                     </div>
                     <h2 className="text-xl sm:text-2xl font-bold font-cairo text-gray-900">
@@ -223,7 +223,7 @@ export function SpinEntryButton() {
                     <button
                       onClick={handlePhoneSubmit}
                       disabled={phone.length < 10}
-                      className="w-full py-3 sm:py-3.5 rounded-2xl text-sm sm:text-base font-bold font-cairo text-white bg-gradient-to-l from-secondary to-accent shadow-lg shadow-secondary/25 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-secondary/25"
+                      className="w-full py-3 sm:py-3.5 rounded-2xl text-sm sm:text-base font-bold font-cairo text-white bg-secondary shadow-lg shadow-black/20 hover:shadow-secondary/40 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-secondary/25"
                     >
                       {t('common.continue')}
                     </button>
@@ -232,7 +232,7 @@ export function SpinEntryButton() {
               ) : (
                 <>
                   <div className="text-center mb-4 sm:mb-6">
-                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-gradient-to-l from-secondary/10 to-accent/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
+                    <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-secondary/10 text-secondary text-[11px] sm:text-sm font-bold font-cairo mb-2 sm:mb-3">
                       <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4" />
                       {t('spin.dailyChance')}
                     </div>

@@ -30,7 +30,7 @@ export function ReviewCard({ review, index = 0 }: ReviewCardProps) {
       {/* Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shrink-0">
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-white text-sm font-bold font-cairo overflow-hidden shrink-0">
             {review.userAvatar ? (
               <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" />
             ) : (

@@ -47,7 +47,7 @@ function StatCard({ title, value, icon, trend, trendLabel, color }: {
             </div>
           )}
         </div>
-        <div className={cn('p-2.5 lg:p-3 rounded-xl lg:rounded-2xl bg-gradient-to-br shrink-0', color)}>{icon}</div>
+        <div className={cn('p-2.5 lg:p-3 rounded-xl lg:rounded-2xl shrink-0', color)}>{icon}</div>
       </div>
     </motion.div>
   );
@@ -127,7 +127,7 @@ export function AdminDashboardPage() {
           <h2 className="text-base lg:text-lg font-bold font-cairo text-gray-900 mb-4 lg:mb-6">الإيرادات الشهرية</h2>
           <div className="space-y-2 lg:space-y-3">
             {last6Months.map((m) => (
-              <ChartBar key={m.key} label={m.label} value={monthlyData[m.key] || 0} max={maxRevenue} color="bg-gradient-to-l from-secondary to-accent" />
+              <ChartBar key={m.key} label={m.label} value={monthlyData[m.key] || 0} max={maxRevenue} color="bg-secondary" />
             ))}
           </div>
         </div>
@@ -177,7 +177,7 @@ export function AdminDashboardPage() {
                   <span className="text-xs text-gray-500 font-cairo w-16 lg:w-20 shrink-0 text-left truncate">{cat.name}</span>
                   <div className="flex-1 h-4 lg:h-5 bg-gray-100 rounded-lg overflow-hidden">
                     <motion.div initial={{ width: 0 }} animate={{ width: `${(cat.productsCount / maxC) * 100}%` }} transition={{ duration: 0.8 }}
-                      className="h-full rounded-lg bg-gradient-to-l from-accent to-orange-400 flex items-center justify-end px-1.5"
+                      className="h-full rounded-lg bg-accent flex items-center justify-end px-1.5"
                     >
                       <span className="text-[9px] font-bold text-white font-cairo">{cat.productsCount}</span>
                     </motion.div>

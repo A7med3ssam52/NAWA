@@ -33,7 +33,7 @@ function FilterCheckbox({ checked, onChange, label, count }: {
         className={cn(
           'w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-200 shrink-0',
           checked
-            ? 'bg-gradient-to-br from-secondary to-accent border-secondary text-white shadow-sm shadow-secondary/20'
+            ? 'bg-secondary border-secondary text-white shadow-sm shadow-black/20'
             : 'border-gray-300 group-hover:border-gray-400',
         )}
       >
@@ -139,7 +139,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
       {/* Header */}
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-secondary/10 to-accent/10">
+          <div className="p-2 rounded-xl bg-secondary/10">
             <SlidersHorizontal className="w-5 h-5 text-secondary" />
           </div>
           <div>
@@ -307,7 +307,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
                 className={cn(
                   'w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all shrink-0',
                   localFilters.discount === option.value
-                    ? 'bg-gradient-to-br from-success to-green-500 border-success text-white shadow-sm shadow-success/20'
+                    ? 'bg-success border-success text-white shadow-sm shadow-black/20'
                     : 'border-gray-300 group-hover:border-gray-400',
                 )}
               >
@@ -371,7 +371,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
         className={cn(
           'flex items-center gap-2 px-4 py-2.5 rounded-xl font-cairo text-sm transition-all duration-200',
           hasActiveFilters
-            ? 'bg-gradient-to-l from-secondary to-accent text-white border-transparent shadow-md shadow-secondary/20'
+            ? 'bg-secondary text-white border-transparent shadow-md shadow-black/20'
             : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 hover:shadow-sm',
           className,
         )}

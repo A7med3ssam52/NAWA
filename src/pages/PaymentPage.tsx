@@ -120,7 +120,7 @@ export function PaymentPage() {
         })}
       </div>
 
-      <div className="mt-12 bg-gradient-to-l from-secondary/10 via-accent/10 to-secondary/10 rounded-2xl p-6 lg:p-8 text-center border border-gray-100">
+      <div className="mt-12 bg-secondary/10 rounded-2xl p-6 lg:p-8 text-center border border-gray-100">
         <h2 className="text-lg font-bold font-cairo text-gray-900 mb-3">
           {t('payment.safePayment')}
         </h2>

@@ -62,7 +62,7 @@ function StatCard({ title, value, icon, trend, trendLabel, color }: {
             </div>
           )}
         </div>
-        <div className={cn('p-3 rounded-2xl bg-gradient-to-br', color)}>
+        <div className={cn('p-3 rounded-2xl', color)}>
           {icon}
         </div>
       </div>
@@ -222,7 +222,7 @@ export function DashboardPage() {
                   label={m.month}
                   value={m.revenue}
                   max={maxRevenue}
-                  color="bg-gradient-to-l from-secondary to-accent"
+                  color="bg-secondary"
                 />
               ))
             ) : (
@@ -277,7 +277,7 @@ export function DashboardPage() {
                   <span className="text-xs text-gray-500 font-cairo w-24 shrink-0 text-left">{cat.name}</span>
                   <div className="flex-1 h-6 bg-gray-100 rounded-lg overflow-hidden relative">
                     <div
-                      className="h-full rounded-lg bg-gradient-to-l from-accent to-orange-400 flex items-center justify-end px-2 transition-all duration-1000 ease-out"
+                      className="h-full rounded-lg bg-accent flex items-center justify-end px-2 transition-all duration-1000 ease-out"
                       style={{ width: `${pct}%` }}
                     >
                       <span className="text-[10px] font-bold text-white font-cairo">{cat.count}</span>

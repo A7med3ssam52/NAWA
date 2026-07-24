@@ -24,7 +24,6 @@ export function HeroSlider() {
       link: PAGES.PRODUCTS,
       icon: Sparkles,
       image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1920&q=80',
-      gradient: 'from-secondary/80 via-secondary/60 to-purple-600/80',
     },
     {
       id: 2,
@@ -34,7 +33,6 @@ export function HeroSlider() {
       link: PAGES.OFFERS,
       icon: Zap,
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80',
-      gradient: 'from-accent/80 via-orange-500/60 to-rose-500/80',
     },
     {
       id: 3,
@@ -44,7 +42,6 @@ export function HeroSlider() {
       link: PAGES.PRODUCTS,
       icon: Truck,
       image: 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=1920&q=80',
-      gradient: 'from-emerald-500/80 via-green-500/60 to-teal-600/80',
     },
   ], [t]);
 
@@ -72,7 +69,7 @@ export function HeroSlider() {
                     alt={slide.heading}
                     className="w-full h-full object-cover"
                   />
-                  <div className={`absolute inset-0 bg-gradient-to-br ${slide.gradient}`} />
+                  <div className="absolute inset-0 bg-black/40" />
                   <div className="absolute inset-0 bg-black/20" />
                 </div>
 

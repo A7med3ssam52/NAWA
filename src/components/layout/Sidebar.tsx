@@ -44,12 +44,12 @@ const contactItems = [
 ];
 
 const catColors = [
-  'from-secondary to-accent',
-  'from-accent to-orange-400',
-  'from-success to-green-400',
-  'from-danger to-red-400',
-  'from-purple-500 to-pink-500',
-  'from-cyan-500 to-accent',
+  'bg-secondary',
+  'bg-accent',
+  'bg-success',
+  'bg-danger',
+  'bg-purple-500',
+  'bg-cyan-500',
 ];
 
 const containerVariants = {
@@ -92,7 +92,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={t('nav.sidebarLabel')}>
           {/* Backdrop with gradient blur */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/50 to-transparent backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -113,7 +113,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
             <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
 
             {/* Header with user section */}
-            <div className="relative bg-gradient-to-l from-secondary/5 to-transparent border-b border-gray-100">
+            <div className="relative bg-secondary/5 border-b border-gray-100">
               <div className="flex items-center justify-between p-4">
                 {isAuthenticated && user ? (
                   <motion.div
@@ -123,7 +123,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     transition={{ delay: 0.1 }}
                   >
                     <div className="relative">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary to-accent flex items-center justify-center text-white font-bold font-cairo text-lg overflow-hidden shadow-lg shadow-secondary/20">
+                      <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-white font-bold font-cairo text-lg overflow-hidden shadow-lg shadow-black/20">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -144,7 +144,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-secondary/20 to-accent/20 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center">
                       <User className="w-6 h-6 text-secondary" />
                     </div>
                     <div>
@@ -168,7 +168,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <Link
                     to="/login"
                     onClick={onClose}
-                    className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gradient-to-l from-secondary to-accent text-white text-sm font-bold font-cairo shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/30 transition-all"
+                    className="flex items-center justify-between px-4 py-3 rounded-2xl bg-secondary text-white text-sm font-bold font-cairo shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 transition-all"
                   >
                     <span>{t('nav.loginOrRegister')}</span>
                     <ArrowLeft className="w-4 h-4" />
@@ -299,7 +299,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                     >
                       <div className="flex items-center gap-3">
                         <div className={cn(
-                          'w-2 h-2 rounded-full bg-gradient-to-br',
+                          'w-2 h-2 rounded-full',
                           catColors[idx % catColors.length],
                         )} />
                         <span>{cat.name}</span>

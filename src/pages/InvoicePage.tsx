@@ -31,7 +31,7 @@ export function InvoicePage() {
 
       <div id="invoice" className="bg-white rounded-2xl border border-gray-100 p-6 shadow-soft">
         <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-4">
-           <span className="text-lg font-bold bg-gradient-to-l from-secondary to-accent bg-clip-text text-transparent font-cairo">{SITE_NAME()}</span>
+           <span className="text-lg font-bold text-secondary font-cairo">{SITE_NAME()}</span>
           <div className="text-left">
             <p className="text-xs text-gray-400 font-cairo">{t('orders.invoiceNumber')}</p>
             <p className="text-sm font-bold font-cairo text-gray-900">{order.orderNumber}</p>

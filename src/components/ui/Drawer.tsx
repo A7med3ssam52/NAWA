@@ -69,7 +69,7 @@ export function Drawer({
           aria-label={title}
         >
           <motion.div
-            className="fixed inset-0 bg-gradient-to-l from-black/60 via-black/40 to-transparent backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
             variants={backdropVariants}
             initial="hidden"
             animate="visible"
@@ -92,7 +92,7 @@ export function Drawer({
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
 
             {(title) && (
-              <div className="relative flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-l from-secondary/5 to-transparent">
+              <div className="relative flex items-center justify-between p-4 border-b border-gray-100 bg-secondary/5">
                 <h2 className="text-lg font-bold text-gray-900 font-cairo">
                   {title}
                 </h2>
