@@ -27,7 +27,7 @@ export function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-4">
         <section className="ios-card px-4 py-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">{t('home.categories')}</h2>
+          <h2 className="text-lg font-bold text-gray-700 mb-4">{t('home.categories')}</h2>
           <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-3 px-3">
             {categories.map((cat, i) => (
               <div key={cat.id} className="shrink-0 w-32 sm:w-36 md:w-40">
@@ -39,14 +39,14 @@ export function HomePage() {
 
         <section className="ios-card px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">{t('home.newProducts')}</h2>
+            <h2 className="text-lg font-bold text-gray-700">{t('home.newProducts')}</h2>
           </div>
           {!allLoaded ? <SectionSkeleton /> : <ProductGrid items={newProducts.data!.slice(0, 12)} loading={false} animated={false} />}
         </section>
 
         <section className="ios-card px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">{t('home.bestSelling')}</h2>
+            <h2 className="text-lg font-bold text-gray-700">{t('home.bestSelling')}</h2>
           </div>
           {!allLoaded ? <SectionSkeleton /> : <ProductGrid items={bestSelling.data!} loading={false} animated={false} />}
         </section>
@@ -54,7 +54,7 @@ export function HomePage() {
         {recentlyViewed.length > 0 && (
           <section className="ios-card px-4 py-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-900">{t('home.recentlyViewed')}</h2>
+              <h2 className="text-lg font-bold text-gray-700">{t('home.recentlyViewed')}</h2>
             </div>
             <ProductGrid items={recentlyViewed} loading={false} animated={false} />
           </section>
@@ -62,13 +62,13 @@ export function HomePage() {
 
         <section className="ios-card px-4 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-900">{t('home.specialOffers')}</h2>
+            <h2 className="text-lg font-bold text-gray-700">{t('home.specialOffers')}</h2>
           </div>
           {!allLoaded ? <SectionSkeleton /> : <ProductGrid items={discounted.data!.slice(0, 12)} loading={false} animated={false} />}
         </section>
 
         <section className="ios-card px-4 py-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">{t('home.testimonials')}</h2>
+          <h2 className="text-lg font-bold text-gray-700 mb-4">{t('home.testimonials')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {testimonials.map((t, i) => (
               <TestimonialCard key={t.id} testimonial={t} index={i} />
