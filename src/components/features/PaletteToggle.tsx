@@ -2,8 +2,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Palette } from 'lucide-react';
 
 const palettes = {
-  taupe: { label: 'باليت 1', bg: 'bg-[#635352]' },
-  terracotta: { label: 'باليت 2', bg: 'bg-[#C84913]' },
+  taupe: { label: 'باليت 1', bg: 'bg-[#013C40]' },
+  terracotta: { label: 'باليت 2', bg: 'bg-[#214458]' },
 } as const;
 
 export function PaletteToggle() {
