@@ -213,7 +213,7 @@
 
   /* iOS Card */
   .ios-card {
-    background: white;
+    background: rgb(var(--color-background));
     border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     overflow: hidden;
