@@ -15,7 +15,7 @@ INSERT INTO profiles (id, name, email, phone, avatar, addresses, orders, wishlis
 -- ─── Categories ───
 INSERT INTO categories (id, name, slug, image, icon, products_count) VALUES
 ('cat-1', 'رجالى', 'men', 'https://picsum.photos/seed/men/400/400', 'Shirt', 1),
-('cat-2', 'حريمى', 'women', 'https://picsum.photos/seed/women/400/400', 'Dress', 0);
+('cat-2', 'حريمى', 'women', 'https://picsum.photos/seed/women/400/400', 'Dress', 1);
 
 -- ─── Brands ───
 INSERT INTO brands (id, name, slug, logo, products_count) VALUES
@@ -30,7 +30,8 @@ INSERT INTO brands (id, name, slug, logo, products_count) VALUES
 
 -- ─── Products (sample - add all from products.json) ───
 INSERT INTO products (id, name, slug, description, short_description, price, old_price, discount, images, category, brand, rating, reviews_count, stock, sku, specifications, tags, is_new, is_featured, created_at) VALUES
-('prod-1', 'تيشيرت قطن رجالي', 'mens-1', 'ملابس رجالية عالية الجودة. تيشيرت قطن رجالي بتصميم عصري وأنيق مناسب لجميع الأذواق.', 'تيشيرت قطن رجالي - ملابس رجالية عالية الجودة', 840, 1075, 28, '{https://loremflickr.com/600/600/mens,cloth,shirt?lock=10,https://loremflickr.com/600/600/mens,cloth,shirt?lock=11}', 'cat-1', 'brand-6', 4.5, 312, 164, '10001', '[{"label":"المادة","value":"قطن 100%"}]', '{رجالي,ملابس,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z');
+('prod-1', 'تيشيرت قطن رجالي', 'mens-1', 'ملابس رجالية عالية الجودة. تيشيرت قطن رجالي بتصميم عصري وأنيق مناسب لجميع الأذواق.', 'تيشيرت قطن رجالي - ملابس رجالية عالية الجودة', 840, 1075, 28, '{https://loremflickr.com/600/600/mens,cloth,shirt?lock=10,https://loremflickr.com/600/600/mens,cloth,shirt?lock=11}', 'cat-1', 'brand-6', 4.5, 312, 164, '10001', '[{"label":"المادة","value":"قطن 100%"}]', '{رجالي,ملابس,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z'),
+('prod-2', 'فستان ماكسي حريمي', 'womens-1', 'فستان ماكسي حريمي أنيق بتصميم عصري وجذاب. مصنوع من خامات عالية الجودة توفر أقصى درجات الراحة والأناقة.', 'فستان ماكسي حريمي - أناقة وراحة في تصميم واحد', 1250, 1600, 22, '{https://loremflickr.com/600/600/women,dress,cloth?lock=20,https://loremflickr.com/600/600/women,dress,cloth?lock=21}', 'cat-2', 'brand-1', 4.3, 89, 45, '10002', '[{"label":"المادة","value":"مزيج قطن وبوليستر"},{"label":"المقاسات","value":"S - 3XL"},{"label":"الألوان","value":"بيج، أسود، كحلي"},{"label":"الجنس","value":"حريمي"},{"label":"الطول","value":"ماكسي (طويل)"}]', '{حريمي,ملابس,فستان,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z');
 
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES

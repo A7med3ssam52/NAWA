@@ -30,5 +30,38 @@
     "isNew": true,
     "isFeatured": true,
     "createdAt": "2026-07-24T21:00:00.000Z"
+  },
+  {
+    "id": "prod-2",
+    "name": "فستان ماكسي حريمي",
+    "slug": "womens-1",
+    "description": "فستان ماكسي حريمي أنيق بتصميم عصري وجذاب. مصنوع من خامات عالية الجودة توفر أقصى درجات الراحة والأناقة. مناسب للمناسبات المختلفة سواء كانت رسمية أو يومية. يتميز بقصة واسعة ومريحة تناسب جميع الأجسام.",
+    "shortDescription": "فستان ماكسي حريمي - أناقة وراحة في تصميم واحد",
+    "price": 1250,
+    "oldPrice": 1600,
+    "discount": 22,
+    "images": [
+      "https://loremflickr.com/600/600/women,dress,cloth?lock=20",
+      "https://loremflickr.com/600/600/women,dress,cloth?lock=21",
+      "https://loremflickr.com/600/600/women,dress,cloth?lock=22",
+      "https://loremflickr.com/600/600/women,dress,cloth?lock=23"
+    ],
+    "category": "cat-2",
+    "brand": "brand-1",
+    "rating": 4.3,
+    "reviewsCount": 89,
+    "stock": 45,
+    "sku": "10002",
+    "specifications": [
+      { "label": "المادة", "value": "مزيج قطن وبوليستر" },
+      { "label": "المقاسات", "value": "S - 3XL" },
+      { "label": "الألوان", "value": "بيج، أسود، كحلي" },
+      { "label": "الجنس", "value": "حريمي" },
+      { "label": "الطول", "value": "ماكسي (طويل)" }
+    ],
+    "tags": ["حريمي", "ملابس", "فستان", "موضة", "أزياء"],
+    "isNew": true,
+    "isFeatured": true,
+    "createdAt": "2026-07-24T21:00:00.000Z"
   }
 ]
