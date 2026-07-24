@@ -135,12 +135,12 @@ export function CartPage() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Input value={couponInput} onChange={(e) => setCouponInput(e.target.value)} placeholder={t('cart.applyCouponPlaceholder')} className="text-sm h-10" dir="rtl" />
-                  <Button variant="secondary" size="md" rounded="xl" onClick={handleApplyCoupon} loading={couponLoading}>{t('cart.applyCoupon')}</Button>
+                  <Button variant="accent" size="md" rounded="xl" onClick={handleApplyCoupon} loading={couponLoading}>{t('cart.applyCoupon')}</Button>
                 </div>
               )}
             </div>
 
-            <Button variant="accent" size="lg" fullWidth rounded="xl" onClick={() => navigate(PAGES.CHECKOUT)}>
+            <Button variant="secondary" size="lg" fullWidth rounded="xl" className="text-[#EFEDE2]" onClick={() => navigate(PAGES.CHECKOUT)}>
               {t('cart.checkout')}
               <ArrowLeft className="w-5 h-5" />
             </Button>
