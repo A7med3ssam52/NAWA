@@ -1,5 +1,14 @@
 import { supabase } from '@/lib/supabase';
 import type { Product, FilterState } from '@/types';
+import {
+  products as localProducts,
+  getNewProducts as getLocalNew,
+  getFeaturedProducts as getLocalFeatured,
+  getDiscountedProducts as getLocalDiscounted,
+  getBestSellingProducts as getLocalBestSelling,
+  getRelatedProducts as getLocalRelated,
+  filterProducts as localFilterProducts,
+} from '@/data';
 
 function mapProduct(data: any): Product {
   return {
@@ -39,54 +48,56 @@ export const productService = {
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1);
 
-    if (!error && data !== null) {
+    if (!error && data !== null && data.length > 0) {
       const mapped = (data as any[]).map(mapProduct);
       return { items: mapped, total: count || data.length, totalPages: Math.ceil((count || data.length) / pageSize), page, pageSize };
     }
-    return { items: [], total: 0, totalPages: 0, page, pageSize };
+    // Fallback to local data
+    return localFilterProducts(filters);
   },
 
   getBySlug: async (slug: string) => {
     const { data } = await supabase.from('products').select('*').eq('slug', slug).single();
     if (data) return mapProduct(data as any);
-    return null;
+    return localProducts.find((p) => p.slug === slug) || null;
   },
 
   getById: async (id: string) => {
     const { data } = await supabase.from('products').select('*').eq('id', id).single();
     if (data) return mapProduct(data as any);
-    return null;
+    return localProducts.find((p) => p.id === id) || null;
   },
 
   getFeatured: async () => {
     const { data, error } = await supabase.from('products').select('*').eq('is_featured', true);
-    if (!error && data !== null) return (data as any[]).map(mapProduct);
-    return [];
+    if (!error && data !== null && data.length > 0) return (data as any[]).map(mapProduct);
+    return getLocalFeatured();
   },
 
   getNew: async () => {
     const { data, error } = await supabase.from('products').select('*').eq('is_new', true);
-    if (!error && data !== null) return (data as any[]).map(mapProduct);
-    return [];
+    if (!error && data !== null && data.length > 0) return (data as any[]).map(mapProduct);
+    return getLocalNew();
   },
 
   getDiscounted: async () => {
     const { data, error } = await supabase.from('products').select('*').not('discount', 'is', null).gt('discount', 0);
-    if (!error && data !== null) return (data as any[]).map(mapProduct);
-    return [];
+    if (!error && data !== null && data.length > 0) return (data as any[]).map(mapProduct);
+    return getLocalDiscounted();
   },
 
   getBestSelling: async () => {
     const { data, error } = await supabase.from('products').select('*').order('reviews_count', { ascending: false }).limit(8);
-    if (!error && data !== null) return (data as any[]).map(mapProduct);
-    return [];
+    if (!error && data !== null && data.length > 0) return (data as any[]).map(mapProduct);
+    return getLocalBestSelling();
   },
 
   getRelated: async (productId: string) => {
     const product = await productService.getById(productId);
     if (!product) return [];
     const { data, error } = await supabase.from('products').select('*').eq('category_id', product.category).neq('id', productId);
-    if (!error && data !== null) return (data as any[]).map(mapProduct);
-    return [];
+    if (!error && data !== null && data.length > 0) return (data as any[]).map(mapProduct);
+    // Fallback: use local helper which already filters by category
+    return getLocalRelated(productId);
   },
 };
