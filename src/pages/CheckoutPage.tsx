@@ -250,7 +250,7 @@ export function CheckoutPage() {
                   })}
                 </div>
                 <div className="flex items-center justify-between pt-4 gap-2 sm:gap-0">
-                  <Button variant="ghost" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(1)}>{t('common.previous')}</Button>
+                  <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(1)}>{t('common.previous')}</Button>
                   <Button variant="secondary" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={handlePaymentSubmit}>{t('common.next')} <ChevronLeft className="w-4 h-4" /></Button>
                 </div>
               </motion.div>
@@ -275,7 +275,7 @@ export function CheckoutPage() {
                 </div>
                 <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('checkout.notesPlaceholder')} className="mb-4" rows={2} />
                 <div className="flex items-center justify-between pt-2 gap-2 sm:gap-0">
-                  <Button variant="ghost" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(2)}>{t('common.previous')}</Button>
+                  <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(2)}>{t('common.previous')}</Button>
                   <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={handlePlaceOrder} loading={processing}>
                     {t('checkout.confirmOrder')}
                   </Button>

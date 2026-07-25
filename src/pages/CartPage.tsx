@@ -140,7 +140,7 @@ export function CartPage() {
               )}
             </div>
 
-            <Button variant="secondary" size="lg" fullWidth rounded="xl" className="text-[#EFEDE2]" onClick={() => navigate(PAGES.CHECKOUT)}>
+            <Button variant="secondary" size="lg" fullWidth rounded="xl" onClick={() => navigate(PAGES.CHECKOUT)}>
               {t('cart.checkout')}
               <ArrowLeft className="w-5 h-5" />
             </Button>

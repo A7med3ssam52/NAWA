@@ -11,12 +11,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: 'bg-primary text-accent hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 ios-touch-feedback',
-  secondary: 'bg-secondary text-accent hover:bg-secondary/90 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 active:scale-95 ios-touch-feedback',
+  primary: 'bg-primary text-background hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-95 ios-touch-feedback',
+  secondary: 'bg-secondary text-background hover:bg-secondary/90 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/25 active:scale-95 ios-touch-feedback',
   accent: 'bg-accent text-primary hover:bg-accent/90 shadow-lg shadow-accent/20 hover:shadow-accent/30 active:scale-95 ios-touch-feedback',
   danger: 'bg-danger text-white hover:bg-danger/90 shadow-lg shadow-danger/20 active:scale-95 ios-touch-feedback',
   ghost: 'bg-transparent text-primary hover:bg-gray-100 ios-touch-feedback',
-  outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-accent active:scale-95 ios-touch-feedback',
+  outline: 'border-2 border-primary text-primary hover:bg-primary hover:text-background active:scale-95 ios-touch-feedback',
   success: 'bg-success text-white hover:bg-success/90 shadow-lg shadow-success/20 active:scale-95 ios-touch-feedback',
 };
 
