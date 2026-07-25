@@ -276,7 +276,7 @@ export function CheckoutPage() {
                 <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('checkout.notesPlaceholder')} className="mb-4" rows={2} />
                 <div className="flex items-center justify-between pt-2 gap-2 sm:gap-0">
                   <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(2)}>{t('common.previous')}</Button>
-                  <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={handlePlaceOrder} loading={processing}>
+                  <Button variant="secondary" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={handlePlaceOrder} loading={processing}>
                     {t('checkout.confirmOrder')}
                   </Button>
                 </div>
