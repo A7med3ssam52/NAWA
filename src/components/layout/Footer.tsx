@@ -33,7 +33,7 @@ const customerServiceLinks = [
 ];
 
 const socialLinks = [
-  { icon: Facebook, href: 'https://www.facebook.com/share/1D3j6EgNHy/?mibextid=wwXIfr', label: 'footer.facebook' },
+  { icon: Facebook, href: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', label: 'footer.facebook' },
   { icon: Instagram, href: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', label: 'footer.instagram' },
   { icon: Music2, href: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', label: 'footer.tiktok' },
   { icon: MessageCircle, href: `https://wa.me/${WHATSAPP_NUMBER}`, label: 'footer.whatsapp' },

@@ -25,7 +25,7 @@ type ContactLink = {
 const socialLinks: ContactLink[] = [
   { id: 2, key: 'store', url: 'https://zahieg.com/products', icon: Store, color: '#C79B4A' },
   { id: 5, key: 'whatsapp', url: `https://wa.me/${WHATSAPP_NUMBER}`, icon: MessageCircle, color: '#25D366' },
-  { id: 6, key: 'facebook', url: 'https://www.facebook.com/share/1D3j6EgNHy/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
+  { id: 6, key: 'facebook', url: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
   { id: 7, key: 'instagram', url: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', icon: Instagram, color: '#E4405F' },
   { id: 8, key: 'tiktok', url: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', icon: Music2, color: '#000000' },
   { id: 1, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#214458' },
@@ -33,7 +33,7 @@ const socialLinks: ContactLink[] = [
 
 const footerSocials: ContactLink[] = [
   { id: 1, key: 'whatsapp', url: `https://wa.me/${WHATSAPP_NUMBER}`, icon: MessageCircle, color: '#25D366' },
-  { id: 2, key: 'facebook', url: 'https://www.facebook.com/share/1D3j6EgNHy/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
+  { id: 2, key: 'facebook', url: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
   { id: 3, key: 'instagram', url: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', icon: Instagram, color: '#E4405F' },
   { id: 4, key: 'tiktok', url: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', icon: Music2, color: '#000000' },
   { id: 5, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#4CAF50' },
