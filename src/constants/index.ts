@@ -26,6 +26,7 @@ export const PAGES = {
   SETTINGS: '/profile/settings',
   ABOUT: '/about',
   CONTACT: '/contact',
+  CONTACTS: '/contacts',
   FAQ: '/faq',
   PRIVACY: '/privacy',
   TERMS: '/terms',

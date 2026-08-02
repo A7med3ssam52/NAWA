@@ -1,9 +1,11 @@
 import i18n from '@/i18n';
 import { supabase } from '@/lib/supabase';
 import type { Product, Category, Brand, Review, Order, Notification, Coupon, Address, Testimonial, SpinPrize, User } from '@/types';
+import localProducts from './products.json';
+import localCategories from './categories.json';
 
-let products: Product[] = [];
-let categories: Category[] = [];
+let products: Product[] = localProducts as Product[];
+let categories: Category[] = localCategories as Category[];
 let brands: Brand[] = [];
 let reviews: Review[] = [];
 let users: User[] = [];

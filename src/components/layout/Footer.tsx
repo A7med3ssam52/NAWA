@@ -19,7 +19,7 @@ const WHATSAPP_NUMBER = '201037223730';
 
 const quickLinks = [
   { label: 'footer.about', href: PAGES.ABOUT },
-  { label: 'footer.contact', href: PAGES.CONTACT },
+  { label: 'footer.contact', href: PAGES.CONTACTS },
   { label: 'footer.faq', href: PAGES.FAQ },
   { label: 'footer.privacy', href: PAGES.PRIVACY },
   { label: 'footer.terms', href: PAGES.TERMS },

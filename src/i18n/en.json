@@ -635,6 +635,26 @@
     "satThuHours": "9:00 AM - 10:00 PM",
     "friHours": "1:00 PM - 10:00 PM"
   },
+  "contactPage": {
+    "headerTitle": "ZAHI",
+    "heroTitle": "ZAHI",
+    "heroSubtitle": "Elegance That Adorns You",
+    "heroDescription": "Shop the latest fashion collections and original products at Zahi online store. A premium shopping experience with fast customer service and delivery to all governorates.",
+    "language": "AR",
+    "links": {
+      "contact": "Contact Us",
+      "store": "The Store",
+      "home": "Homepage",
+      "location": "Location",
+      "whatsapp": "WhatsApp",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "tiktok": "TikTok"
+    },
+    "address": "Cairo, Egypt",
+    "copyright": "© 2026 Zahi - All Rights Reserved",
+    "credit": "Elegance That Adorns You"
+  },
   "faq": {
     "title": "FAQ",
     "subtitle": "Answers to the most common questions",

@@ -16,6 +16,7 @@ export { NotificationsPage } from './NotificationsPage';
 export { SettingsPage } from './SettingsPage';
 export { AboutPage } from './AboutPage';
 export { ContactPage } from './ContactPage';
+export { ContactUsPage } from './ContactUsPage';
 export { FAQPage } from './FAQPage';
 export { PrivacyPage } from './PrivacyPage';
 export { TermsPage } from './TermsPage';

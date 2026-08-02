@@ -69,6 +69,7 @@ const NotificationsPage = lazyPage('NotificationsPage', 'NotificationsPage');
 const SettingsPage = lazyPage('SettingsPage', 'SettingsPage');
 const AboutPage = lazyPage('AboutPage', 'AboutPage');
 const ContactPage = lazyPage('ContactPage', 'ContactPage');
+const ContactUsPage = lazyPage('ContactUsPage', 'ContactUsPage');
 const FAQPage = lazyPage('FAQPage', 'FAQPage');
 const PrivacyPage = lazyPage('PrivacyPage', 'PrivacyPage');
 const TermsPage = lazyPage('TermsPage', 'TermsPage');
@@ -159,6 +160,11 @@ const router = createBrowserRouter([
       { path: 'spin-prizes', element: <SuspenseWrapper><AdminSpinPrizesPage /></SuspenseWrapper> },
       { path: 'accounts', element: <SuspenseWrapper><AdminAccountsPage /></SuspenseWrapper> },
     ],
+  },
+  {
+    path: '/contacts',
+    element: <SuspenseWrapper><ContactUsPage /></SuspenseWrapper>,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/login',
