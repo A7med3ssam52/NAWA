@@ -28,7 +28,7 @@ const socialLinks: ContactLink[] = [
   { id: 6, key: 'facebook', url: 'https://www.facebook.com/share/1D3j6EgNHy/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
   { id: 7, key: 'instagram', url: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', icon: Instagram, color: '#E4405F' },
   { id: 8, key: 'tiktok', url: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', icon: Music2, color: '#000000' },
-  { id: 1, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#013C40' },
+  { id: 1, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#214458' },
 ];
 
 const footerSocials: ContactLink[] = [

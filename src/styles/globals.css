@@ -398,10 +398,10 @@
    Contact Us Page (زاهي) — design replicated from dajajsta.com/contacts
    ============================================================ */
 .contact-us-page {
-  --primary-red: #013c40;
+  --primary-red: #214458;
   --secondary-orange: #c79b4a;
   --white: #fff;
-  --dark: #01292c;
+  --dark: #214458;
   --light-gray: #efede2;
   --font-ar: 'Cairo', sans-serif;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -697,7 +697,7 @@
 .contact-us-page .social-card:hover {
   border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 30px rgba(1, 60, 64, 0.06);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 30px rgba(33, 68, 88, 0.06);
 }
 
 .contact-us-page .social-card:hover:before {
@@ -737,16 +737,16 @@
 
 .contact-us-page .social-card--featured {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
-  border: 2px solid rgba(1, 60, 64, 0.2);
+  border: 2px solid rgba(33, 68, 88, 0.2);
   grid-column: 1 / -1;
   gap: 16px;
   min-height: 200px;
   padding: 36px 24px;
-  box-shadow: 0 8px 32px rgba(1, 60, 64, 0.1);
+  box-shadow: 0 8px 32px rgba(33, 68, 88, 0.1);
 }
 
 .contact-us-page .social-card--featured:after {
-  background: linear-gradient(rgba(1, 60, 64, 0.06) 0%, transparent 100%);
+  background: linear-gradient(rgba(33, 68, 88, 0.06) 0%, transparent 100%);
 }
 
 .contact-us-page .social-card--featured .social-card-icon {
@@ -754,9 +754,9 @@
 }
 
 .contact-us-page .social-card--featured:hover {
-  border-color: rgba(1, 60, 64, 0.4);
+  border-color: rgba(33, 68, 88, 0.4);
   transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(1, 60, 64, 0.18);
+  box-shadow: 0 16px 48px rgba(33, 68, 88, 0.18);
 }
 
 .contact-us-page .social-card--featured .social-card-label {
@@ -811,7 +811,7 @@
 
 .contact-us-page .footer-glow {
   pointer-events: none;
-  background: radial-gradient(rgba(1, 60, 64, 0.08) 0%, transparent 70%);
+  background: radial-gradient(rgba(33, 68, 88, 0.08) 0%, transparent 70%);
   width: 500px;
   height: 200px;
   position: absolute;
