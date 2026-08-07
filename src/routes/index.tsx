@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
 import { Layout, AdminLayout } from '@/components/layout';
 import { Button, Spinner } from '@/components/ui';
+import { RequireAuth, RequireAdmin, RequireGuest } from '@/routes/guards';
 import { HomePage } from '@/pages/HomePage';
 
 function lazyWithRetry<T extends React.ComponentType>(
@@ -122,16 +123,16 @@ const router = createBrowserRouter([
       { path: 'search', element: <SuspenseWrapper><SearchPage /></SuspenseWrapper> },
       { path: 'wishlist', element: <SuspenseWrapper><WishlistPage /></SuspenseWrapper> },
       { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
-      { path: 'checkout', element: <SuspenseWrapper><CheckoutPage /></SuspenseWrapper> },
+      { path: 'checkout', element: <RequireAuth><SuspenseWrapper><CheckoutPage /></SuspenseWrapper></RequireAuth> },
       { path: 'order-success/:orderId', element: <SuspenseWrapper><OrderSuccessPage /></SuspenseWrapper> },
-      { path: 'profile', element: <SuspenseWrapper><ProfilePage /></SuspenseWrapper> },
-      { path: 'profile/orders', element: <SuspenseWrapper><MyOrdersPage /></SuspenseWrapper> },
-      { path: 'profile/orders/:orderId', element: <SuspenseWrapper><OrderDetailsPage /></SuspenseWrapper> },
-      { path: 'profile/orders/:orderId/invoice', element: <SuspenseWrapper><InvoicePage /></SuspenseWrapper> },
-      { path: 'compare', element: <SuspenseWrapper><ComparePage /></SuspenseWrapper> },
-      { path: 'profile/addresses', element: <SuspenseWrapper><AddressesPage /></SuspenseWrapper> },
-      { path: 'profile/notifications', element: <SuspenseWrapper><NotificationsPage /></SuspenseWrapper> },
-      { path: 'profile/settings', element: <SuspenseWrapper><SettingsPage /></SuspenseWrapper> },
+      { path: 'profile', element: <RequireAuth><SuspenseWrapper><ProfilePage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/orders', element: <RequireAuth><SuspenseWrapper><MyOrdersPage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/orders/:orderId', element: <RequireAuth><SuspenseWrapper><OrderDetailsPage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/orders/:orderId/invoice', element: <RequireAuth><SuspenseWrapper><InvoicePage /></SuspenseWrapper></RequireAuth> },
+      { path: 'compare', element: <RequireAuth><SuspenseWrapper><ComparePage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/addresses', element: <RequireAuth><SuspenseWrapper><AddressesPage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/notifications', element: <RequireAuth><SuspenseWrapper><NotificationsPage /></SuspenseWrapper></RequireAuth> },
+      { path: 'profile/settings', element: <RequireAuth><SuspenseWrapper><SettingsPage /></SuspenseWrapper></RequireAuth> },
       { path: 'about', element: <SuspenseWrapper><AboutPage /></SuspenseWrapper> },
       { path: 'contact', element: <SuspenseWrapper><ContactPage /></SuspenseWrapper> },
       { path: 'faq', element: <SuspenseWrapper><FAQPage /></SuspenseWrapper> },
@@ -152,18 +153,18 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     errorElement: <RouteErrorBoundary />,
     children: [
-      { index: true, element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper> },
-      { path: 'products', element: <SuspenseWrapper><AdminProductsPage /></SuspenseWrapper> },
-      { path: 'orders', element: <SuspenseWrapper><AdminOrdersPage /></SuspenseWrapper> },
-      { path: 'categories', element: <SuspenseWrapper><AdminCategoriesPage /></SuspenseWrapper> },
-      { path: 'brands', element: <SuspenseWrapper><AdminBrandsPage /></SuspenseWrapper> },
-      { path: 'coupons', element: <SuspenseWrapper><AdminCouponsPage /></SuspenseWrapper> },
-      { path: 'users', element: <SuspenseWrapper><AdminUsersPage /></SuspenseWrapper> },
-      { path: 'reviews', element: <SuspenseWrapper><AdminReviewsPage /></SuspenseWrapper> },
-      { path: 'notifications', element: <SuspenseWrapper><AdminNotificationsPage /></SuspenseWrapper> },
-      { path: 'settings', element: <SuspenseWrapper><AdminSettingsPage /></SuspenseWrapper> },
-      { path: 'spin-prizes', element: <SuspenseWrapper><AdminSpinPrizesPage /></SuspenseWrapper> },
-      { path: 'accounts', element: <SuspenseWrapper><AdminAccountsPage /></SuspenseWrapper> },
+      { index: true, element: <RequireAdmin><SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'products', element: <RequireAdmin><SuspenseWrapper><AdminProductsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'orders', element: <RequireAdmin><SuspenseWrapper><AdminOrdersPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'categories', element: <RequireAdmin><SuspenseWrapper><AdminCategoriesPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'brands', element: <RequireAdmin><SuspenseWrapper><AdminBrandsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'coupons', element: <RequireAdmin><SuspenseWrapper><AdminCouponsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'users', element: <RequireAdmin><SuspenseWrapper><AdminUsersPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'reviews', element: <RequireAdmin><SuspenseWrapper><AdminReviewsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'notifications', element: <RequireAdmin><SuspenseWrapper><AdminNotificationsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'settings', element: <RequireAdmin><SuspenseWrapper><AdminSettingsPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'spin-prizes', element: <RequireAdmin><SuspenseWrapper><AdminSpinPrizesPage /></SuspenseWrapper></RequireAdmin> },
+      { path: 'accounts', element: <RequireAdmin><SuspenseWrapper><AdminAccountsPage /></SuspenseWrapper></RequireAdmin> },
     ],
   },
   {
@@ -173,7 +174,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <SuspenseWrapper><LoginPage /></SuspenseWrapper>,
+    element: <RequireGuest><SuspenseWrapper><LoginPage /></SuspenseWrapper></RequireGuest>,
     errorElement: <RouteErrorBoundary />,
   },
 ]);

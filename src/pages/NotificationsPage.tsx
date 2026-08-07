@@ -2,9 +2,10 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Bell, Package, Tag, Info, CheckCheck } from 'lucide-react';
 import { useAuth } from '@/contexts';
-import { getUserNotifications } from '@/data';
+import { useMyNotifications, useMarkAllRead } from '@/api';
 import { getTimeAgo, cn } from '@/utils';
 import { Button, EmptyState } from '@/components/ui';
+import toast from 'react-hot-toast';
 
 const typeIcons: Record<string, typeof Package> = {
   order: Package,
@@ -21,6 +22,8 @@ const typeColors: Record<string, string> = {
 export function NotificationsPage() {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const { data: dbNotifications } = useMyNotifications(user?.id);
+  const markAllRead = useMarkAllRead(user?.id);
 
   if (!user) {
     return (
@@ -30,10 +33,13 @@ export function NotificationsPage() {
     );
   }
 
-  const notifications = getUserNotifications(user.id);
+  const notifications = dbNotifications || [];
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const handleMarkAllRead = () => {};
+  const handleMarkAllRead = async () => {
+    await markAllRead();
+    toast.success(t('notifications.allMarkedRead'));
+  };
 
   return (
     <motion.div

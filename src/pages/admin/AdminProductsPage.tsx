@@ -156,9 +156,7 @@ export function AdminProductsPage() {
         brand: form.brand,
         description: form.description,
         shortDescription: form.shortDescription,
-        images: form.images.length > 0
-          ? form.images
-          : ['https://picsum.photos/seed/default/600/600'],
+        images: form.images,
         isFeatured: form.isFeatured,
         tags: form.tags
           ? form.tags.split(',').map((s: string) => s.trim()).filter(Boolean)

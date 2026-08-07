@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, Eye, BarChart3 } from 'lucide-react';
 import { cn, formatPrice, formatDiscount } from '@/utils';
 import type { Product } from '@/types';
-import { categories } from '@/data';
+import { useCategories } from '@/api';
 import { PAGES } from '@/constants';
 import { Badge, Rating, Button, FadeInView } from '@/components/ui';
 import toast from 'react-hot-toast';
@@ -30,6 +30,7 @@ export const ProductCard = memo(function ProductCard({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
+  const { data: categories } = useCategories();
 
   const mainImage = product.images[0];
   const isOutOfStock = product.stock === 0;
@@ -96,7 +97,7 @@ export const ProductCard = memo(function ProductCard({
           )}
 
           <Badge variant="secondary" size="sm" className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {categories.find((c) => c.id === product.category)?.name}
+            {categories?.find((c) => c.id === product.category)?.name}
           </Badge>
 
           <button

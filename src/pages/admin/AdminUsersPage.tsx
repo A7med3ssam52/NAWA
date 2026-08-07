@@ -70,8 +70,12 @@ export function AdminUsersPage() {
                     className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-4 py-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-50">
-                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" loading="lazy" />
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary flex items-center justify-center text-white text-sm font-bold font-cairo">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" loading="lazy" />
+                        ) : (
+                          (user.name && user.name.charAt(0)) || '—'
+                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3"><span className="text-sm font-semibold font-cairo text-gray-900">{user.name}</span></td>
@@ -99,8 +103,12 @@ export function AdminUsersPage() {
         {viewModal && (
           <div className="space-y-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-50">
-                <img src={viewModal.avatar} alt={viewModal.name} className="w-full h-full object-cover" />
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-secondary flex items-center justify-center text-white text-lg font-bold font-cairo">
+                {viewModal.avatar ? (
+                  <img src={viewModal.avatar} alt={viewModal.name} className="w-full h-full object-cover" />
+                ) : (
+                  (viewModal.name && viewModal.name.charAt(0)) || '—'
+                )}
               </div>
               <div>
                 <h3 className="text-lg font-bold font-cairo text-gray-900">{viewModal.name}</h3>

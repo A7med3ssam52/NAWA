@@ -11,7 +11,7 @@ import {
   Phone,
 } from 'lucide-react';
 import { cn } from '@/utils';
-import { categories } from '@/data';
+import { useCategories } from '@/api';
 import { PAGES, SITE_NAME, SITE_DESCRIPTION } from '@/constants';
 import toast from 'react-hot-toast';
 
@@ -51,6 +51,7 @@ const paymentMethods = [
 
 export const Footer = memo(function Footer() {
   const { t, i18n } = useTranslation();
+  const { data: categories } = useCategories();
 
   const handleWhatsApp = () => {
     window.open(`https://wa.me/${WHATSAPP_NUMBER}`, '_blank');
@@ -134,7 +135,7 @@ export const Footer = memo(function Footer() {
               {t('nav.categories')}
             </h4>
             <ul className="space-y-2.5">
-              {categories.slice(0, 6).map((cat) => (
+              {(categories || []).slice(0, 6).map((cat) => (
                 <li key={cat.id}>
                   <Link
                     to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}

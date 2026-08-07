@@ -105,7 +105,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login, register: registerUser, isAuthenticated } = useAuth();
+  const { login, register: registerUser, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -129,11 +129,17 @@ export function LoginPage() {
 
   const from = (location.state as { from?: string })?.from || '/';
 
+  const resolveDestination = useCallback((role: 'admin' | 'customer' | undefined, fallback: string) => {
+    if (role === 'admin') return '/admin';
+    if (fallback === '/admin' || fallback.startsWith('/admin')) return '/';
+    return fallback || '/';
+  }, []);
+
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(from, { replace: true });
+      navigate(resolveDestination(user?.role, from), { replace: true });
     }
-  }, [isAuthenticated, navigate, from]);
+  }, [isAuthenticated, navigate, from, user, resolveDestination]);
 
   if (isAuthenticated) return null;
 
@@ -150,26 +156,36 @@ export function LoginPage() {
   const onLogin = useCallback(async (data: LoginForm) => {
     setLoading(true);
     setError('');
-    const result = await login(data.email, data.password);
-    setLoading(false);
-    if (result.success) {
-      navigate(from, { replace: true });
-    } else {
-      setError(result.error || t('auth.loginFailed'));
+    try {
+      const result = await login(data.email, data.password);
+      if (result.success) {
+        navigate(resolveDestination(result.role, from), { replace: true });
+      } else {
+        setError(result.error || t('auth.loginFailed'));
+      }
+    } catch {
+      setError(t('auth.loginFailed'));
+    } finally {
+      setLoading(false);
     }
-  }, [login, navigate, from, t]);
+  }, [login, navigate, from, t, resolveDestination]);
 
   const onRegister = useCallback(async (data: RegisterForm) => {
     setLoading(true);
     setError('');
-    const result = await registerUser(data.name, data.email, data.password);
-    setLoading(false);
-    if (result.success) {
-      navigate(from, { replace: true });
-    } else {
-      setError(result.error || t('auth.registerFailed'));
+    try {
+      const result = await registerUser(data.name, data.email, data.password);
+      if (result.success) {
+        navigate(resolveDestination('customer', from), { replace: true });
+      } else {
+        setError(result.error || t('auth.registerFailed'));
+      }
+    } catch {
+      setError(t('auth.registerFailed'));
+    } finally {
+      setLoading(false);
     }
-  }, [registerUser, navigate, from, t]);
+  }, [registerUser, navigate, from, t, resolveDestination]);
 
   const switchMode = useCallback(() => {
     setIsRegister((prev) => !prev);
@@ -212,17 +228,17 @@ export function LoginPage() {
             </p>
             <div className="flex items-center justify-center gap-8">
               <div className="text-center">
-                <p className="text-3xl font-bold text-white">10K+</p>
+                <p className="text-3xl font-bold text-white">2K+</p>
                 <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.productLabel')}</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div className="text-center">
-                <p className="text-3xl font-bold text-white">50K+</p>
+                <p className="text-3xl font-bold text-white">20K+</p>
                 <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.customerLabel')}</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div className="text-center">
-                <p className="text-3xl font-bold text-white">4.9</p>
+                <p className="text-3xl font-bold text-white">4.8</p>
                 <p className="text-sm text-white/70 font-cairo mt-1">{t('auth.ratingLabel')}</p>
               </div>
             </div>

@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { CartProvider } from '@/contexts/CartContext';
@@ -9,7 +8,7 @@ import { SpinProvider } from '@/contexts/SpinContext';
 import { DirectionProvider } from '@/components/ui/DirectionProvider';
 import { Toaster } from '@/components/ui/Toast';
 import { AppRouter } from '@/routes';
-import { loadAllData } from '@/data';
+import { RealtimeProvider } from '@/api/useRealtime';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,8 +21,6 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  useEffect(() => { loadAllData(); }, []);
-
   return (
     <div className="min-h-screen">
       <QueryClientProvider client={queryClient}>
@@ -34,8 +31,10 @@ export default function App() {
                 <CompareProvider>
                   <SpinProvider>
                     <DirectionProvider>
-                      <AppRouter />
-                      <Toaster />
+                      <RealtimeProvider>
+                        <AppRouter />
+                        <Toaster />
+                      </RealtimeProvider>
                     </DirectionProvider>
                   </SpinProvider>
                 </CompareProvider>

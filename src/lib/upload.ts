@@ -22,12 +22,24 @@ function fileName(bucket: StorageBucket, ext: string) {
   return `${bucket}/${id}.${ext}`;
 }
 
+async function avatarFileName(ext: string, userId?: string) {
+  let id = userId;
+  if (!id) {
+    const { data } = await supabase.auth.getSession();
+    id = data.session?.user.id || crypto.randomUUID();
+  }
+  return `${id}.${ext}`;
+}
+
 export async function uploadImage(
   bucket: StorageBucket,
-  file: File
+  file: File,
+  userId?: string
 ): Promise<string> {
   const ext = fileExt(file.name);
-  const path = fileName(bucket, ext);
+  const path = bucket === 'avatars'
+    ? await avatarFileName(ext, userId)
+    : fileName(bucket, ext);
 
   const { error } = await supabase.storage
     .from(getBucket(bucket))

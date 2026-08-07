@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts';
-import { getUserOrders } from '@/data';
+import { useMyOrders } from '@/api';
 import { OrderCard } from '@/components/features/OrderCard';
 import { Tabs, EmptyState } from '@/components/ui';
 import { Package } from 'lucide-react';
@@ -12,6 +12,7 @@ export function MyOrdersPage() {
   const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('all');
+  const { data: orders } = useMyOrders(user?.id);
 
   const statusTabs: Tab[] = [
     { id: 'all', label: t('orders.allOrders') },
@@ -30,7 +31,7 @@ export function MyOrdersPage() {
     );
   }
 
-  const allOrders = getUserOrders(user.id);
+  const allOrders = orders || [];
   const filteredOrders = activeTab === 'all' ? allOrders : allOrders.filter((o) => o.status === activeTab);
 
   return (

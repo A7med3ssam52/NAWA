@@ -54,6 +54,7 @@
   "nav": {
     "home": "Home",
     "products": "Products",
+    "store": "Store",
     "categories": "Categories",
     "offers": "Offers",
     "cart": "Shopping Cart",
@@ -160,7 +161,7 @@
     "loginFailed": "Login failed",
     "registerFailed": "Account creation failed",
     "forgotPassword": "Forgot password?",
-    "brandSubtitle": "Elegance that adorns you — Shop the finest international brands at the best prices",
+    "brandSubtitle": "Elegance that adorns you — Locally made products with premium quality at affordable prices",
     "productLabel": "Product",
     "customerLabel": "Customer",
     "ratingLabel": "Rating"
@@ -195,6 +196,7 @@
     "applyCoupon": "Apply",
     "couponSuccess": "Coupon applied successfully",
     "couponInvalid": "Invalid or expired coupon code",
+    "couponMinOrder": "Minimum order for this coupon is {{amount}}",
     "couponRemoved": "Coupon removed",
     "removeCoupon": "Remove",
     "addForFreeShipping": "Add {{amount}} for free shipping",
@@ -422,7 +424,8 @@
   "categories": {
     "title": "Categories",
     "productsCount": "{{count}} products",
-    "allCategories": "All Categories"
+    "allCategories": "All Categories",
+    "empty": "No categories yet"
   },
   "brands": {
     "title": "Brands",
@@ -1157,6 +1160,7 @@
     "expired": "Expired",
     "percentage": "Percentage",
     "fixed": "Fixed",
+    "freeShipping": "Free Shipping",
     "noMinimum": "None",
     "addCouponForm": "Add Coupon",
     "editCoupon": "Edit Coupon",

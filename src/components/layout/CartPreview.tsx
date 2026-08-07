@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, memo } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -10,51 +10,52 @@ export function CartPreview() {
   const { t } = useTranslation();
   const { items, itemsCount, subtotal, removeItem, updateQuantity } = useCart();
   const [open, setOpen] = useState(false);
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const show = useCallback(() => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => setOpen(true), 200);
-  }, []);
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    },
+    []
+  );
 
-  const hide = useCallback(() => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    hoverTimer.current = setTimeout(() => setOpen(false), 300);
-  }, []);
+  useEffect(() => {
+    if (open) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [open, handleClickOutside]);
+
+  const toggle = useCallback(() => setOpen((prev) => !prev), []);
 
   return (
     <div
       ref={containerRef}
       className="relative"
-      onMouseEnter={show}
-      onMouseLeave={hide}
     >
       {/* Cart Button */}
-      <Link
-        to={PAGES.CART}
+      <button
+        type="button"
+        onClick={toggle}
         className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         aria-label={t('nav.cartLabel')}
+        aria-expanded={open}
+        aria-haspopup="true"
       >
         <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
         {itemsCount > 0 && (
           <span
-            className={cn(
-              'absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-secondary text-white text-[10px] font-bold shadow-sm shadow-secondary/20',
-              itemsCount > 0 && 'animate-in zoom-in-50 duration-200'
-            )}
+            className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-secondary text-white text-[10px] font-bold shadow-sm shadow-secondary/10"
           >
             {itemsCount > 99 ? '99+' : itemsCount}
           </span>
         )}
-      </Link>
+      </button>
 
       {/* Dropdown */}
       {open && (
         <div
           className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
-          onMouseEnter={show}
-          onMouseLeave={hide}
         >
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">

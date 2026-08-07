@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { CheckCircle, Package, ShoppingBag } from 'lucide-react';
-import { getOrderById } from '@/data';
+import { useOrder } from '@/api';
 import { PAGES } from '@/constants';
 import { Button } from '@/components/ui';
 
@@ -10,7 +10,7 @@ export function OrderSuccessPage() {
   const { t, i18n } = useTranslation();
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
-  const order = orderId ? getOrderById(orderId) : null;
+  const { data: order } = useOrder(orderId);
 
   return (
     <motion.div

@@ -1,16 +1,14 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  Package, ShoppingCart, DollarSign, Users, BarChart3,
-  TrendingUp, TrendingDown, AlertTriangle, Layers, Percent, Clock,
-  Star, Tag, ChevronLeft,
+  Package, ShoppingCart, DollarSign, Users, 
+  TrendingUp, TrendingDown, AlertTriangle, Clock,
+  Star, ChevronLeft,
 } from 'lucide-react';
 import { formatPrice, formatDate, cn } from '@/utils';
 import { getOrderStatusMap, SITE_NAME } from '@/constants';
-import { adminService } from '@/services';
-import { Badge } from '@/components/ui';
-import type { Order, Product, Category } from '@/types';
+import { useDashboard, useCategories } from '@/api';
+import { Badge, Spinner, EmptyState } from '@/components/ui';
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-500', confirmed: 'bg-blue-500', processing: 'bg-indigo-500',
@@ -70,36 +68,43 @@ function ChartBar({ label, value, max, color }: { label: string; value: number; 
 }
 
 export function AdminDashboardPage() {
-  const [orders, setOrders] = useState<{ items: Order[] }>({ items: [] });
-  const [stats, setStats] = useState({ totalProducts: 0, totalOrders: 0, totalRevenue: 0, totalUsers: 0, totalCategories: 0, totalBrands: 0, totalCoupons: 0, pendingOrders: 0, lowStockProducts: 0 });
-  const [products, setProducts] = useState<{ items: Product[] }>({ items: [] });
-  const [allCategories, setAllCategories] = useState<Category[]>([]);
+  const { data, isLoading, isError } = useDashboard();
+  const { data: categoriesData } = useCategories();
+  const allCategories = categoriesData || [];
 
-  useEffect(() => {
-    adminService.getOrders().then((res) => setOrders(res));
-    adminService.getStats().then((res) => setStats(res));
-    adminService.getProducts().then((res) => setProducts(res));
-    adminService.getCategories().then((res) => setAllCategories(res));
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
-  const maxRevenue = Math.max(...orders.items.reduce((acc: number[], o) => {
-    const month = new Date(o.createdAt).getMonth();
-    acc[month] = (acc[month] || 0) + o.total;
-    return acc;
-  }, new Array(12).fill(0)), 1);
+  if (isError || !data) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <EmptyState title="تعذر تحميل بيانات لوحة التحكم" description="حدث خطأ أثناء جلب البيانات من قاعدة البيانات" />
+      </div>
+    );
+  }
 
-  const monthlyData = orders.items.reduce((acc: Record<string, number>, o) => {
-    const d = new Date(o.createdAt);
-    const key = `${d.getMonth() + 1}/${d.getFullYear()}`.slice(-7);
-    acc[key] = (acc[key] || 0) + o.total;
+  const stats = data.stats;
+  const monthlyData = data.monthlyRevenue.reduce((acc: Record<string, number>, row) => {
+    acc[row.month_key] = Number(row.revenue) || 0;
     return acc;
   }, {} as Record<string, number>);
+  const maxRevenue = Math.max(...(data.monthlyRevenue.map((r) => Number(r.revenue) || 0)), 1);
+  const statusCounts: Record<string, number> = {};
+  data.orderStatuses.forEach((s) => { statusCounts[s.status] = s.count; });
+  const recentOrders = data.recentOrders;
+  const topProducts = data.topProducts;
 
   const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
   const now = new Date();
   const last6Months = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
-    return { label: `${months[d.getMonth()]}`, key: `${d.getMonth() + 1}/${d.getFullYear()}`.slice(-7) };
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    return { label: `${months[d.getMonth()]}`, key: `${d.getFullYear()}-${m}` };
   });
 
   return (
@@ -136,7 +141,7 @@ export function AdminDashboardPage() {
           <h2 className="text-base lg:text-lg font-bold font-cairo text-gray-900 mb-4 lg:mb-6">حالات الطلبات</h2>
           <div className="space-y-3 lg:space-y-4">
             {['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((s) => {
-              const count = orders.items.filter((o) => o.status === s).length;
+              const count = statusCounts[s] || 0;
               const total = stats.totalOrders || 1;
               const pct = Math.round((count / total) * 100);
               const info = getOrderStatusMap()[s] || { label: s, color: 'text-gray-500' };
@@ -196,13 +201,13 @@ export function AdminDashboardPage() {
             </Link>
           </div>
           <div className="space-y-1 lg:space-y-2">
-            {orders.items.slice(0, 5).map((order, i) => (
+            {recentOrders.map((order, i) => (
               <motion.div key={order.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                 className="flex items-center justify-between p-2 lg:p-2.5 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 <div className="min-w-0 flex-1 ml-2">
-                  <p className="text-xs lg:text-sm font-semibold font-cairo text-gray-900 truncate">{order.orderNumber}</p>
-                  <p className="text-[10px] lg:text-xs text-gray-400 font-cairo">{formatDate(order.createdAt)}</p>
+                  <p className="text-xs lg:text-sm font-semibold font-cairo text-gray-900 truncate">{order.order_number}</p>
+                  <p className="text-[10px] lg:text-xs text-gray-400 font-cairo">{formatDate(order.created_at)}</p>
                 </div>
                 <Badge variant={order.status === 'delivered' ? 'success' : order.status === 'cancelled' ? 'danger' : order.status === 'pending' ? 'warning' : 'info'} size="sm">
                   {getOrderStatusMap()[order.status]?.label || order.status}
@@ -220,12 +225,12 @@ export function AdminDashboardPage() {
             </Link>
           </div>
           <div className="space-y-1 lg:space-y-2">
-            {products.items.slice(0, 5).map((product, i) => (
+            {topProducts.slice(0, 5).map((product, i) => (
               <motion.div key={product.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
                 className="flex items-center gap-2 lg:gap-3 p-2 lg:p-2.5 rounded-xl hover:bg-gray-50 transition-colors"
               >
                 <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-lg overflow-hidden bg-gray-50 shrink-0">
-                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
+                  <img src={product.images?.[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs lg:text-sm font-semibold font-cairo text-gray-900 truncate">{product.name}</p>

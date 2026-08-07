@@ -54,6 +54,7 @@
   "nav": {
     "home": "الرئيسية",
     "products": "المنتجات",
+    "store": "المتجر",
     "categories": "الأقسام",
     "offers": "العروض",
     "cart": "سلة التسوق",
@@ -160,7 +161,7 @@
     "loginFailed": "فشل تسجيل الدخول",
     "registerFailed": "فشل إنشاء الحساب",
     "forgotPassword": "نسيت كلمة المرور؟",
-    "brandSubtitle": "أناقة تزهو بك — تسوق أرقى الماركات العالمية بأفضل الأسعار",
+    "brandSubtitle": "أناقة تزهو بك — منتجات بخامات محلية عالية الجودة بأسعار في متناول الجميع",
     "productLabel": "منتج",
     "customerLabel": "عميل",
     "ratingLabel": "تقييم"
@@ -195,6 +196,7 @@
     "applyCoupon": "تطبيق",
     "couponSuccess": "تم تطبيق الكوبون بنجاح",
     "couponInvalid": "كود الخصم غير صالح أو منتهي الصلاحية",
+    "couponMinOrder": "الحد الأدنى للطلب لهذا الكوبون هو {{amount}}",
     "couponRemoved": "تم إلغاء الكوبون",
     "removeCoupon": "إلغاء",
     "addForFreeShipping": "أضف {{amount}} للحصول على توصيل مجاني",
@@ -422,7 +424,8 @@
   "categories": {
     "title": "الأقسام",
     "productsCount": "{{count}} منتج",
-    "allCategories": "جميع الأقسام"
+    "allCategories": "جميع الأقسام",
+    "empty": "لا توجد تصنيفات بعد"
   },
   "brands": {
     "title": "الماركات",
@@ -1157,6 +1160,7 @@
     "expired": "منتهي",
     "percentage": "نسبة مئوية",
     "fixed": "قيمة ثابتة",
+    "freeShipping": "شحن مجاني",
     "noMinimum": "بدون",
     "addCouponForm": "إضافة كود خصم",
     "editCoupon": "تعديل كود الخصم",

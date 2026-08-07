@@ -199,6 +199,7 @@ export function AdminCouponsPage() {
               options={[
                 { value: 'percentage', label: t('admin.percentage') },
                 { value: 'fixed', label: t('admin.fixed') },
+                { value: 'free_shipping', label: t('admin.freeShipping') },
               ]}
             />
           </div>

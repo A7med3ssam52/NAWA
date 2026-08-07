@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Search, Clock, TrendingUp, Package, Grid3X3, X } from 'lucide-react';
 import { cn } from '@/utils';
-import { products, categories, brands } from '@/data';
+import { useCategories, useProducts } from '@/api';
 import { useLocalStorage } from '@/hooks';
 
 interface SearchSuggestionsProps {
@@ -23,21 +23,16 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
   const [recentSearches, setRecentSearches] = useLocalStorage<string[]>('recent-searches', []);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const listRef = useRef<HTMLDivElement>(null);
+  const { data: categories } = useCategories();
+  const { data: searchResults } = useProducts({ search: query, page: 1, pageSize: 5 });
 
   const searchLower = query.toLowerCase().trim();
 
-  const productSuggestions = searchLower
-    ? products
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(searchLower) ||
-            p.tags.some((t) => t.toLowerCase().includes(searchLower))
-        )
-        .slice(0, 5)
-    : [];
+  const productSuggestions = (searchResults?.items || []).slice(0, 5);
 
+  const categoryList = categories || [];
   const categorySuggestions = searchLower
-    ? categories.filter((c) => c.name.toLowerCase().includes(searchLower)).slice(0, 3)
+    ? categoryList.filter((c) => c.name.toLowerCase().includes(searchLower)).slice(0, 3)
     : [];
 
   const showRecent = !searchLower && recentSearches.length > 0;
@@ -194,7 +189,7 @@ export function SearchSuggestions({ query, onSelect, onClose, standalone }: Sear
                       {product.name}
                     </p>
                     <p className="text-xs text-gray-400">
-                      {categories.find((c) => c.id === product.category)?.name}
+                      {categoryList.find((c) => c.id === product.category)?.name}
                     </p>
                   </div>
                 </button>

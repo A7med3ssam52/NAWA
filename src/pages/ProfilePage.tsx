@@ -10,12 +10,11 @@ import {
   Check, XCircle, Search, Download, Calendar, FileText,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth, useWishlist } from '@/contexts';
-import {
-  getUserOrders, getUserNotifications, getUserAddresses,
-  orders as allOrders, reviews as allReviews,
-} from '@/data';
-import { adminService } from '@/services';
+import { useMyOrders, useMyNotifications, useMarkNotificationRead, useMarkAllRead, useDeleteNotification } from '@/api';
+import { supabase } from '@/lib/supabase';
+import { mapReview } from '@/lib/mappers';
 import {
   Tabs, Button, Input, Modal, Badge, EmptyState, Divider, Spinner, Select, Textarea,
 } from '@/components/ui';
@@ -252,10 +251,11 @@ function AddressFormModal({
   );
 }
 
-function NotificationItem({ notif, onMarkRead, onDelete }: {
+function NotificationItem({ notif, onMarkRead, onDelete, showDelete = false }: {
   notif: NotifType;
   onMarkRead: (id: string) => void;
   onDelete: (id: string) => void;
+  showDelete?: boolean;
 }) {
   const { t } = useTranslation();
   const typeIcons: Record<string, React.ReactNode> = {
@@ -312,17 +312,19 @@ function NotificationItem({ notif, onMarkRead, onDelete }: {
                   <CheckCircle className="w-4 h-4" />
                 </button>
               )}
-              <button
-                onClick={() => onDelete(notif.id)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors"
-                aria-label={t('admin.deleteNotification')}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {showDelete && (
+                <button
+                  onClick={() => onDelete(notif.id)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/5 transition-colors"
+                  aria-label={t('admin.deleteNotification')}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
+          {!notif.read && <span className="w-2 h-2 rounded-full bg-secondary shrink-0 mt-2" />}
         </div>
-        {!notif.read && <span className="w-2 h-2 rounded-full bg-secondary shrink-0 mt-2" />}
       </div>
     </motion.div>
   );
@@ -343,9 +345,24 @@ export function ProfilePage() {
   const [addressModal, setAddressModal] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
 
-  const [notifications, setNotifications] = useState<NotifType[]>(
-    user ? getUserNotifications(user.id) : [],
-  );
+  const { data: dbNotifications } = useMyNotifications(user?.id);
+  const markNotificationRead = useMarkNotificationRead();
+  const markAllRead = useMarkAllRead(user?.id);
+  const deleteNotification = useDeleteNotification();
+
+  const { data: orders } = useMyOrders(user?.id);
+  const { data: reviewList } = useQuery({
+    queryKey: ['user-reviews', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase.from('reviews').select('*').eq('user_id', user.id);
+      if (!error && data) return (data as any[]).map(mapReview);
+      return [];
+    },
+    enabled: !!user,
+  });
+
+  const notifications = dbNotifications || [];
 
   const [orderNotif, setOrderNotif] = useState(true);
   const [promoNotif, setPromoNotif] = useState(true);
@@ -372,13 +389,13 @@ export function ProfilePage() {
     );
   }
 
-  const orders = getUserOrders(user.id);
-  const filteredOrders = orderFilter === 'all' ? orders : orders.filter((o) => o.status === orderFilter);
-  const memberSince = orders.length > 0
-    ? [...orders].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0].createdAt
+  const allOrders = orders || [];
+  const filteredOrders = orderFilter === 'all' ? allOrders : allOrders.filter((o) => o.status === orderFilter);
+  const memberSince = allOrders.length > 0
+    ? [...allOrders].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())[0].createdAt
     : new Date().toISOString();
 
-  const userReviews = allReviews.filter((r) => r.userId === user.id);
+  const userReviews = reviewList || [];
   const unreadNotifs = notifications.filter((n) => !n.read);
 
   const orderStatusFilters = [
@@ -394,7 +411,7 @@ export function ProfilePage() {
   const tabs: Tab[] = [
     { id: 'profile', label: t('profile.title'), icon: <User className="w-4 h-4" /> },
     { id: 'addresses', label: t('profile.myAddresses'), icon: <MapPin className="w-4 h-4" />, count: userAddresses.length },
-    { id: 'orders', label: t('profile.myOrders'), icon: <Package className="w-4 h-4" />, count: orders.length },
+    { id: 'orders', label: t('profile.myOrders'), icon: <Package className="w-4 h-4" />, count: allOrders.length },
     { id: 'wishlist', label: t('profile.wishlist'), icon: <Heart className="w-4 h-4" />, count: wishlistItems.length },
     { id: 'notifications', label: t('profile.notifications'), icon: <Bell className="w-4 h-4" />, count: unreadNotifs.length },
     { id: 'reviews', label: t('profile.reviews'), icon: <MessageSquare className="w-4 h-4" />, count: userReviews.length },
@@ -422,22 +439,17 @@ export function ProfilePage() {
   };
 
   const handleMarkRead = async (id: string) => {
-    await adminService.markNotificationRead(id);
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+    await markNotificationRead(id);
     toast.success(t('profile.notifMarkedRead'));
   };
 
   const handleDeleteNotif = async (id: string) => {
-    await adminService.deleteNotification(id);
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    await deleteNotification(id);
     toast.success(t('profile.notifDeleted'));
   };
 
   const handleMarkAllRead = async () => {
-    for (const n of notifications.filter((n) => !n.read)) {
-      await adminService.markNotificationRead(n.id);
-    }
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    await markAllRead();
     toast.success(t('profile.allMarkedRead'));
   };
 
@@ -502,7 +514,7 @@ export function ProfilePage() {
           <StatCard
             icon={<Package className="w-5 h-5 text-white" />}
             label={t('profile.statsOrders')}
-            value={orders.length}
+            value={allOrders.length}
             color="bg-secondary"
           />
           <StatCard
@@ -926,6 +938,7 @@ export function ProfilePage() {
                       notif={n}
                       onMarkRead={handleMarkRead}
                       onDelete={handleDeleteNotif}
+                      showDelete={user?.role === 'admin'}
                     />
                   ))}
                 </AnimatePresence>

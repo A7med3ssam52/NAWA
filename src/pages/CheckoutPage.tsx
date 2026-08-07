@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { ShoppingCart, CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Tag, Wallet, Smartphone, Building2, Landmark, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { orderService } from '@/services';
@@ -25,7 +26,8 @@ type ShippingData = {
 export function CheckoutPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { user, register: registerUser } = useAuth();
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated, register: registerUser } = useAuth();
   const { items, subtotal, shippingCost, total, discount, notes, setNotes, clearCart, coupon } = useCart();
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('cod');
@@ -64,11 +66,7 @@ export function CheckoutPage() {
   }, [items.length, navigate, orderPlaced]);
 
   const actualShipping = useMemo(() => subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST, [subtotal]);
-  const isGuest = useMemo(() => {
-    try {
-      return !JSON.parse(localStorage.getItem('auth') || '{}')?.isAuthenticated;
-    } catch { return true; }
-  }, []);
+  const isGuest = !isAuthenticated;
 
   const handleShippingSubmit = (data: ShippingData) => {
     shippingDataRef.current = data;
@@ -82,7 +80,6 @@ export function CheckoutPage() {
   const handlePlaceOrder = async () => {
     if (!shippingDataRef.current) return;
     setProcessing(true);
-    await new Promise((r) => setTimeout(r, 1500));
     const sd = shippingDataRef.current;
     const order = await orderService.create({
       userId: user?.id,
@@ -108,6 +105,7 @@ export function CheckoutPage() {
     await supabase.from('order_email_logs').insert({
       order_id: order.id, email: user?.email || 'guest@zahieg.com', sent_at: new Date().toISOString(),
     });
+    queryClient.invalidateQueries({ queryKey: ['my-orders'] });
     toast.success(t('checkout.emailConfirmationSent'));
     if (isGuest) {
       setOrderPlaced({ id: order.id });

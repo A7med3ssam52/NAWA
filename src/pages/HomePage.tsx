@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { categories, testimonials } from '@/data';
+import { useCategories, useTestimonials } from '@/api';
 import { useNewProducts, useBestSellingProducts, useDiscountedProducts } from '@/api';
 import { HeroSlider } from '@/components/features/HeroSlider';
 import { NewsletterSection } from '@/components/features/NewsletterSection';
@@ -12,11 +12,13 @@ import { useRecentlyViewed } from '@/hooks';
 
 export function HomePage() {
   const { t, i18n } = useTranslation();
+  const { data: categories } = useCategories();
   useEffect(() => { document.title = t('home.title'); }, [t]);
 
   const newProducts = useNewProducts();
   const bestSelling = useBestSellingProducts();
   const discounted = useDiscountedProducts();
+  const testimonials = useTestimonials();
   const { items: recentlyViewed } = useRecentlyViewed();
 
   const allLoaded = newProducts.data && bestSelling.data && discounted.data;
@@ -29,7 +31,7 @@ export function HomePage() {
         <section className="ios-card px-4 py-4">
           <h2 className="text-lg font-bold text-gray-700 mb-4">{t('home.categories')}</h2>
           <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide -mx-3 px-3">
-            {categories.map((cat, i) => (
+            {categories?.map((cat, i) => (
               <div key={cat.id} className="shrink-0 w-32 sm:w-36 md:w-40">
                 <CategoryCard category={cat} index={i} />
               </div>
@@ -70,8 +72,8 @@ export function HomePage() {
         <section className="ios-card px-4 py-4">
           <h2 className="text-lg font-bold text-gray-700 mb-4">{t('home.testimonials')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            {testimonials.map((t, i) => (
-              <TestimonialCard key={t.id} testimonial={t} index={i} />
+            {(testimonials.data || []).map((test, i) => (
+              <TestimonialCard key={test.id} testimonial={test} index={i} />
             ))}
           </div>
         </section>

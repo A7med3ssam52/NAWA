@@ -2,17 +2,25 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Package, ChevronLeft, MapPin, CreditCard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getOrderById } from '@/data';
+import { useOrder } from '@/api';
 import { getPaymentMethodLabel } from '@/utils';
 import { PAGES, getOrderStatusMap } from '@/constants';
 import { formatPrice, formatDate } from '@/utils';
 import { TrackingTimeline } from '@/components/features/TrackingTimeline';
-import { Badge, Button, Divider, ErrorState } from '@/components/ui';
+import { Badge, Button, Divider, ErrorState, Spinner } from '@/components/ui';
 
 export function OrderDetailsPage() {
   const { t, i18n } = useTranslation();
   const { orderId } = useParams<{ orderId: string }>();
-  const order = orderId ? getOrderById(orderId) : null;
+  const { data: order, isLoading } = useOrder(orderId);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   if (!order) {
     return (

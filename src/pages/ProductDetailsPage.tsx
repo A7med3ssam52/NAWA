@@ -1,10 +1,10 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, Share2, Check, Truck, Package, Bell, Star, MessageSquare, BarChart3 } from 'lucide-react';
-import { useProduct, useRelatedProducts } from '@/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProduct, useRelatedProducts, useCategories, useProductReviews } from '@/api';
 import { useRecentlyViewed } from '@/hooks';
-import { getProductReviews, categories, setReviewsData, reviews as allReviews } from '@/data';
 import { PAGES, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '@/constants';
 import { useCart, useWishlist, useCompare, useAuth } from '@/contexts';
 import { formatPrice, cn } from '@/utils';
@@ -68,6 +68,7 @@ function BackInStockForm({ productId, productName, onClose }: { productId: strin
 function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () => void }) {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [title, setTitle] = useState('');
@@ -83,19 +84,20 @@ function ReviewForm({ productId, onSubmit }: { productId: string; onSubmit: () =
     const userName = name.trim() || user?.name || siteName;
     const userAvatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=2563EB&color=fff`;
     const newReview = {
-      id: `review-${Date.now()}`,
+      id: crypto.randomUUID(),
       product_id: productId,
-      user_id: user?.id || 'guest',
+      user_id: user?.id ?? null,
       user_name: userName,
       user_avatar: userAvatar,
       rating,
       title: title.trim(),
       comment: comment.trim(),
-      created_at: new Date().toISOString(),
       likes: 0,
     };
     await supabase.from('reviews').insert(newReview);
-    setReviewsData([newReview as unknown as Review, ...allReviews]);
+    queryClient.invalidateQueries({ queryKey: ['product-reviews', productId] });
+    queryClient.invalidateQueries({ queryKey: ['product'] });
+    queryClient.invalidateQueries({ queryKey: ['product-reviews'] });
     setSubmitting(false);
     toast.success(t('products.reviewSubmitted'));
     onSubmit();
@@ -136,18 +138,14 @@ export function ProductDetailsPage() {
   const { addItem: addRecentlyViewed } = useRecentlyViewed();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const { data: categories } = useCategories();
+  const { data: reviews } = useProductReviews(product?.id);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [showStockModal, setShowStockModal] = useState(false);
-  const [reviewKey, setReviewKey] = useState(0);
 
   useEffect(() => { if (product) document.title = `${product.name} | ${t('common.siteName')}`; }, [product, t]);
   useEffect(() => { if (product) addRecentlyViewed(product); }, [product?.id]);
-
-  const reviews = useMemo(() => {
-    if (!product) return [];
-    return getProductReviews(product.id);
-  }, [product?.id, reviewKey]);
 
   if (isLoading) {
     return (
@@ -187,7 +185,7 @@ export function ProductDetailsPage() {
   const tabs: Tab[] = [
     { id: 'description', label: t('products.description') },
     { id: 'specifications', label: t('products.specifications') },
-    { id: 'reviews', label: t('products.reviews', { count: reviews.length }) },
+    { id: 'reviews', label: t('products.reviews', { count: (reviews || []).length }) },
   ];
 
   const handleAddToCart = () => {
@@ -374,7 +372,7 @@ export function ProductDetailsPage() {
 
           {product.category && (
             <div className="text-sm text-gray-500 font-cairo">
-              {t('products.category')} <span className="text-gray-900 font-semibold">{categories.find((c) => c.id === product.category)?.name}</span>
+              {t('products.category')} <span className="text-gray-900 font-semibold">{categories?.find((c) => c.id === product.category)?.name}</span>
             </div>
           )}
         </div>
@@ -400,9 +398,9 @@ export function ProductDetailsPage() {
           )}
           {activeTab === 'reviews' && (
             <div className="space-y-4 animate-fade-in">
-              <ReviewForm productId={product.id} onSubmit={() => setReviewKey((k) => k + 1)} />
+              <ReviewForm productId={product.id} onSubmit={() => { }} />
               <div className="border-t border-gray-100 pt-4" />
-              {reviews.length > 0 ? reviews.map((r, i) => (
+              {(reviews || []).length > 0 ? (reviews || []).map((r, i) => (
                 <ReviewCard key={r.id || i} review={r} index={i} />
               )) : (
                 <p className="text-sm text-gray-400 font-cairo text-center py-4">{t('products.noReviewsYet')}</p>

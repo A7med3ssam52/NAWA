@@ -1,6 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import type { SpinPrize, SpinHistoryEntry, DailySpinState } from '@/types';
 import { adminService } from '@/services';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/contexts';
 
 function genId() {
   return `spin-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -133,7 +135,10 @@ interface SpinContextType {
 
 const SpinContext = createContext<SpinContextType | null>(null);
 
+const PHONE_STORAGE_KEY = 'spin_guest_phone';
+
 export function SpinProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [state, dispatch] = useReducer(spinReducer, undefined, loadInitialState);
 
   useEffect(() => {
@@ -177,7 +182,29 @@ export function SpinProvider({ children }: { children: ReactNode }) {
       couponCode = `SPIN-${genId().slice(-6).toUpperCase()}`;
     }
     dispatch({ type: 'SPIN_COMPLETE', payload: { prize, couponCode } });
-  }, [state.prizes]);
+    const guestPhone = localStorage.getItem(PHONE_STORAGE_KEY) || '';
+    if (user?.id) {
+      supabase.from('spin_history').insert({
+        user_id: user.id,
+        prize_id: prize.id,
+        prize_label: prize.label,
+        type: prize.type,
+        value: prize.value ?? null,
+        coupon_code: couponCode ?? null,
+        claimed: false,
+      }).then(() => {});
+    } else if (guestPhone) {
+      supabase.from('spin_history').insert({
+        guest_phone: guestPhone,
+        prize_id: prize.id,
+        prize_label: prize.label,
+        type: prize.type,
+        value: prize.value ?? null,
+        coupon_code: couponCode ?? null,
+        claimed: false,
+      }).then(() => {});
+    }
+  }, [state.prizes, user?.id]);
 
   const claimPrize = useCallback(() => {
     if (state.currentPrize?.type === 'tryAgain') {
@@ -187,23 +214,15 @@ export function SpinProvider({ children }: { children: ReactNode }) {
     const latest = state.history.find((h) => !h.claimed);
     if (latest) {
       dispatch({ type: 'CLAIM_PRIZE', payload: latest.id });
-      const coupon = state.currentPrize ? {
-        id: genId(),
-        code: latest.couponCode || '',
-        discount: state.currentPrize.value || 0,
-        type: state.currentPrize.type === 'freeShipping' ? 'freeShipping' : state.currentPrize.type === 'fixed' ? 'fixed' : 'percentage',
-        minOrder: 0,
-        maxDiscount: state.currentPrize.type === 'percentage' ? 200 : (state.currentPrize.value || 0),
-        expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
-        usageLimit: 1,
-        usedCount: 0,
-      } : null;
-      if (coupon) {
-        adminService.createCoupon(coupon).then(() => {});
+      if (user?.id && latest.couponCode) {
+        supabase.from('spin_history').update({ claimed: true })
+          .eq('user_id', user.id)
+          .eq('coupon_code', latest.couponCode)
+          .then(() => {});
       }
     }
     dispatch({ type: 'DISMISS_RESULT' });
-  }, [state.currentPrize, state.history]);
+  }, [state.currentPrize, state.history, user?.id]);
 
   const dismissResult = useCallback(() => {
     dispatch({ type: 'DISMISS_RESULT' });

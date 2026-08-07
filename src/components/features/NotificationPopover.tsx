@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
-import { getUserNotifications } from '@/data';
+import { useMyNotifications, useMarkAllRead } from '@/api';
 import { getTimeAgo } from '@/utils';
 import { PAGES } from '@/constants';
 
@@ -32,9 +32,11 @@ export function NotificationPopover() {
   const [open, setOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
-  const notifications = user ? getUserNotifications(user.id) : [];
+  const { data: dbNotifications } = useMyNotifications(user?.id);
+  const notifications = dbNotifications || [];
   const unread = notifications.filter((n) => !n.read);
   const recent = notifications.slice(0, 5);
+  const markAllRead = useMarkAllRead(user?.id);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -54,7 +56,9 @@ export function NotificationPopover() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [open]);
 
-  const handleMarkAllRead = () => {};
+  const handleMarkAllRead = async () => {
+    await markAllRead();
+  };
 
   return (
     <div ref={popoverRef} className="relative">

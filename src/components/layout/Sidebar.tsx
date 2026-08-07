@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
-import { categories } from '@/data';
+import { useCategories } from '@/api';
 import { PAGES } from '@/constants';
 import { LanguageSwitcher } from '@/components/ui';
 
@@ -68,6 +68,7 @@ const itemVariants = {
 export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { t, i18n } = useTranslation();
   const { user, isAuthenticated } = useAuth();
+  const { data: categories } = useCategories();
 
   useEffect(() => {
     if (isOpen) {
@@ -290,7 +291,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onClose }: SidebarProps) 
                   <span className="text-[11px] font-bold font-cairo text-gray-400 uppercase tracking-widest">{t('nav.categories')}</span>
                 </div>
                 <div className="space-y-0.5">
-                  {categories.map((cat, idx) => (
+                  {(categories || []).map((cat, idx) => (
                     <Link
                       key={cat.id}
                       to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}

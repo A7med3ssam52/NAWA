@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils';
 import { FadeInView } from '@/components/ui';
 import type { FilterState } from '@/types';
-import { categories, brands } from '@/data';
+import { useCategories, useBrands } from '@/api';
 import { useMediaQuery } from '@/hooks';
 import { Button, Input, Drawer } from '@/components/ui';
 
@@ -56,6 +56,8 @@ function FilterCheckbox({ checked, onChange, label, count }: {
 
 export function FilterSidebar({ filters, onFilterChange, className }: FilterSidebarProps) {
   const { t, i18n } = useTranslation();
+  const { data: categories } = useCategories();
+  const { data: brands } = useBrands();
   const isMobile = useMediaQuery('(max-width: 1023px)');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<FilterState>(filters);
@@ -170,7 +172,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
         onToggle={() => toggleSection('category')}
       >
         <div className="space-y-0.5">
-          {categories.map((cat) => (
+          {(categories || []).map((cat) => (
             <FilterCheckbox
               key={cat.id}
               checked={localFilters.category.includes(cat.id)}
@@ -190,7 +192,7 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
         onToggle={() => toggleSection('brand')}
       >
         <div className="space-y-0.5 max-h-48 overflow-y-auto scrollbar-thin">
-          {brands.map((brand) => (
+          {(brands || []).map((brand) => (
             <FilterCheckbox
               key={brand.id}
               checked={localFilters.brand.includes(brand.id)}

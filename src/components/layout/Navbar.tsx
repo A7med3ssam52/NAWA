@@ -7,6 +7,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
   User,
   LogOut,
   Package,
@@ -24,7 +25,7 @@ import { useWishlist } from '@/contexts';
 import { useAuth } from '@/contexts';
 import { useMediaQuery } from '@/hooks';
 import { useDebounce } from '@/hooks';
-import { categories } from '@/data';
+import { useCategories } from '@/api';
 import { PAGES, SITE_NAME } from '@/constants';
 import { Button, Badge, LanguageSwitcher } from '@/components/ui';
 import { Sidebar } from './Sidebar';
@@ -69,6 +70,9 @@ export const Navbar = memo(function Navbar() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const { data: categories } = useCategories();
+  const visibleCategories = (categories || []).slice(0, 3);
 
   const [announcementDismissed, setAnnouncementDismissed] = useState(() => {
     try { return localStorage.getItem('announcement-dismissed') === 'true'; }
@@ -232,7 +236,18 @@ export const Navbar = memo(function Navbar() {
                 >
                   {t('nav.home')}
                 </Link>
-                {categories.map((cat) => (
+                <Link
+                  to={PAGES.PRODUCTS}
+                  className={cn(
+                    'px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                    location.pathname.startsWith(PAGES.PRODUCTS)
+                      ? 'bg-secondary/10 text-secondary font-bold'
+                      : 'text-gray-700 hover:text-secondary hover:bg-gray-100'
+                  )}
+                >
+                  {t('nav.store')}
+                </Link>
+                {visibleCategories.map((cat) => (
                   <Link
                     key={cat.id}
                     to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
@@ -246,6 +261,90 @@ export const Navbar = memo(function Navbar() {
                     {cat.name}
                   </Link>
                 ))}
+
+                {/* All Categories Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setCategoriesOpen(true)}
+                  onMouseLeave={() => setCategoriesOpen(false)}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setCategoriesOpen((open) => !open)}
+                    aria-haspopup="menu"
+                    aria-expanded={categoriesOpen}
+                    className={cn(
+                      'flex items-center gap-1.5 px-4 py-2 text-sm font-medium font-cairo rounded-xl transition-all duration-200',
+                      categoriesOpen || location.pathname === PAGES.CATEGORIES
+                        ? 'bg-secondary/10 text-secondary font-bold'
+                        : 'text-gray-700 hover:text-secondary hover:bg-gray-100'
+                    )}
+                  >
+                    <Grid3X3 className="w-4 h-4" />
+                    {t('categories.allCategories')}
+                    <ChevronDown
+                      className={cn(
+                        'w-4 h-4 transition-transform duration-200',
+                        categoriesOpen && 'rotate-180'
+                      )}
+                    />
+                  </button>
+
+                  <div
+                    className={cn(
+                      'absolute top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-soft-xl transition-all duration-200',
+                      categoriesOpen
+                        ? 'visible pointer-events-auto translate-y-0 opacity-100'
+                        : 'invisible pointer-events-none translate-y-1 opacity-0'
+                    )}
+                    style={i18n.language === 'ar' ? { right: 0 } : { left: 0 }}
+                  >
+                    <div className="max-h-[70vh] overflow-y-auto p-2">
+                      {(categories || []).length === 0 ? (
+                        <p className="px-3 py-6 text-sm text-gray-400 text-center font-cairo">
+                          {t('categories.empty')}
+                        </p>
+                      ) : (
+                        <>
+                          {(categories || []).map((cat) => (
+                            <Link
+                              key={cat.id}
+                              to={`${PAGES.CATEGORY_PRODUCTS.replace(':slug', cat.slug)}`}
+                              onClick={() => setCategoriesOpen(false)}
+                              className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-sm font-cairo text-gray-700 hover:bg-secondary/5 hover:text-secondary transition-colors"
+                            >
+                              <span className="flex items-center gap-3 min-w-0">
+                                {cat.image ? (
+                                  <img src={cat.image} alt="" className="w-8 h-8 rounded-lg object-cover shrink-0" />
+                                ) : (
+                                  <span className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
+                                    <Grid3X3 className="w-4 h-4" />
+                                  </span>
+                                )}
+                                <span className="truncate">{cat.name}</span>
+                              </span>
+                              {cat.productsCount > 0 && (
+                                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-gray-100 text-xs text-gray-500 font-cairo">
+                                  {t('categories.productsCount', { count: cat.productsCount })}
+                                </span>
+                              )}
+                            </Link>
+                          ))}
+                          <div className="mt-1 pt-2 border-t border-gray-100">
+                            <Link
+                              to={PAGES.CATEGORIES}
+                              onClick={() => setCategoriesOpen(false)}
+                              className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-bold font-cairo text-secondary hover:bg-secondary/5 transition-colors"
+                            >
+                              {t('nav.categories')}
+                              <ChevronRight className={cn('w-4 h-4', i18n.language === 'ar' && 'rotate-180')} />
+                            </Link>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </nav>
 
               {/* Search Bar - Desktop */}

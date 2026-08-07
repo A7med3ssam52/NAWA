@@ -1,10 +1,14 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { categories } from '@/data';
+import { Grid3X3 } from 'lucide-react';
+import { useCategories } from '@/api';
+import { EmptyState } from '@/components/ui';
 import { CategoryCard } from '@/components/features/CategoryCard';
 
 export function CategoriesPage() {
   const { t, i18n } = useTranslation();
+  const { data: categories } = useCategories();
+  const items = categories || [];
 
   return (
     <motion.div
@@ -18,11 +22,18 @@ export function CategoriesPage() {
       <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-8">
         {t('categories.title')}
       </h1>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 lg:gap-5">
-        {categories.map((cat, i) => (
-          <CategoryCard key={cat.id} category={cat} index={i} />
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <EmptyState
+          icon={<Grid3X3 className="w-16 h-16" />}
+          title={t('categories.empty')}
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 lg:gap-5">
+          {items.map((cat, i) => (
+            <CategoryCard key={cat.id} category={cat} index={i} />
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 }

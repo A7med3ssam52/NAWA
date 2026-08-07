@@ -1,15 +1,23 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { getOrderById } from '@/data';
+import { useOrder } from '@/api';
 import { formatPrice, formatDate } from '@/utils';
 import { PAGES, SITE_NAME } from '@/constants';
-import { Button } from '@/components/ui';
+import { Button, Spinner } from '@/components/ui';
 import { Printer } from 'lucide-react';
 
 export function InvoicePage() {
   const { t, i18n } = useTranslation();
   const { orderId } = useParams<{ orderId: string }>();
-  const order = getOrderById(orderId || '');
+  const { data: order, isLoading } = useOrder(orderId);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   if (!order) {
     return (

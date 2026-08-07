@@ -58,7 +58,6 @@ export function AdminOrdersPage() {
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 300));
     const result = await adminService.getOrders(
       statusFilter || undefined,
       searchQuery || undefined,
@@ -95,7 +94,6 @@ export function AdminOrdersPage() {
 
   const handleUpdateStatus = async (orderId: string, newStatus: string) => {
     setUpdating(true);
-    await new Promise((r) => setTimeout(r, 500));
     const updated = await adminService.updateOrderStatus(orderId, newStatus as Order['status']);
     if (updated) {
       setSelectedOrder(updated);
@@ -106,7 +104,6 @@ export function AdminOrdersPage() {
   };
 
   const handleDelete = async (orderId: string) => {
-    await new Promise((r) => setTimeout(r, 300));
     const success = await adminService.deleteOrder(orderId);
     if (success) {
       setOrders((prev) => prev.filter((o) => o.id !== orderId));

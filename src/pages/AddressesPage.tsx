@@ -3,17 +3,22 @@ import { motion } from 'framer-motion';
 import { MapPin, Plus, Trash2, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts';
-import { addresses as allAddresses } from '@/data';
 import { Button, Modal, Input, EmptyState } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export function AddressesPage() {
   const { t, i18n } = useTranslation();
-  const { user, removeAddress, setDefaultAddress } = useAuth();
+  const { user, addresses, addAddress, removeAddress, setDefaultAddress } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
+  const [label, setLabel] = useState('home');
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
 
-  const userAddresses = allAddresses.filter((a) => user?.addresses.includes(a.id));
+  const userAddresses = addresses.filter((a) => user?.addresses.includes(a.id) || a.userId === user?.id);
 
   if (!user) {
     return (
@@ -31,6 +36,27 @@ export function AddressesPage() {
   const handleSetDefault = (id: string) => {
     setDefaultAddress(id);
     toast.success(t('addresses.defaultSet'));
+  };
+
+  const handleSave = () => {
+    if (!fullName || !phone || !street || !city) {
+      toast.error(t('profile.requiredFields'));
+      return;
+    }
+    addAddress({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+      userId: user.id,
+      label,
+      fullName,
+      phone,
+      street,
+      city,
+      state,
+      isDefault: addresses.length === 0,
+    });
+    toast.success(t('addresses.added'));
+    setShowModal(false);
+    setFullName(''); setPhone(''); setStreet(''); setCity(''); setState('');
   };
 
   return (
@@ -87,8 +113,22 @@ export function AddressesPage() {
         <EmptyState icon={<MapPin className="w-16 h-16" />} title={t('addresses.noAddresses')} description={t('addresses.noAddressesDesc')} />
       )}
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editId ? t('addresses.editAddress') : t('addresses.addNewAddress')} size="lg">
-        <p className="text-sm text-gray-500 font-cairo text-center py-4">{t('addresses.addressForm')}</p>
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={t('addresses.addNewAddress')} size="lg">
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Input label={t('profile.addressLabel')} value={label} onChange={(e) => setLabel(e.target.value)} />
+            <Input label={t('profile.fullName')} value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          </div>
+          <Input label={t('nav.phone')} value={phone} onChange={(e) => setPhone(e.target.value)} dir="ltr" />
+          <Input label={t('profile.addressDetail')} value={street} onChange={(e) => setStreet(e.target.value)} />
+          <div className="grid grid-cols-2 gap-3">
+            <Input label={t('checkout.city')} value={city} onChange={(e) => setCity(e.target.value)} />
+            <Input label={t('profile.region')} value={state} onChange={(e) => setState(e.target.value)} />
+          </div>
+          <Button variant="secondary" size="md" rounded="xl" fullWidth onClick={handleSave}>
+            {t('addresses.addAddress')}
+          </Button>
+        </div>
       </Modal>
     </motion.div>
   );

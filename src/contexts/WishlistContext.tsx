@@ -1,5 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
+import { mapProduct } from '@/lib/mappers';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Product } from '@/types';
 
@@ -60,7 +61,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     if (data && data.length > 0) {
       const productIds = data.map((item) => item.product_id);
       const { data: products } = await supabase.from('products').select('*').in('id', productIds);
-      if (products) dispatch({ type: 'SET', payload: products as unknown as Product[] });
+      if (products) dispatch({ type: 'SET', payload: (products as any[]).map(mapProduct) });
     }
   }
 

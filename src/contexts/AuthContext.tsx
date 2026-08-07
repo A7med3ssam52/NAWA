@@ -1,8 +1,8 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User, Address } from '@/types';
-import { users, getUserAddresses, setUsersData, addresses as allAddresses, setAddressesData } from '@/data';
-import i18n from '@/i18n';
+import { mapProfile } from '@/lib/mappers';
+import { useAddresses } from '@/api';
 
 interface AuthState {
   user: User | null;
@@ -21,7 +21,7 @@ type AuthAction =
   | { type: 'SET_DEFAULT_ADDRESS'; payload: string };
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: 'admin' | 'customer' }>;
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
-        const profile = await loadProfile(session.user.id, session.user.email || '');
+        const profile = await loadProfile(session.user.id);
         if (profile) dispatch({ type: 'SET_USER', payload: profile });
       }
       dispatch({ type: 'SET_LOADING', payload: false });
@@ -76,8 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          const profile = await loadProfile(session.user.id, session.user.email || '');
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+          const profile = await loadProfile(session.user.id);
           if (profile) dispatch({ type: 'SET_USER', payload: profile });
         }
       } else {
@@ -88,52 +88,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      localStorage.setItem('auth', JSON.stringify({ user: state.user, isAuthenticated: state.isAuthenticated, defaultAddressId: state.defaultAddressId }));
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [state.user, state.isAuthenticated, state.defaultAddressId]);
-
-  const loadProfile = useCallback(async (authId: string, email: string): Promise<User | null> => {
-    const { data } = await supabase.from('profiles').select('*').eq('id', authId).single();
-    if (data) return mapProfile(data);
-    const existing = users.find((u) => u.email === email);
-    if (existing) return existing;
+  const loadProfile = useCallback(async (authId: string): Promise<User | null> => {
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', authId).maybeSingle();
+      if (!error && data) return mapProfile(data);
+    } catch {
+      return null;
+    }
     return null;
   }, []);
 
-  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return { success: false, error: error.message };
-    return { success: true };
-  }, []);
+  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; error?: string; role?: 'admin' | 'customer' }> => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return { success: false, error: error.message };
+      if (data.user) {
+        try {
+          const profile = await loadProfile(data.user.id);
+          if (profile) {
+            dispatch({ type: 'SET_USER', payload: profile });
+            return { success: true, role: profile.role };
+          }
+        } catch {
+          return { success: true };
+        }
+      }
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Login failed' };
+    }
+  }, [loadProfile]);
 
   const register = useCallback(async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) return { success: false, error: error.message };
-    if (data.user) {
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        name,
+    try {
+      const { data, error } = await supabase.auth.signUp({
         email,
-        phone: '',
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2563EB&color=fff`,
-        role: 'customer',
-        addresses: [],
-        orders: [],
-        wishlist: [],
-        notifications: [],
-      };
-      await supabase.from('profiles').insert({
-        id: data.user.id, name, email,
-        avatar: newUser.avatar, role: 'customer',
+        password,
+        options: { data: { name, avatar: '' } },
       });
-      setUsersData([...users, newUser]);
-      dispatch({ type: 'SET_USER', payload: newUser });
+      if (error) return { success: false, error: error.message };
+      if (data.user) {
+        let profile: User | null = null;
+        for (let i = 0; i < 8 && !profile; i++) {
+          profile = await loadProfile(data.user.id);
+          if (!profile && i < 7) await new Promise((r) => setTimeout(r, 250));
+        }
+        if (!profile) {
+          const { data: inserted, error: insertError } = await supabase
+            .from('profiles')
+            .insert({ id: data.user.id, name, email, avatar: '', role: 'customer' })
+            .select()
+            .single();
+          if (insertError) {
+            return { success: true, error: undefined };
+          }
+          if (inserted) profile = mapProfile(inserted);
+        }
+        if (profile) dispatch({ type: 'SET_USER', payload: profile });
+      }
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : 'Registration failed' };
     }
-    return { success: true };
-  }, []);
+  }, [loadProfile]);
 
   const logout = useCallback(() => {
     supabase.auth.signOut();
@@ -145,63 +162,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (session?.user) {
       const updateData: Record<string, any> = {};
       if (data.name !== undefined) updateData.name = data.name;
-      if (data.email !== undefined) updateData.email = data.email;
       if (data.phone !== undefined) updateData.phone = data.phone;
       if (data.avatar !== undefined) updateData.avatar = data.avatar;
-      await supabase.from('profiles').update(updateData).eq('id', session.user.id);
+      if (Object.keys(updateData).length > 0) {
+        await supabase.from('profiles').update(updateData).eq('id', session.user.id);
+      }
+      if (data.email !== undefined) {
+        await supabase.auth.updateUser({ email: data.email });
+      }
+      const profile = await loadProfile(session.user.id);
+      if (profile) dispatch({ type: 'SET_USER', payload: profile });
+      else dispatch({ type: 'UPDATE_PROFILE', payload: data });
     }
-    dispatch({ type: 'UPDATE_PROFILE', payload: data });
-  }, []);
+  }, [loadProfile]);
 
   const addAddress = useCallback(async (address: Address) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
-      const { data: profile } = await supabase.from('profiles').select('id').eq('id', session.user.id).single();
-      if (profile) {
-        await supabase.from('addresses').insert({
-          id: address.id, user_id: profile.id, label: address.label,
-          full_name: address.fullName, phone: address.phone,
-          street: address.street, city: address.city, state: address.state,
-          is_default: address.isDefault,
-        });
-        const updatedAddrs = [...(state.user?.addresses || []), address.id];
-        await supabase.from('profiles').update({ addresses: updatedAddrs }).eq('id', session.user.id);
-        setAddressesData([...allAddresses, address as never]);
-      }
+      await supabase.from('addresses').insert({
+        id: address.id, user_id: session.user.id, label: address.label,
+        full_name: address.fullName, phone: address.phone,
+        street: address.street, city: address.city, state: address.state,
+        is_default: address.isDefault,
+      });
     }
     dispatch({ type: 'ADD_ADDRESS', payload: address });
-  }, [state.user]);
+  }, []);
 
   const removeAddress = useCallback(async (id: string) => {
-    await supabase.from('addresses').delete().eq('id', id);
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user && state.user) {
-      const updatedAddrs = state.user.addresses.filter((a) => a !== id);
-      await supabase.from('profiles').update({ addresses: updatedAddrs }).eq('id', session.user.id);
-      setAddressesData(allAddresses.filter((a) => a.id !== id));
-    }
+    await supabase.from('addresses').delete().eq('id', id).eq('user_id', state.user?.id || '');
     dispatch({ type: 'REMOVE_ADDRESS', payload: id });
   }, [state.user]);
 
   const setDefaultAddress = useCallback(async (id: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
-      const { data: profile } = await supabase.from('profiles').select('id').eq('id', session.user.id).single();
-      if (profile) {
-        await supabase.from('addresses').update({ is_default: false }).eq('user_id', profile.id);
-        await supabase.from('addresses').update({ is_default: true }).eq('id', id);
-        setAddressesData(allAddresses.map((a) =>
-          a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }
-        ));
-      }
+      await supabase.from('addresses').update({ is_default: true }).eq('id', id).eq('user_id', session.user.id);
     }
     dispatch({ type: 'SET_DEFAULT_ADDRESS', payload: id });
   }, []);
 
-  const addresses = useMemo(() =>
-    state.user ? getUserAddresses(state.user.id) : [],
-    [state.user]
-  );
+  const { data: dbAddresses } = useAddresses(state.user?.id);
+
+  const addresses = useMemo(() => dbAddresses || [], [dbAddresses]);
 
   const value = useMemo(() => ({
     ...state,
@@ -215,21 +218,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-function mapProfile(data: any): User {
-  return {
-    id: data.id,
-    name: data.name,
-    email: data.email,
-    phone: data.phone || '',
-    avatar: data.avatar || '',
-    role: data.role || 'customer',
-    addresses: data.addresses || [],
-    orders: data.orders || [],
-    wishlist: data.wishlist || [],
-    notifications: data.notifications || [],
-  };
 }
 
 export const useAuth = () => {

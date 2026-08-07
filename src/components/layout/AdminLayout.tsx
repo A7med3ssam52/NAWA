@@ -10,6 +10,7 @@ import { cn } from '@/utils';
 import { useAuth } from '@/contexts';
 import { useTranslation } from 'react-i18next';
 import { adminService } from '@/services';
+import { Spinner } from '@/components/ui';
 
 interface NavItem {
   label: string;
@@ -104,9 +105,14 @@ export function AdminLayout() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
+  const isAdmin = isAuthenticated && !!user && user.role === 'admin';
+
   useEffect(() => {
-    adminService.getStats().then((stats) => setPendingOrders(stats.pendingOrders));
-  }, []);
+    if (!isAdmin) return;
+    adminService.getDashboardData()
+      .then((data) => setPendingOrders(data.stats.pendingOrders))
+      .catch(() => setPendingOrders(0));
+  }, [isAdmin]);
 
   const navItems: NavItem[] = useMemo(() =>
     BASE_NAV_ITEMS.map((item) =>
@@ -134,9 +140,9 @@ export function AdminLayout() {
 
   useEffect(() => {
     if (loading) return;
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       navigate('/login', { state: { from: pathname } });
-    } else if (user && user.role !== 'admin') {
+    } else if (user.role !== 'admin') {
       navigate('/');
     }
   }, [isAuthenticated, user, loading, navigate, pathname]);
@@ -181,6 +187,14 @@ export function AdminLayout() {
   };
 
   const currentPage = navItems.find((n) => isActive(n.href));
+
+  if (loading || !isAuthenticated || !user || user.role !== 'admin') {
+    return (
+      <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   return (
     <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">

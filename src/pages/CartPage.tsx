@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart } from '@/contexts';
-import { adminService } from '@/services';
+import { supabase } from '@/lib/supabase';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
 import { EmptyState, Button, Input, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
+import type { Coupon } from '@/types';
 
 export function CartPage() {
   const { t, i18n } = useTranslation();
@@ -33,20 +34,35 @@ export function CartPage() {
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
     setCouponLoading(true);
-    const coupons = await adminService.getCoupons();
-    const coupon = coupons.find(
-      (c) => c.code === couponInput.trim().toUpperCase() && new Date(c.expiresAt) > new Date()
-    );
-    if (coupon) {
-      const discAmount = coupon.type === 'percentage'
-        ? Math.min(subtotal * coupon.discount / 100, coupon.maxDiscount)
-        : coupon.discount;
-      setCoupon(coupon, coupon.code, discAmount);
-      toast.success(t('cart.couponSuccess'));
-    } else {
-      toast.error(t('cart.couponInvalid'));
-    }
+    const { data, error } = await supabase.rpc('get_coupon', { p_code: couponInput.trim() });
     setCouponLoading(false);
+    if (error || !data?.valid) {
+      toast.error(t('cart.couponInvalid'));
+      return;
+    }
+    if (subtotal < Number(data.min_order)) {
+      toast.error(t('cart.couponMinOrder', { amount: formatPrice(Number(data.min_order)) }));
+      return;
+    }
+    const discountType = data.discount_type === 'free_shipping' ? 'freeShipping' : data.discount_type || 'percentage';
+    const coupon: Coupon = {
+      id: data.code,
+      code: data.code,
+      discount: Number(data.discount_value) || 0,
+      type: discountType,
+      minOrder: Number(data.min_order) || 0,
+      maxDiscount: Number(data.max_discount) || 0,
+      expiresAt: data.expires_at || new Date(Date.now() + 365 * 86400000).toISOString(),
+      usageLimit: 0,
+      usedCount: 0,
+    };
+    const discAmount = discountType === 'freeShipping'
+      ? shippingCost
+      : discountType === 'percentage'
+        ? Math.min(subtotal * coupon.discount / 100, coupon.maxDiscount || Infinity)
+        : coupon.discount;
+    setCoupon(coupon, coupon.code, discAmount);
+    toast.success(t('cart.couponSuccess'));
   };
 
   const handleRemoveCoupon = () => {
