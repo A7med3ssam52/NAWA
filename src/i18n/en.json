@@ -841,7 +841,9 @@
   "notFound": {
     "title": "Sorry, page not found",
     "description": "The page you're looking for may have been moved, deleted, or is currently unavailable",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "backToStore": "Back to Store",
+    "goBack": "Go Back"
   },
   "errors": {
     "defaultTitle": "Sorry, something went wrong",

@@ -1,18 +1,1 @@
-[
-  {
-    "id": "cat-1",
-    "name": "رجالى",
-    "slug": "men",
-    "image": "https://picsum.photos/seed/men/400/400",
-    "icon": "Shirt",
-    "productsCount": 1
-  },
-  {
-    "id": "cat-2",
-    "name": "حريمى",
-    "slug": "women",
-    "image": "https://picsum.photos/seed/women/400/400",
-    "icon": "Dress",
-    "productsCount": 1
-  }
-]
+[]

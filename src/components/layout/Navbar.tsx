@@ -191,7 +191,7 @@ export const Navbar = memo(function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20 flex-nowrap">
             {/* Left group: Menu + Logo */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 h-full">
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="lg:hidden relative p-1.5 rounded-xl text-gray-600 hover:bg-gray-100 transition-all duration-200 active:scale-90"
@@ -201,10 +201,10 @@ export const Navbar = memo(function Navbar() {
               </button>
               <Link
                 to={PAGES.HOME}
-                className="shrink-0"
+                className="shrink-0 h-full flex items-center"
                 aria-label={t('nav.homePage')}
               >
-                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-10 sm:h-12 lg:h-16 w-auto" />
+                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-full w-auto object-contain" />
               </Link>
             </div>
 

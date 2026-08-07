@@ -9,13 +9,11 @@
 -- VALUES ('THE-AUTH-UUID', 'Kiady Zahi', 'kiady@zahieg.com', '+201000000000', 'https://ui-avatars.com/api/?name=Kiady+Zahi&background=2563EB&color=fff', '{}', '{}', '{}', '{}');
 
 INSERT INTO profiles (id, name, email, phone, avatar, addresses, orders, wishlist, notifications) VALUES
-('user-1', 'محمد الكيادي', 'ahmed@example.com', '+201234567890', 'https://picsum.photos/seed/avatar1/200/200', '{addr-1,addr-2}', '{ord-1,ord-3}', '{prod-5,prod-14,prod-22}', '{notif-1,notif-2,notif-3}'),
-('user-2', 'محمد الكيادي', 'sara@example.com', '+201098765432', 'https://picsum.photos/seed/avatar2/200/200', '{addr-3}', '{ord-2}', '{prod-2,prod-9,prod-19}', '{notif-4,notif-5}');
+('user-1', 'محمد الكيادي', 'ahmed@example.com', '+201234567890', 'https://picsum.photos/seed/avatar1/200/200', '{addr-1,addr-2}', '{ord-1,ord-3}', '{}', '{notif-1,notif-2,notif-3}'),
+('user-2', 'محمد الكيادي', 'sara@example.com', '+201098765432', 'https://picsum.photos/seed/avatar2/200/200', '{addr-3}', '{ord-2}', '{}', '{notif-4,notif-5}');
 
 -- ─── Categories ───
-INSERT INTO categories (id, name, slug, image, icon, products_count) VALUES
-('cat-1', 'رجالى', 'men', 'https://picsum.photos/seed/men/400/400', 'Shirt', 1),
-('cat-2', 'حريمى', 'women', 'https://picsum.photos/seed/women/400/400', 'Dress', 1);
+-- (Mock categories removed — real categories come from Supabase)
 
 -- ─── Brands ───
 INSERT INTO brands (id, name, slug, logo, products_count) VALUES
@@ -28,10 +26,8 @@ INSERT INTO brands (id, name, slug, logo, products_count) VALUES
 ('brand-7', 'Samsung', 'samsung', 'https://picsum.photos/seed/samsung/200/100', 0),
 ('brand-8', 'Apple', 'apple', 'https://picsum.photos/seed/apple/200/100', 0);
 
--- ─── Products (sample - add all from products.json) ───
-INSERT INTO products (id, name, slug, description, short_description, price, old_price, discount, images, category, brand, rating, reviews_count, stock, sku, specifications, tags, is_new, is_featured, created_at) VALUES
-('prod-1', 'تيشيرت قطن رجالي', 'mens-1', 'ملابس رجالية عالية الجودة. تيشيرت قطن رجالي بتصميم عصري وأنيق مناسب لجميع الأذواق.', 'تيشيرت قطن رجالي - ملابس رجالية عالية الجودة', 840, 1075, 28, '{https://loremflickr.com/600/600/mens,cloth,shirt?lock=10,https://loremflickr.com/600/600/mens,cloth,shirt?lock=11}', 'cat-1', 'brand-6', 4.5, 312, 164, '10001', '[{"label":"المادة","value":"قطن 100%"}]', '{رجالي,ملابس,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z'),
-('prod-2', 'فستان ماكسي حريمي', 'womens-1', 'فستان ماكسي حريمي أنيق بتصميم عصري وجذاب. مصنوع من خامات عالية الجودة توفر أقصى درجات الراحة والأناقة.', 'فستان ماكسي حريمي - أناقة وراحة في تصميم واحد', 1250, 1600, 22, '{https://loremflickr.com/600/600/women,dress,cloth?lock=20,https://loremflickr.com/600/600/women,dress,cloth?lock=21}', 'cat-2', 'brand-1', 4.3, 89, 45, '10002', '[{"label":"المادة","value":"مزيج قطن وبوليستر"},{"label":"المقاسات","value":"S - 3XL"},{"label":"الألوان","value":"بيج، أسود، كحلي"},{"label":"الجنس","value":"حريمي"},{"label":"الطول","value":"ماكسي (طويل)"}]', '{حريمي,ملابس,فستان,موضة,أزياء}', true, true, '2026-07-24T21:00:00Z');
+-- ─── Products ───
+-- (Mock products removed — real products come from Supabase)
 
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES

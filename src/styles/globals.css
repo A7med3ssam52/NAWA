@@ -472,9 +472,9 @@
 
 .contact-us-page .header-logo {
   border-radius: var(--radius-sm);
-  width: 42px;
-  height: 42px;
-  object-fit: cover;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
   transition: var(--transition);
 }
 
@@ -595,16 +595,15 @@
 
 .contact-us-page .hero-logo-wrapper {
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
 }
 
 .contact-us-page .hero-logo {
   justify-content: center;
   align-items: center;
-  width: 120px;
-  height: 120px;
-  animation: 3s ease-in-out infinite contactFloat;
+  width: 140px;
+  height: 140px;
   display: flex;
 }
 
@@ -629,6 +628,15 @@
   margin-bottom: 6px;
   font-size: 1.2rem;
   font-weight: 700;
+}
+
+.contact-us-page .hero-subtitle-img {
+  display: block;
+  height: 56px;
+  width: auto;
+  max-width: 340px;
+  object-fit: contain;
+  margin: 0 auto 6px;
 }
 
 .contact-us-page .hero-description {
@@ -831,15 +839,20 @@
   margin-bottom: 24px;
 }
 
+.contact-us-page .footer-brand-img {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  margin: 0 auto;
+  transition: var(--transition);
+}
+
 .contact-us-page .footer-brand-text {
   color: var(--white);
   transition: var(--transition);
   font-size: 1.6rem;
   font-weight: 900;
-}
-
-.contact-us-page .footer:hover .footer-brand-text {
-  color: var(--secondary-orange);
 }
 
 .contact-us-page .footer-social {
@@ -904,11 +917,12 @@
 @media (max-width: 768px) {
   .contact-us-page .header-inner { padding: 12px 16px; }
   .contact-us-page .header-title { font-size: 1.1rem; }
-  .contact-us-page .header-logo { width: 36px; height: 36px; }
+  .contact-us-page .header-logo { width: 40px; height: 40px; }
   .contact-us-page .lang-switcher { padding: 6px 14px; font-size: 0.75rem; }
   .contact-us-page .hero { padding: 85px 20px 30px; }
-  .contact-us-page .hero-logo { width: 90px; height: 90px; }
-  .contact-us-page .hero-logo-wrapper { margin-bottom: 14px; }
+  .contact-us-page .hero-logo { width: 100px; height: 100px; }
+  .contact-us-page .hero-subtitle-img { height: 44px; }
+  .contact-us-page .hero-logo-wrapper { margin-bottom: 10px; }
   .contact-us-page .hero-title { letter-spacing: 2px; margin-bottom: 6px; font-size: 2rem; }
   .contact-us-page .social-links { padding: 20px 16px 60px; }
   .contact-us-page .social-links-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -927,8 +941,9 @@
 
 @media (max-width: 480px) {
   .contact-us-page .hero { padding: 75px 16px 24px; }
-  .contact-us-page .hero-logo { width: 76px; height: 76px; }
-  .contact-us-page .hero-logo-wrapper { margin-bottom: 10px; }
+  .contact-us-page .hero-logo { width: 84px; height: 84px; }
+  .contact-us-page .hero-subtitle-img { height: 38px; }
+  .contact-us-page .hero-logo-wrapper { margin-bottom: 8px; }
   .contact-us-page .hero-title { letter-spacing: 1px; font-size: 1.6rem; }
   .contact-us-page .social-links-grid { gap: 12px; }
   .contact-us-page .social-card { border-radius: var(--radius-sm); min-height: 120px; padding: 20px 12px; }

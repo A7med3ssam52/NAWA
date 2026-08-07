@@ -33,14 +33,14 @@ export function CartPreview() {
       {/* Cart Button */}
       <Link
         to={PAGES.CART}
-        className="relative p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
+        className="relative p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
         aria-label={t('nav.cartLabel')}
       >
         <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
         {itemsCount > 0 && (
           <span
             className={cn(
-              'absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-secondary text-white text-[10px] font-bold shadow-lg shadow-secondary/30',
+              'absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-secondary text-white text-[10px] font-bold shadow-sm shadow-secondary/20',
               itemsCount > 0 && 'animate-in zoom-in-50 duration-200'
             )}
           >

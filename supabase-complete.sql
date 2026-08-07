@@ -233,10 +233,7 @@ DROP POLICY IF EXISTS "order_emails_insert" ON order_emails; CREATE POLICY "orde
 -- ===========================================================
 
 -- ─── Categories ───
-INSERT INTO categories (id, name, slug, image, icon, products_count) VALUES
-('cat-1', 'رجالى', 'men', 'https://picsum.photos/seed/men/400/400', 'Shirt', 1),
-('cat-2', 'حريمى', 'women', 'https://picsum.photos/seed/women/400/400', 'Dress', 0)
-ON CONFLICT (id) DO NOTHING;
+-- (Mock categories removed — real categories come from Supabase)
 
 -- ─── Brands ───
 INSERT INTO brands (id, name, slug, logo, products_count) VALUES
@@ -251,9 +248,7 @@ INSERT INTO brands (id, name, slug, logo, products_count) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- ─── Sample Products ───
-INSERT INTO products (id, name, slug, description, short_description, price, old_price, discount, images, category, brand, rating, reviews_count, stock, sku, specifications, tags, is_new, is_featured, created_at) VALUES
-('prod-1', 'تيشيرت قطن رجالي', 'mens-1', 'تيشيرت قطن عالي الجودة مناسب للارتداء اليومي', 'تيشيرت قطن مريح', 840, 1075, 28, '{https://picsum.photos/seed/prod1a/600/600,https://picsum.photos/seed/prod1b/600/600}', 'cat-1', 'brand-6', 4.5, 312, 164, '10001', '[{"label":"المادة","value":"قطن 100%"}]', '{تيشيرت,قطن,رجالي}', true, true, '2026-07-24T21:00:00Z')
-ON CONFLICT (id) DO NOTHING;
+-- (Mock products removed — real products come from Supabase)
 
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES

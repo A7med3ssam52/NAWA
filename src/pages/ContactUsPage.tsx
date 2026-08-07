@@ -51,22 +51,24 @@ export function ContactUsPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  const isArabic = (i18n.language ?? i18n.resolvedLanguage ?? '').toLowerCase().startsWith('ar');
+
   const toggleLang = () => {
-    i18n.changeLanguage(i18n.language === 'ar' ? 'en' : 'ar');
+    i18n.changeLanguage(isArabic ? 'en' : 'ar');
   };
 
   return (
-    <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="contact-us-page">
+    <div dir={isArabic ? 'rtl' : 'ltr'} className="contact-us-page">
       <header className={`header${scrolled ? ' header-scrolled' : ''}`} role="banner">
         <div className="header-bg" aria-hidden="true" />
         <div className="header-inner">
           <div className="header-brand">
             <img
               className="header-logo"
-              src="/images/zahilogo.png"
+              src="/images/zahieg.png"
               alt={t('contactPage.headerTitle')}
-              width="42"
-              height="42"
+              width="56"
+              height="56"
             />
           </div>
           <button
@@ -93,14 +95,14 @@ export function ContactUsPage() {
               <div className="hero-logo">
                 <img
                   className="hero-logo-img"
-                  src="/images/zahilogo.png"
+                  src="/images/zahieg.png"
                   alt={t('contactPage.heroTitle')}
                   width="120"
                   height="120"
                 />
               </div>
             </div>
-            <p className="hero-subtitle">{t('contactPage.heroSubtitle')}</p>
+            <img className="hero-subtitle-img" src="/images/anaqa.png" alt={t('contactPage.heroSubtitle')} />
             <p className="hero-description">{t('contactPage.heroDescription')}</p>
           </div>
         </section>
@@ -136,7 +138,7 @@ export function ContactUsPage() {
         <div className="footer-glow" aria-hidden="true" />
         <div className="footer-inner">
           <div className="footer-brand">
-            <span className="footer-brand-text">{t('contactPage.headerTitle')}</span>
+            <img className="footer-brand-img" src="/images/footer.png" alt={t('contactPage.headerTitle')} />
           </div>
           <div className="footer-social">
             {footerSocials.map((social) => {

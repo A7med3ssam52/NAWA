@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { categories, products } from '@/data';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { Button } from '@/components/ui';
@@ -18,30 +18,6 @@ export function CategoryProductsPage() {
         <Link to={PAGES.HOME}>
           <Button variant="primary">{t('common.back')}</Button>
         </Link>
-      </div>
-    );
-  }
-
-  if (category.id === 'cat-2') {
-    return (
-      <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="text-center max-w-lg mx-auto">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-secondary/10 flex items-center justify-center">
-            <ShoppingBag className="w-10 h-10 text-secondary" />
-          </div>
-          <h1 className="text-2xl lg:text-3xl font-bold font-cairo text-gray-900 mb-3">
-            {category.name}
-          </h1>
-          <p className="text-lg text-gray-500 font-cairo mb-8">
-            قريباً.. عالم الأنوثة في انتظارك
-          </p>
-          <Link to={PAGES.HOME}>
-            <Button variant="primary" size="lg" rounded="xl">
-              <ArrowLeft className="w-4 h-4 ml-2" />
-              {t('common.back')}
-            </Button>
-          </Link>
-        </div>
       </div>
     );
   }

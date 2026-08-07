@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { createBrowserRouter, RouterProvider, useRouteError } from 'react-router-dom';
 import { Layout, AdminLayout } from '@/components/layout';
 import { Button, Spinner } from '@/components/ui';
+import { HomePage } from '@/pages/HomePage';
 
 function lazyWithRetry<T extends React.ComponentType>(
   importFn: () => Promise<{ default: T }>
@@ -50,7 +51,7 @@ function RouteErrorBoundary() {
   );
 }
 
-const HomePage = lazyPage('HomePage', 'HomePage');
+const HomePageRoute = HomePage;
 const ProductsPage = lazyPage('ProductsPage', 'ProductsPage');
 const ProductDetailsPage = lazyPage('ProductDetailsPage', 'ProductDetailsPage');
 const CategoriesPage = lazyPage('CategoriesPage', 'CategoriesPage');
@@ -112,7 +113,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     errorElement: <RouteErrorBoundary />,
     children: [
-      { index: true, element: <SuspenseWrapper><HomePage /></SuspenseWrapper> },
+      { index: true, element: <HomePageRoute /> },
       { path: 'products', element: <SuspenseWrapper><ProductsPage /></SuspenseWrapper> },
       { path: 'products/:slug', element: <SuspenseWrapper><ProductDetailsPage /></SuspenseWrapper> },
       { path: 'categories', element: <SuspenseWrapper><CategoriesPage /></SuspenseWrapper> },
@@ -139,8 +140,12 @@ const router = createBrowserRouter([
       { path: 'terms', element: <SuspenseWrapper><TermsPage /></SuspenseWrapper> },
       { path: 'shipping', element: <SuspenseWrapper><ShippingPage /></SuspenseWrapper> },
       { path: 'returns', element: <SuspenseWrapper><ReturnsPage /></SuspenseWrapper> },
-      { path: '*', element: <SuspenseWrapper><NotFoundPage /></SuspenseWrapper> },
     ],
+  },
+  {
+    path: '*',
+    element: <SuspenseWrapper><NotFoundPage /></SuspenseWrapper>,
+    errorElement: <RouteErrorBoundary />,
   },
   {
     path: '/admin',
