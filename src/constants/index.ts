@@ -17,6 +17,7 @@ export const PAGES = {
   WISHLIST: '/wishlist',
   CART: '/cart',
   CHECKOUT: '/checkout',
+  LOGIN: '/login',
   ORDER_SUCCESS: '/order-success/:orderId',
   PROFILE: '/profile',
   MY_ORDERS: '/profile/orders',

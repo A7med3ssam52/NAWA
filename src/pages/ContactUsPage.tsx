@@ -95,14 +95,13 @@ export function ContactUsPage() {
               <div className="hero-logo">
                 <img
                   className="hero-logo-img"
-                  src="/images/zahieg.png"
+                  src="/images/contacts.png"
                   alt={t('contactPage.heroTitle')}
                   width="120"
                   height="120"
                 />
               </div>
             </div>
-            <img className="hero-subtitle-img" src="/images/anaqa.png" alt={t('contactPage.heroSubtitle')} />
             <p className="hero-description">{t('contactPage.heroDescription')}</p>
           </div>
         </section>

@@ -13,8 +13,8 @@ export const productService = {
     }
     if (category?.length) query = query.in('category_id', category);
     if (brand?.length) query = query.in('brand_id', brand);
-    if (priceMin !== undefined) query = query.gte('price', priceMin);
-    if (priceMax !== undefined) query = query.lte('price', priceMax);
+    if (priceMin !== undefined && priceMin > 0) query = query.gte('price', priceMin);
+    if (priceMax !== undefined && priceMax > 0) query = query.lte('price', priceMax);
 
     if (sort === 'price-asc') query = query.order('price', { ascending: true });
     else if (sort === 'price-desc') query = query.order('price', { ascending: false });

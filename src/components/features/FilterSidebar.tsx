@@ -22,6 +22,13 @@ interface FilterSidebarProps {
 
 const discountValues = [10, 20, 30, 50];
 
+const toLatinNumber = (value: string): number =>
+  Number(
+    value
+      .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+      .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+  ) || 0;
+
 const ratingOptions = [4, 3, 2, 1];
 
 function FilterCheckbox({ checked, onChange, label, count }: {
@@ -214,25 +221,25 @@ export function FilterSidebar({ filters, onFilterChange, className }: FilterSide
         <div className="flex items-center gap-2 px-1">
           <div className="relative flex-1">
             <Input
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={localFilters.priceMin || ''}
-              onChange={(e) => updateFilter('priceMin', Number(e.target.value) || 0)}
+              onChange={(e) => updateFilter('priceMin', toLatinNumber(e.target.value))}
               placeholder={t('products.from')}
               dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               className="text-sm h-10 pr-3"
-              min={0}
             />
           </div>
           <div className="w-6 h-px bg-gray-300 shrink-0" />
           <div className="relative flex-1">
             <Input
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={localFilters.priceMax || ''}
-              onChange={(e) => updateFilter('priceMax', Number(e.target.value) || 0)}
+              onChange={(e) => updateFilter('priceMax', toLatinNumber(e.target.value))}
               placeholder={t('products.to')}
               dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               className="text-sm h-10 pr-3"
-              min={0}
             />
           </div>
         </div>

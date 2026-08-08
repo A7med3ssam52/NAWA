@@ -1,16 +1,35 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Package, ShoppingBag } from 'lucide-react';
+import { CheckCircle, Package, ShoppingBag, KeyRound, Mail, Eye, EyeOff, Copy, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useOrder } from '@/api';
 import { PAGES } from '@/constants';
 import { Button } from '@/components/ui';
+import { readGuestCredentials, clearGuestCredentials, type GuestAccountCredentials } from '@/lib/guestAccount';
+import toast from 'react-hot-toast';
 
 export function OrderSuccessPage() {
   const { t, i18n } = useTranslation();
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
   const { data: order } = useOrder(orderId);
+  const [guestCredentials] = useState<GuestAccountCredentials | null>(() => readGuestCredentials());
+  const [revealed, setRevealed] = useState(false);
+
+  const copyText = async (text: string, successKey: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(t(successKey));
+    } catch {
+      // clipboard unavailable — ignore
+    }
+  };
+
+  const handleReveal = () => {
+    setRevealed(true);
+    clearGuestCredentials();
+  };
 
   return (
     <motion.div
@@ -57,6 +76,81 @@ export function OrderSuccessPage() {
         >
           <p className="text-xs text-gray-400 font-cairo mb-1">{t('orders.orderNumber')}</p>
           <p className="text-lg font-bold font-cairo text-gray-900 font-mono" dir="ltr">{order.orderNumber}</p>
+        </motion.div>
+      )}
+
+      {guestCredentials && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="bg-secondary/5 rounded-2xl border border-secondary/15 p-5 text-right mb-6"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-secondary" />
+            </div>
+            <div className="flex-1 text-left">
+              <h2 className="text-sm font-bold font-cairo text-gray-900">{t('orders.guestAccountTitle')}</h2>
+              <p className="text-xs text-gray-500 font-cairo">{t('orders.guestAccountDesc')}</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 px-3.5 h-11">
+              <Mail className="w-4 h-4 text-gray-400 shrink-0" />
+              <span dir="ltr" className="flex-1 text-sm font-cairo text-gray-900 truncate">{guestCredentials.email}</span>
+              <button
+                type="button"
+                onClick={() => copyText(guestCredentials.email, 'orders.guestCopiedEmail')}
+                className="p-1 text-gray-400 hover:text-secondary transition-colors"
+                aria-label={t('orders.guestCopyEmail')}
+              >
+                <Copy className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 p-3">
+              <KeyRound className="w-4 h-4 text-gray-400 shrink-0" />
+              <div className="flex-1 min-w-0 text-left">
+                <p className="text-xs font-cairo text-gray-400 mb-0.5">{t('orders.guestTempPassword')}</p>
+                <p dir="ltr" className="text-sm font-mono font-bold text-gray-900 truncate">
+                  {revealed ? guestCredentials.password : '••••••••••••'}
+                </p>
+              </div>
+              {!revealed ? (
+                <Button variant="outline" size="sm" rounded="md" onClick={handleReveal}>
+                  <Eye className="w-4 h-4" />
+                  {t('orders.guestRevealPassword')}
+                </Button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => copyText(guestCredentials.password, 'orders.guestCopiedPassword')}
+                  className="p-1.5 text-gray-400 hover:text-secondary transition-colors"
+                  aria-label={t('orders.guestCopyPassword')}
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {!guestCredentials.activated && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-cairo text-amber-700 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                {t('orders.guestActivation')}
+              </div>
+            )}
+
+            <p className="text-xs text-gray-400 font-cairo leading-relaxed">{t('orders.guestPasswordNotice')}</p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
+            <Link to={PAGES.PROFILE} className="inline-flex items-center gap-1.5 text-xs font-cairo text-secondary hover:text-secondary/80 transition-colors">
+              <KeyRound className="w-3.5 h-3.5" />
+              {t('orders.guestChangePassword')}
+            </Link>
+          </div>
         </motion.div>
       )}
 

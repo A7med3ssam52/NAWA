@@ -18,6 +18,10 @@ export interface Product {
   tags: string[];
   isNew: boolean;
   isFeatured: boolean;
+  colors: string[];
+  sizes: string[];
+  stockByColor: Record<string, number>;
+  stockBySize: Record<string, number>;
   createdAt: string;
 }
 

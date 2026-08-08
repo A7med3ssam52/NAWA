@@ -123,7 +123,7 @@ const router = createBrowserRouter([
       { path: 'search', element: <SuspenseWrapper><SearchPage /></SuspenseWrapper> },
       { path: 'wishlist', element: <SuspenseWrapper><WishlistPage /></SuspenseWrapper> },
       { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
-      { path: 'checkout', element: <RequireAuth><SuspenseWrapper><CheckoutPage /></SuspenseWrapper></RequireAuth> },
+      { path: 'checkout', element: <SuspenseWrapper><CheckoutPage /></SuspenseWrapper> },
       { path: 'order-success/:orderId', element: <SuspenseWrapper><OrderSuccessPage /></SuspenseWrapper> },
       { path: 'profile', element: <RequireAuth><SuspenseWrapper><ProfilePage /></SuspenseWrapper></RequireAuth> },
       { path: 'profile/orders', element: <RequireAuth><SuspenseWrapper><MyOrdersPage /></SuspenseWrapper></RequireAuth> },

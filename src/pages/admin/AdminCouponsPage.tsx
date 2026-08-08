@@ -70,7 +70,7 @@ export function AdminCouponsPage() {
     try {
       const payload = {
         ...form,
-        expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : new Date(Date.now() + 365 * 86400000).toISOString(),
+        expiresAt: form.expiresAt ? new Date(`${form.expiresAt}T23:59:59`).toISOString() : new Date(Date.now() + 365 * 86400000).toISOString(),
       };
       if (editing) {
         await adminService.updateCoupon(editing.id, payload);

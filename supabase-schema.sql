@@ -60,12 +60,22 @@ CREATE TABLE products (
   sku TEXT DEFAULT '',
   specifications JSONB DEFAULT '[]',
   tags TEXT[] DEFAULT '{}',
+  colors TEXT[] DEFAULT '{}',
+  sizes TEXT[] DEFAULT '{}',
+  stock_by_color JSONB DEFAULT '{}',
+  stock_by_size JSONB DEFAULT '{}',
   is_new BOOLEAN DEFAULT false,
   is_featured BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- Idempotent migration for existing databases (all optional columns)
+ALTER TABLE products ADD COLUMN IF NOT EXISTS colors TEXT[] DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS sizes TEXT[] DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_by_color JSONB DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_by_size JSONB DEFAULT '{}';
 
 -- ─── Reviews ───
 CREATE TABLE reviews (
@@ -269,3 +279,27 @@ CREATE TABLE order_emails (
 
 ALTER TABLE order_emails ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "order_emails_insert" ON order_emails FOR INSERT WITH CHECK (true);
+
+-- ─── Guest Checkout → Auto Account ───
+-- After a guest places an order (user_id NULL) and the store creates an account
+-- via auth.signUp, this RPC claims the order for the just-created account.
+-- The temporary password is generated client-side and never stored in the DB.
+CREATE OR REPLACE FUNCTION public.link_guest_order(p_order_id TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_uid TEXT := auth.uid()::text;
+BEGIN
+    IF v_uid IS NULL OR v_uid = '' THEN
+        RETURN FALSE;
+    END IF;
+    UPDATE orders
+       SET user_id = v_uid
+     WHERE id = p_order_id
+       AND user_id IS NULL;
+    RETURN FOUND;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+COMMENT ON FUNCTION public.link_guest_order IS
+    'Claims a guest order (user_id IS NULL) for the freshly created account of the current user.';
+REVOKE ALL ON FUNCTION public.link_guest_order(TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION public.link_guest_order(TEXT) TO anon, authenticated;

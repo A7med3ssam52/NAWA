@@ -47,12 +47,12 @@
 -- DROP FUNCTION IF EXISTS handle_new_user(), is_admin(), is_low_stock(text, integer),
 --   get_user_count(text), generate_order_number(), orders_set_updated_at(),
 --   orders_set_order_number(), update_product_rating(), ensure_single_address(),
---   settings_set_updated_at(), validate_coupon(text, numeric), get_coupon(text),
+--   --   settings_set_updated_at(), validate_coupon(text, numeric), get_coupon(text),
 --   increment_coupon_usage(text), create_order(text, jsonb, numeric, numeric, numeric,
 --   numeric, text, text, jsonb, text, text), products_search_update(),
 --   update_accounting_entries_updated_at(), get_dashboard_data(),
 --   protect_profile_role(), prevent_order_mutation(), normalize_coupon_type(),
---   normalize_spin_prize_type() CASCADE;
+--   normalize_spin_prize_type(), link_guest_order(text) CASCADE;
 
 
 -- ############################################################################
@@ -173,12 +173,23 @@ CREATE TABLE IF NOT EXISTS products (
     sku TEXT DEFAULT '',
     specifications JSONB NOT NULL DEFAULT '[]'::jsonb,
     tags TEXT[] NOT NULL DEFAULT '{}',
+    colors TEXT[] NOT NULL DEFAULT '{}',
+    sizes TEXT[] NOT NULL DEFAULT '{}',
+    stock_by_color JSONB NOT NULL DEFAULT '{}'::jsonb,
+    stock_by_size JSONB NOT NULL DEFAULT '{}'::jsonb,
     is_new BOOLEAN NOT NULL DEFAULT false,
     is_featured BOOLEAN NOT NULL DEFAULT false,
     search_vector TSVECTOR,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT valid_old_price CHECK (old_price IS NULL OR old_price >= price)
 );
+
+-- Idempotent migration for existing databases (already-created products tables
+-- keep working: every column is optional with a safe default)
+ALTER TABLE products ADD COLUMN IF NOT EXISTS colors TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS sizes TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_by_color JSONB NOT NULL DEFAULT '{}'::jsonb;
+ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_by_size JSONB NOT NULL DEFAULT '{}'::jsonb;
 
 -- Full-text search support
 CREATE OR REPLACE FUNCTION products_search_update()
@@ -397,6 +408,33 @@ COMMENT ON FUNCTION create_order IS 'Safe order creation RPC with amount integri
 GRANT EXECUTE ON FUNCTION create_order(text, jsonb, numeric, numeric, numeric, numeric,
     text, text, jsonb, text, text) TO anon, authenticated;
 
+-- 6.5 GUEST CHECKOUT → LINK THE ORDER TO THE JUST-CREATED ACCOUNT
+-- After a guest places an order (user_id = NULL) and the store creates an account
+-- for them via auth.signUp, the client (CheckoutPage) calls this RPC to claim the
+-- order back so it shows under "My Orders". Order ids are unguessable UUIDs and
+-- claiming is only allowed while the order still has no owner.
+-- NOTE: no plaintext password is ever stored — the temporary password is generated
+-- and handled entirely client-side (shown once, kept in sessionStorage only).
+CREATE OR REPLACE FUNCTION public.link_guest_order(p_order_id TEXT)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_uid TEXT := auth.uid()::text;
+BEGIN
+    IF v_uid IS NULL OR v_uid = '' THEN
+        RETURN FALSE;
+    END IF;
+    UPDATE orders
+       SET user_id = v_uid
+     WHERE id = p_order_id
+       AND user_id IS NULL;
+    RETURN FOUND;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+COMMENT ON FUNCTION public.link_guest_order IS
+    'Claims a guest order (user_id IS NULL) for the freshly created account of the current user.';
+REVOKE ALL ON FUNCTION public.link_guest_order(TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION public.link_guest_order(TEXT) TO anon, authenticated;
+
 -- ############################################################################
 -- 7. ORDER ITEMS   (line items snapshot — independent from orders.items JSON)
 -- ############################################################################
@@ -478,7 +516,7 @@ RETURNS TABLE(valid BOOLEAN, discount_type TEXT, discount_value NUMERIC,
 DECLARE
     c coupons%ROWTYPE;
 BEGIN
-    SELECT * INTO c FROM coupons WHERE upper(code) = upper(p_code) LIMIT 1;
+    SELECT * INTO c FROM coupons WHERE upper(coupons.code) = upper(p_code) LIMIT 1;
     IF NOT FOUND THEN
         RETURN QUERY SELECT false, NULL::TEXT, 0::NUMERIC, 0::NUMERIC, 'invalid code'::TEXT; RETURN;
     END IF;
@@ -504,7 +542,7 @@ RETURNS VOID AS $$
 BEGIN
     UPDATE coupons
     SET used_count = used_count + 1
-    WHERE upper(code) = upper(p_code)
+    WHERE upper(coupons.code) = upper(p_code)
       AND is_active = true
       AND expires_at > now()
       AND (usage_limit = 0 OR used_count < usage_limit);
@@ -513,23 +551,29 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Public-safe coupon lookup (no used_count / usage_limit exposure).
 -- Clients (e.g. CartPage) should call this RPC instead of SELECTing coupons.
+-- NOTE: the WHERE clause MUST qualify coupons.code — an unqualified `code`
+-- collides with the OUT parameter `code` and raises 42702 at runtime.
 CREATE OR REPLACE FUNCTION get_coupon(p_code TEXT)
 RETURNS TABLE(valid BOOLEAN, code TEXT, discount_type TEXT, discount_value NUMERIC,
               max_discount NUMERIC, min_order NUMERIC, expires_at TIMESTAMPTZ, message TEXT) AS $$
 DECLARE
     c coupons%ROWTYPE;
 BEGIN
-    SELECT * INTO c FROM coupons WHERE upper(code) = upper(p_code) LIMIT 1;
+    SELECT * INTO c FROM coupons WHERE upper(coupons.code) = upper(p_code) LIMIT 1;
     IF NOT FOUND THEN
         RETURN QUERY SELECT false, coalesce(p_code, ''), NULL::TEXT, 0::NUMERIC, 0::NUMERIC,
                             0::NUMERIC, NULL::TIMESTAMPTZ, 'invalid code'::TEXT; RETURN;
     END IF;
-    IF NOT c.is_active OR c.expires_at < now() THEN
+    IF NOT c.is_active THEN
         RETURN QUERY SELECT false, c.code, c.type, c.discount, coalesce(c.max_discount, c.discount),
-                            c.min_order, c.expires_at, 'coupon unavailable'::TEXT; RETURN;
+                            c.min_order, c.expires_at, 'coupon disabled'::TEXT; RETURN;
+    END IF;
+    IF c.expires_at < now() THEN
+        RETURN QUERY SELECT false, c.code, c.type, c.discount, coalesce(c.max_discount, c.discount),
+                            c.min_order, c.expires_at, 'coupon expired'::TEXT; RETURN;
     END IF;
     RETURN QUERY SELECT true, c.code, c.type, c.discount, coalesce(c.max_discount, c.discount),
-                        c.min_order, c.expires_at, 'ok'::TEXT;
+                        c.min_order, c.expires_at, 'valid'::TEXT;
 END;
 $$ LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = public;
 COMMENT ON FUNCTION get_coupon IS 'Client-safe coupon lookup (P5): type/discount/validity without usage counters';
@@ -1358,18 +1402,23 @@ REVOKE ALL ON FUNCTION increment_coupon_usage(text) FROM anon, authenticated;
 REVOKE ALL ON FUNCTION get_user_count(text) FROM anon, authenticated;
 REVOKE ALL ON FUNCTION is_low_stock(text, integer) FROM anon, authenticated;
 REVOKE ALL ON FUNCTION prevent_order_mutation() FROM anon, authenticated;
--- Public RPCs keep EXECUTE: get_coupon(text), create_order(...), is_admin()
+-- Public RPCs keep EXECUTE: get_coupon(text), create_order(...),
+-- link_guest_order(text), is_admin()
 
 -- ============================================================================
 -- 26. MIGRATIONS / SANITY  (idempotent repairs for pre-existing databases)
 --     Safe to run at any time; every statement tolerates repeated execution.
 -- ============================================================================
 
--- 26.1 Seed coupons must never expire (extend rows created by older seeds)
-UPDATE coupons SET expires_at = '2027-12-31' WHERE id = 'coup-1' AND expires_at < now();
-UPDATE coupons SET expires_at = '2027-06-30' WHERE id = 'coup-2' AND expires_at < now();
-UPDATE coupons SET expires_at = '2027-03-31' WHERE id = 'coup-3' AND expires_at < now();
-UPDATE coupons SET expires_at = '2027-09-30' WHERE id = 'coup-4' AND expires_at < now();
+-- 26.1 Seed coupons must never expire (code-based: works regardless of row id)
+UPDATE coupons SET expires_at = '2027-12-31'
+    WHERE code = 'WELCOME10' AND expires_at < now() + interval '30 days';
+UPDATE coupons SET expires_at = '2027-06-30'
+    WHERE code = 'ZAHI20' AND expires_at < now() + interval '30 days';
+UPDATE coupons SET expires_at = '2027-03-31'
+    WHERE code = 'SALE50' AND expires_at < now() + interval '30 days';
+UPDATE coupons SET expires_at = '2027-09-30'
+    WHERE code = 'FREESHIP' AND expires_at < now() + interval '30 days';
 
 -- 26.2 max_discount: NULL == "no cap" (0 was the legacy sentinel)
 ALTER TABLE coupons ALTER COLUMN max_discount SET DEFAULT NULL;

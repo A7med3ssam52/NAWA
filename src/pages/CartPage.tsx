@@ -1,22 +1,24 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
-import { useCart } from '@/contexts';
+import { ShoppingCart, Tag, Trash2, ArrowLeft, LogIn, User } from 'lucide-react';
+import { useCart, useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
-import { EmptyState, Button, Input, Divider } from '@/components/ui';
+import { EmptyState, Button, Input, Divider, Modal } from '@/components/ui';
 import toast from 'react-hot-toast';
 import type { Coupon } from '@/types';
 
 export function CartPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const { items, subtotal, shippingCost, total, discount, couponCode, setCoupon, clearCart } = useCart();
   const [couponInput, setCouponInput] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
+  const [showAccountGate, setShowAccountGate] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -34,10 +36,16 @@ export function CartPage() {
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
     setCouponLoading(true);
-    const { data, error } = await supabase.rpc('get_coupon', { p_code: couponInput.trim() });
+    const { data, error } = await supabase.rpc('get_coupon', { p_code: couponInput.trim().toUpperCase() });
     setCouponLoading(false);
     if (error || !data?.valid) {
-      toast.error(t('cart.couponInvalid'));
+      if (!error && data?.message === 'coupon expired') {
+        toast.error(t('cart.couponExpired'));
+      } else if (!error && data?.message === 'coupon disabled') {
+        toast.error(t('cart.couponDisabled'));
+      } else {
+        toast.error(t('cart.couponInvalid'));
+      }
       return;
     }
     if (subtotal < Number(data.min_order)) {
@@ -69,6 +77,14 @@ export function CartPage() {
     setCoupon(null, '', 0);
     setCouponInput('');
     toast.success(t('cart.couponRemoved'));
+  };
+
+  const handleCheckout = () => {
+    if (isAuthenticated || authLoading) {
+      navigate(PAGES.CHECKOUT);
+    } else {
+      setShowAccountGate(true);
+    }
   };
 
   const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
@@ -156,13 +172,53 @@ export function CartPage() {
               )}
             </div>
 
-            <Button variant="secondary" size="lg" fullWidth rounded="xl" onClick={() => navigate(PAGES.CHECKOUT)}>
+            <Button variant="secondary" size="lg" fullWidth rounded="xl" onClick={handleCheckout}>
               {t('cart.checkout')}
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={showAccountGate}
+        onClose={() => setShowAccountGate(false)}
+        title={t('checkout.accountGateTitle')}
+        size="sm"
+      >
+        <p className="text-sm text-gray-500 font-cairo mb-5 text-center">
+          {t('checkout.accountGateDesc')}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Button
+            variant="secondary"
+            size="lg"
+            rounded="xl"
+            fullWidth
+            onClick={() => {
+              setShowAccountGate(false);
+              navigate(PAGES.LOGIN, { state: { from: PAGES.CHECKOUT } });
+            }}
+          >
+            <LogIn className="w-4 h-4" />
+            {t('checkout.yesHaveAccount')}
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            rounded="xl"
+            fullWidth
+            onClick={() => {
+              setShowAccountGate(false);
+              navigate(`${PAGES.CHECKOUT}?guest=1`);
+            }}
+          >
+            <User className="w-4 h-4" />
+            {t('checkout.noAccountContinue')}
+          </Button>
+        </div>
+        <p className="text-xs text-gray-400 font-cairo text-center mt-4">{t('checkout.accountGateNote')}</p>
+      </Modal>
     </div>
   );
 }

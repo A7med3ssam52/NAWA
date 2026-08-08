@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Package, Search, Plus, Edit2, Trash2, Image as ImageIcon,
-  Star, AlertTriangle,
+  Star, AlertTriangle, X,
 } from 'lucide-react';
 import { formatPrice } from '@/utils';
 import { adminService } from '@/services';
@@ -30,6 +30,10 @@ const emptyForm = {
   images: [] as string[],
   isFeatured: false,
   tags: '',
+  colors: [] as string[],
+  sizes: [] as string[],
+  stockByColor: {} as Record<string, number>,
+  stockBySize: {} as Record<string, number>,
 };
 
 type FormData = typeof emptyForm;
@@ -48,6 +52,8 @@ export function AdminProductsPage() {
   const [modalMode, setModalMode] = useState<'add' | 'edit' | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [colorInput, setColorInput] = useState('');
+  const [sizeInput, setSizeInput] = useState('');
 
   const [editId, setEditId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -111,6 +117,10 @@ export function AdminProductsPage() {
       images: [...product.images],
       isFeatured: product.isFeatured,
       tags: product.tags.join(', '),
+      colors: [...(product.colors || [])],
+      sizes: [...(product.sizes || [])],
+      stockByColor: { ...(product.stockByColor || {}) },
+      stockBySize: { ...(product.stockBySize || {}) },
     });
     setEditId(product.id);
     setModalMode('edit');
@@ -122,6 +132,56 @@ export function AdminProductsPage() {
 
   function updateForm(key: keyof FormData, value: string | boolean | number) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function addColor() {
+    const name = colorInput.trim();
+    if (!name || form.colors.includes(name)) return;
+    setForm((prev) => ({ ...prev, colors: [...prev.colors, name] }));
+    setColorInput('');
+  }
+
+  function removeColor(color: string) {
+    setForm((prev) => {
+      const stock = { ...prev.stockByColor };
+      delete stock[color];
+      return { ...prev, colors: prev.colors.filter((c) => c !== color), stockByColor: stock };
+    });
+  }
+
+  function setColorStock(color: string, value: string) {
+    setForm((prev) => {
+      const stock = { ...prev.stockByColor };
+      const num = value === '' ? NaN : Number(value);
+      if (Number.isNaN(num) || num <= 0) delete stock[color];
+      else stock[color] = Math.floor(num);
+      return { ...prev, stockByColor: stock };
+    });
+  }
+
+  function addSize() {
+    const name = sizeInput.trim();
+    if (!name || form.sizes.includes(name)) return;
+    setForm((prev) => ({ ...prev, sizes: [...prev.sizes, name] }));
+    setSizeInput('');
+  }
+
+  function removeSize(size: string) {
+    setForm((prev) => {
+      const stock = { ...prev.stockBySize };
+      delete stock[size];
+      return { ...prev, sizes: prev.sizes.filter((s) => s !== size), stockBySize: stock };
+    });
+  }
+
+  function setSizeStock(size: string, value: string) {
+    setForm((prev) => {
+      const stock = { ...prev.stockBySize };
+      const num = value === '' ? NaN : Number(value);
+      if (Number.isNaN(num) || num <= 0) delete stock[size];
+      else stock[size] = Math.floor(num);
+      return { ...prev, stockBySize: stock };
+    });
   }
 
   async function handleSave() {
@@ -161,6 +221,10 @@ export function AdminProductsPage() {
         tags: form.tags
           ? form.tags.split(',').map((s: string) => s.trim()).filter(Boolean)
           : [],
+        colors: form.colors ? form.colors.map((s: string) => s.trim()).filter(Boolean) : [],
+        sizes: form.sizes ? form.sizes.map((s: string) => s.trim()).filter(Boolean) : [],
+        stockByColor: form.stockByColor || {},
+        stockBySize: form.stockBySize || {},
       };
 
       if (modalMode === 'add') {
@@ -493,13 +557,8 @@ export function AdminProductsPage() {
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select
-              label={t('admin.brand')}
-              options={brandList}
-              value={form.brand}
-              onChange={(e) => updateForm('brand', e.target.value)}
-            />
             <Input label={t('admin.tags')} value={form.tags} onChange={(e) => updateForm('tags', e.target.value)} placeholder="tag1, tag2, tag3" />
+            <div />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -528,6 +587,88 @@ export function AdminProductsPage() {
               {t('admin.productImages')}
             </label>
             <ImageUpload value={form.images} onChange={handleImages} bucket="products" max={5} />
+          </div>
+          <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-4 space-y-4">
+            <div>
+              <h4 className="text-sm font-bold font-cairo text-gray-900">{t('admin.colorsAndSizes')}</h4>
+              <p className="text-xs text-gray-500 font-cairo mt-0.5">{t('admin.variantsHint')}</p>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 font-cairo">{t('admin.colorsLabel')}</label>
+              <div className="flex gap-2">
+                <Input value={colorInput} onChange={(e) => setColorInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addColor(); } }} placeholder={t('admin.colorPlaceholder')} />
+                <Button variant="outline" size="md" rounded="xl" onClick={addColor} disabled={!colorInput.trim()}>
+                  <Plus className="w-4 h-4" />
+                  {t('admin.addColor')}
+                </Button>
+              </div>
+              {form.colors.length > 0 && (
+                <div className="space-y-2 pt-1">
+                  {form.colors.map((color) => (
+                    <div key={color} className="flex items-center gap-2">
+                      <span className="flex-1 flex items-center gap-2 px-3 py-2 text-sm font-cairo text-gray-900 bg-white border border-gray-200 rounded-xl">
+                        {color}
+                      </span>
+                      <Input
+                        type="number"
+                        min={0}
+                        dir="ltr"
+                        className="!w-24 shrink-0"
+                        value={form.stockByColor[color] ?? ''}
+                        onChange={(e) => setColorStock(color, e.target.value)}
+                        placeholder={t('admin.stockQuantity')}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeColor(color)}
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-gray-100 transition-colors shrink-0"
+                        aria-label={t('admin.removeColor')}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 font-cairo">{t('admin.sizesLabel')}</label>
+              <div className="flex gap-2">
+                <Input value={sizeInput} onChange={(e) => setSizeInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addSize(); } }} placeholder={t('admin.sizePlaceholder')} />
+                <Button variant="outline" size="md" rounded="xl" onClick={addSize} disabled={!sizeInput.trim()}>
+                  <Plus className="w-4 h-4" />
+                  {t('admin.addSize')}
+                </Button>
+              </div>
+              {form.sizes.length > 0 && (
+                <div className="space-y-2 pt-1">
+                  {form.sizes.map((size) => (
+                    <div key={size} className="flex items-center gap-2">
+                      <span className="flex-1 flex items-center gap-2 px-3 py-2 text-sm font-cairo text-gray-900 bg-white border border-gray-200 rounded-lg">
+                        {size}
+                      </span>
+                      <Input
+                        type="number"
+                        min={0}
+                        dir="ltr"
+                        className="!w-24 shrink-0"
+                        value={form.stockBySize[size] ?? ''}
+                        onChange={(e) => setSizeStock(size, e.target.value)}
+                        placeholder={t('admin.stockQuantity')}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeSize(size)}
+                        className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-gray-100 transition-colors shrink-0"
+                        aria-label={t('admin.removeSize')}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input

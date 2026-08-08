@@ -29,8 +29,6 @@ const COLORS_OPTIONS = [
   { nameKey: 'wine', hex: '#7C1D4E' },
 ];
 
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
 function BackInStockForm({ productId, productName, onClose }: { productId: string; productName: string; onClose: () => void }) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
@@ -146,6 +144,11 @@ export function ProductDetailsPage() {
 
   useEffect(() => { if (product) document.title = `${product.name} | ${t('common.siteName')}`; }, [product, t]);
   useEffect(() => { if (product) addRecentlyViewed(product); }, [product?.id]);
+  useEffect(() => {
+    setSelectedColor('');
+    setSelectedSize('');
+    setQuantity(1);
+  }, [product?.id]);
 
   if (isLoading) {
     return (
@@ -175,6 +178,31 @@ export function ProductDetailsPage() {
   const inWishlist = isInWishlist(product.id);
   const isOutOfStock = product.stock === 0;
   const cartItem = items.find((i) => i.product.id === product.id);
+
+  const productColors = product.colors || [];
+  const productSizes = product.sizes || [];
+
+  const getColorHex = (name: string) => {
+    const key = name.trim().toLowerCase();
+    const match = COLORS_OPTIONS.find(
+      (c) => c.nameKey === key || t(`products.colors.${c.nameKey}`).toLowerCase() === key
+    );
+    return match ? match.hex : null;
+  };
+
+  const getColorName = (name: string) => {
+    const key = name.trim().toLowerCase();
+    const match = COLORS_OPTIONS.find(
+      (c) => c.nameKey === key || t(`products.colors.${c.nameKey}`).toLowerCase() === key
+    );
+    return match ? t(`products.colors.${match.nameKey}`) : name;
+  };
+
+  const selectedColorStock = selectedColor ? product.stockByColor?.[selectedColor] : undefined;
+  const selectedSizeStock = selectedSize ? product.stockBySize?.[selectedSize] : undefined;
+  const definedStocks = [selectedColorStock, selectedSizeStock].filter((s): s is number => s !== undefined);
+  const availableStock = definedStocks.length > 0 ? Math.min(...definedStocks) : product.stock;
+  const noVariantStock = availableStock === 0;
 
   const breadcrumbItems = [
     { label: t('nav.home'), href: PAGES.HOME },
@@ -279,67 +307,100 @@ export function ProductDetailsPage() {
 
           {selectedColor && (
             <div className="text-sm font-cairo text-gray-500">
-              {t('cart.color')} <span className="font-semibold text-gray-900">{t(`products.colors.${COLORS_OPTIONS.find((c) => c.hex === selectedColor)?.nameKey}`)}</span>
+              {t('cart.color')} <span className="font-semibold text-gray-900">{getColorName(selectedColor)}</span>
             </div>
           )}
 
-          <div>
-            <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableColors')}:</p>
-            <div className="flex items-center gap-2 flex-wrap">
-              {COLORS_OPTIONS.map((color) => (
-                <button
-                  key={color.hex}
-                  onClick={() => setSelectedColor(color.hex)}
-                  className={cn(
-                    'w-8 h-8 rounded-full border-2 transition-all duration-200',
-                    selectedColor === color.hex ? 'border-secondary scale-110 shadow-md' : 'border-gray-200 hover:border-gray-300'
-                  )}
-                  style={{ backgroundColor: color.hex }}
-                  title={t(`products.colors.${color.nameKey}`)}
-                >
-                  {selectedColor === color.hex && (
-                    <span className="flex items-center justify-center">
-                      <Check className={cn('w-4 h-4', color.hex === '#FFFFFF' || color.hex === '#F5E6D3' ? 'text-gray-900' : 'text-white')} />
-                    </span>
-                  )}
-                </button>
-              ))}
+          {productColors.length > 0 && (
+            <div>
+              <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableColors')}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                {productColors.map((color) => {
+                  const hex = getColorHex(color);
+                  if (hex) {
+                    return (
+                      <button
+                        key={color}
+                        onClick={() => setSelectedColor(color)}
+                        className={cn(
+                          'w-8 h-8 rounded-full border-2 transition-all duration-200',
+                          selectedColor === color ? 'border-secondary scale-110 shadow-md' : 'border-gray-200 hover:border-gray-300'
+                        )}
+                        style={{ backgroundColor: hex }}
+                        title={getColorName(color)}
+                      >
+                        {selectedColor === color && (
+                          <span className="flex items-center justify-center">
+                            <Check className={cn('w-4 h-4', hex === '#FFFFFF' || hex === '#F5E6D3' ? 'text-gray-900' : 'text-white')} />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  }
+                  return (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(color)}
+                      className={cn(
+                        'min-w-[36px] h-9 px-3 rounded-lg border-2 text-sm font-cairo font-semibold transition-all duration-200',
+                        selectedColor === color
+                          ? 'border-secondary bg-secondary text-white'
+                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      )}
+                    >
+                      {color}
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedColor && (
+                <p className="text-xs font-cairo text-gray-500 mt-2">
+                  {t('products.availableStock', { count: selectedColorStock ?? product.stock })}
+                </p>
+              )}
             </div>
-          </div>
+          )}
 
-          <div>
-            <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableSizes')}:</p>
-            <div className="flex items-center gap-2 flex-wrap">
-              {SIZES.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={cn(
-                    'min-w-[36px] h-9 px-3 rounded-lg border-2 text-sm font-cairo font-semibold transition-all duration-200',
-                    selectedSize === size
-                      ? 'border-secondary bg-secondary text-white'
-                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                  )}
-                >
-                  {size}
-                </button>
-              ))}
+          {productSizes.length > 0 && (
+            <div>
+              <p className="text-xs font-cairo text-gray-500 mb-2">{t('products.availableSizes')}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                {productSizes.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={cn(
+                      'min-w-[36px] h-9 px-3 rounded-lg border-2 text-sm font-cairo font-semibold transition-all duration-200',
+                      selectedSize === size
+                        ? 'border-secondary bg-secondary text-white'
+                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                    )}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              {selectedSize && (
+                <p className="text-xs font-cairo text-gray-500 mt-2">
+                  {t('products.availableStock', { count: selectedSizeStock ?? product.stock })}
+                </p>
+              )}
             </div>
-          </div>
+          )}
 
           <div className="flex items-center gap-4">
-            <QuantitySelector value={quantity} onChange={setQuantity} max={product.stock} disabled={isOutOfStock} />
+            <QuantitySelector value={quantity} onChange={setQuantity} max={Math.max(availableStock, 1)} disabled={isOutOfStock || noVariantStock} />
             <div className="text-sm text-gray-500 font-cairo">
               {t('cart.total')}: <span className="font-bold text-gray-900">{formatPrice(product.price * quantity)}</span>
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch gap-3">
-            <Button variant="secondary" size="lg" rounded="xl" className="flex-1" onClick={handleAddToCart} disabled={isOutOfStock}>
+            <Button variant="secondary" size="lg" rounded="xl" className="flex-1" onClick={handleAddToCart} disabled={isOutOfStock || noVariantStock}>
               <ShoppingCart className="w-5 h-5" />
               {t('products.addToCart')}
             </Button>
-            <Button variant="accent" size="lg" rounded="xl" className="flex-1" onClick={handleBuyNow} disabled={isOutOfStock}>
+            <Button variant="accent" size="lg" rounded="xl" className="flex-1" onClick={handleBuyNow} disabled={isOutOfStock || noVariantStock}>
               <Check className="w-5 h-5" />
               {t('products.buyNow')}
             </Button>

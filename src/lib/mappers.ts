@@ -48,6 +48,10 @@ export function mapProduct(data: any): Product {
     tags: data.tags || [],
     isNew: !!data.is_new,
     isFeatured: !!data.is_featured,
+    colors: data.colors || [],
+    sizes: data.sizes || [],
+    stockByColor: data.stock_by_color || {},
+    stockBySize: data.stock_by_size || {},
     createdAt: data.created_at || new Date().toISOString(),
   };
 }
@@ -59,7 +63,7 @@ export function mapCategory(data: any): Category {
     slug: data.slug,
     image: data.image || '',
     icon: data.icon || 'Folder',
-    productsCount: data.products_count || 0,
+    productsCount: Number(data.products?.[0]?.count) || Number(data.products_count) || 0,
   };
 }
 
@@ -69,7 +73,7 @@ export function mapBrand(data: any): Brand {
     name: data.name,
     slug: data.slug,
     logo: data.logo || '',
-    productsCount: data.products_count || 0,
+    productsCount: Number(data.products?.[0]?.count) || Number(data.products_count) || 0,
   };
 }
 

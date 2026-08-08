@@ -63,6 +63,8 @@ export const adminService = {
       rating: 0, reviewsCount: 0, stock: data.stock || 0, sku: data.sku || '',
       specifications: data.specifications || [], tags: data.tags || [],
       isNew: true, isFeatured: data.isFeatured || false, createdAt: now,
+      colors: data.colors || [], sizes: data.sizes || [],
+      stockByColor: data.stockByColor || {}, stockBySize: data.stockBySize || {},
     };
     let oldPrice = product.oldPrice;
     if (oldPrice != null && oldPrice < product.price) oldPrice = null;
@@ -74,6 +76,8 @@ export const adminService = {
       images: product.images, category_id: product.category, brand_id: product.brand,
       rating: 0, reviews_count: 0, stock: product.stock, sku: product.sku,
       specifications: product.specifications, tags: product.tags,
+      colors: product.colors, sizes: product.sizes,
+      stock_by_color: product.stockByColor, stock_by_size: product.stockBySize,
       is_new: true, is_featured: product.isFeatured, created_at: now,
     };
     const { error } = await supabase.from('products').insert(dbRow);
@@ -102,6 +106,10 @@ export const adminService = {
     if (data.sku !== undefined) dbRow.sku = data.sku;
     if (data.specifications !== undefined) dbRow.specifications = data.specifications;
     if (data.tags !== undefined) dbRow.tags = data.tags;
+    if (data.colors !== undefined) dbRow.colors = data.colors;
+    if (data.sizes !== undefined) dbRow.sizes = data.sizes;
+    if (data.stockByColor !== undefined) dbRow.stock_by_color = data.stockByColor;
+    if (data.stockBySize !== undefined) dbRow.stock_by_size = data.stockBySize;
     if (data.isFeatured !== undefined) dbRow.is_featured = data.isFeatured;
     const { data: updated, error } = await supabase.from('products').update(dbRow).eq('id', id).select().single();
     if (!error && updated) return mapProduct(updated as any);
@@ -115,8 +123,12 @@ export const adminService = {
 
   // ─── Categories ────────────────────────────────────
   async getCategories() {
-    const { data, error } = await supabase.from('categories').select('*');
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*, products(count)');
     if (!error && data !== null) return (data as any[]).map(mapCategory);
+    const { data: fallback, error: fallbackError } = await supabase.from('categories').select('*');
+    if (!fallbackError && fallback !== null) return (fallback as any[]).map(mapCategory);
     return [];
   },
 
@@ -156,8 +168,12 @@ export const adminService = {
 
   // ─── Brands ────────────────────────────────────────
   async getBrands() {
-    const { data, error } = await supabase.from('brands').select('*');
+    const { data, error } = await supabase
+      .from('brands')
+      .select('*, products(count)');
     if (!error && data !== null) return (data as any[]).map(mapBrand);
+    const { data: fallback, error: fallbackError } = await supabase.from('brands').select('*');
+    if (!fallbackError && fallback !== null) return (fallback as any[]).map(mapBrand);
     return [];
   },
 
@@ -209,7 +225,7 @@ export const adminService = {
 
   async createCoupon(data: Partial<Coupon>): Promise<Coupon> {
     const coupon: Coupon = {
-      id: genId('coupon'), code: data.code || '', discount: data.discount || 0,
+      id: genId('coupon'), code: (data.code || '').trim().toUpperCase(), discount: data.discount || 0,
       type: data.type || 'percentage', minOrder: data.minOrder || 0, maxDiscount: data.maxDiscount || 0,
       expiresAt: data.expiresAt || new Date(Date.now() + 365 * 86400000).toISOString(),
       usageLimit: data.usageLimit || 100, usedCount: 0,
@@ -226,7 +242,7 @@ export const adminService = {
 
   async updateCoupon(id: string, data: Partial<Coupon>): Promise<Coupon | null> {
     const dbRow: Record<string, any> = {};
-    if (data.code !== undefined) dbRow.code = data.code;
+    if (data.code !== undefined) dbRow.code = (data.code as string).trim().toUpperCase();
     if (data.discount !== undefined) dbRow.discount = data.discount;
     if (data.type !== undefined) dbRow.type = data.type;
     if (data.minOrder !== undefined) dbRow.min_order = data.minOrder;
