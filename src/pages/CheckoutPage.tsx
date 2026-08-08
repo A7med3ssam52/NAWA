@@ -6,12 +6,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Smartphone, Building2, Landmark, User, Mail, Lock, Eye, EyeOff, LogIn, ShieldCheck, Copy, AlertCircle, KeyRound } from 'lucide-react';
+import { CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Smartphone, Building2, Landmark, Mail, Lock, LogIn, Copy, AlertCircle, KeyRound, Tag } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { orderService } from '@/services';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, EGYPT_GOVERNORATES } from '@/constants';
 import { Button, Input, Select, Textarea, Divider, Spinner } from '@/components/ui';
+import { AccountGateModal } from '@/components/features/AccountGateModal';
 import { supabase } from '@/lib/supabase';
 import { generateTemporaryPassword, saveGuestCredentials } from '@/lib/guestAccount';
 import toast from 'react-hot-toast';
@@ -36,14 +37,16 @@ export function CheckoutPage() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
-  const { items, subtotal, shippingCost, total, discount, notes, setNotes, clearCart, coupon } = useCart();
+  const { items, subtotal, shippingCost, total, discount, notes, setNotes, clearCart, coupon, couponCode } = useCart();
   const [currentStep, setCurrentStep] = useState(() => new URLSearchParams(location.search).get('guest') === '1' ? 1 : 0);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [processing, setProcessing] = useState(false);
   const shippingDataRef = useRef<ShippingData | null>(null);
   const [orderPlaced, setOrderPlaced] = useState<{ id: string } | null>(null);
   const [guestFlow, setGuestFlow] = useState<GuestFlow | null>(null);
-  const [showTempPassword, setShowTempPassword] = useState(false);
+  const [guestPassword, setGuestPassword] = useState('');
+  const [guestConfirmPassword, setGuestConfirmPassword] = useState('');
+  const [guestPasswordError, setGuestPasswordError] = useState<string | null>(null);
 
   const shippingSchema = useMemo(() => z.object({
     fullName: z.string().min(3, t('checkout.fullNameRequired')),
@@ -96,8 +99,15 @@ export function CheckoutPage() {
     }
   };
 
+  const validateGuestPassword = (): string | null => {
+    if (!guestPassword) return t('auth.passwordRequired');
+    if (guestPassword.length < 6) return t('auth.passwordMin');
+    if (guestPassword !== guestConfirmPassword) return t('auth.passwordMismatch');
+    return null;
+  };
+
   const createGuestAccount = async (orderId: string, sd: ShippingData) => {
-    const password = generateTemporaryPassword();
+    const password = guestPassword.trim() || generateTemporaryPassword();
     const { error } = await supabase.auth.signUp({
       email: sd.email.trim(),
       password,
@@ -120,6 +130,13 @@ export function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!shippingDataRef.current) return;
+    if (isGuest) {
+      const pwError = validateGuestPassword();
+      if (pwError) {
+        setGuestPasswordError(pwError);
+        return;
+      }
+    }
     setProcessing(true);
     const sd = shippingDataRef.current;
     try {
@@ -201,29 +218,6 @@ export function CheckoutPage() {
     </div>
   );
 
-  const renderAccountGate = () => (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-xl mx-auto">
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-soft p-6 sm:p-8 text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 mb-4">
-          <ShieldCheck className="w-8 h-8 text-secondary" />
-        </div>
-        <h2 className="text-lg sm:text-xl font-bold font-cairo text-gray-900 mb-1">{t('checkout.accountGateTitle')}</h2>
-        <p className="text-sm text-gray-500 font-cairo mb-6">{t('checkout.accountGateDesc')}</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Button variant="secondary" size="lg" rounded="xl" fullWidth onClick={() => navigate(PAGES.LOGIN, { state: { from: PAGES.CHECKOUT } })}>
-            <LogIn className="w-4 h-4" />
-            {t('checkout.yesHaveAccount')}
-          </Button>
-          <Button variant="outline" size="lg" rounded="xl" fullWidth onClick={() => setCurrentStep(1)}>
-            <User className="w-4 h-4" />
-            {t('checkout.noAccountContinue')}
-          </Button>
-        </div>
-        <p className="text-xs text-gray-400 font-cairo mt-4">{t('checkout.accountGateNote')}</p>
-      </div>
-    </motion.div>
-  );
-
   const renderGuestCreated = () => {
     if (!guestFlow || guestFlow.kind !== 'created') return null;
     return (
@@ -237,7 +231,7 @@ export function CheckoutPage() {
         </div>
 
         <div className="bg-secondary/5 rounded-2xl border border-secondary/10 p-5 space-y-4">
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center shrink-0">
               <KeyRound className="w-5 h-5 text-secondary" />
             </div>
@@ -247,29 +241,12 @@ export function CheckoutPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 px-3.5 h-11">
-              <Mail className="w-4 h-4 text-gray-400 shrink-0" />
-              <span dir="ltr" className="flex-1 text-sm font-cairo text-gray-900 truncate">{guestFlow.email}</span>
-              <button type="button" onClick={() => copyText(guestFlow.email, 'checkout.copiedEmail')} className="p-1 text-gray-400 hover:text-secondary transition-colors" aria-label={t('checkout.copyEmail')}>
-                <Copy className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex items-center gap-2 p-3 bg-white rounded-xl border border-gray-200">
-              <Lock className="w-4 h-4 text-gray-400 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-cairo text-gray-400 mb-0.5">{t('checkout.tempPasswordLabel')}</p>
-                <p dir="ltr" className="text-sm font-mono font-bold text-gray-900 truncate">
-                  {showTempPassword ? guestFlow.password : '••••••••••••'}
-                </p>
-              </div>
-              <button type="button" onClick={() => setShowTempPassword((v) => !v)} className="p-1.5 text-gray-400 hover:text-secondary transition-colors" aria-label={t('checkout.togglePassword')}>
-                {showTempPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-              <button type="button" onClick={() => copyText(guestFlow.password, 'checkout.copiedPassword')} className="p-1.5 text-gray-400 hover:text-secondary transition-colors" aria-label={t('checkout.copyPassword')}>
-                <Copy className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 px-3.5 h-11">
+            <Mail className="w-4 h-4 text-gray-400 shrink-0" />
+            <span dir="ltr" className="flex-1 text-sm font-cairo text-gray-900 truncate">{guestFlow.email}</span>
+            <button type="button" onClick={() => copyText(guestFlow.email, 'checkout.copiedEmail')} className="p-1 text-gray-400 hover:text-secondary transition-colors" aria-label={t('checkout.copyEmail')}>
+              <Copy className="w-4 h-4" />
+            </button>
           </div>
 
           {!guestFlow.activated && (
@@ -279,7 +256,7 @@ export function CheckoutPage() {
             </div>
           )}
 
-          <p className="text-xs text-gray-400 font-cairo leading-relaxed">{t('checkout.tempPasswordSecurityNote')}</p>
+          <p className="text-xs text-gray-400 font-cairo leading-relaxed">{t('checkout.chosenPasswordNote')}</p>
         </div>
 
         <Button variant="secondary" size="lg" rounded="xl" fullWidth className="mt-5" onClick={handleGuestFinish}>
@@ -345,6 +322,13 @@ export function CheckoutPage() {
         {t('checkout.title')}
       </h1>
 
+      <AccountGateModal
+        isOpen={currentStep === 0 && !authLoading && isGuest}
+        onClose={() => navigate(PAGES.CART)}
+        onLogin={() => navigate(PAGES.LOGIN, { state: { from: PAGES.CHECKOUT } })}
+        onContinueGuest={() => setCurrentStep(1)}
+      />
+
       {isGuest && currentStep > 0 && (
         <div className="max-w-2xl mx-auto mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
           <p className="text-sm font-cairo text-blue-700">
@@ -353,9 +337,7 @@ export function CheckoutPage() {
         </div>
       )}
 
-      {currentStep === 0 && !authLoading && isGuest ? (
-        renderAccountGate()
-      ) : currentStep === 0 && authLoading ? (
+      {authLoading ? (
         <div className="flex justify-center py-24"><Spinner size="lg" /></div>
       ) : (
         <>
@@ -442,6 +424,54 @@ export function CheckoutPage() {
                         </div>
                       ))}
                     </div>
+                    {couponCode && discount > 0 && (
+                      <div className="flex items-center justify-between mb-4 p-3 bg-success/10 rounded-xl border border-success/20">
+                        <span className="flex items-center gap-2 text-sm font-cairo text-success font-semibold">
+                          <Tag className="w-4 h-4" />
+                          {t('orders.couponCode', { code: couponCode })}
+                        </span>
+                        <span className="text-sm font-bold font-cairo text-success">-{formatPrice(discount)}</span>
+                      </div>
+                    )}
+                    {isGuest && (
+                      <div className="bg-secondary/5 rounded-2xl border border-secondary/10 p-4 sm:p-5 space-y-3 sm:space-y-4 mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center shrink-0">
+                            <KeyRound className="w-5 h-5 text-secondary" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold font-cairo text-gray-900">{t('checkout.choosePasswordTitle')}</h3>
+                            <p className="text-xs text-gray-500 font-cairo">{t('checkout.choosePasswordHint')}</p>
+                          </div>
+                        </div>
+                        <Input
+                          type="password"
+                          dir="ltr"
+                          icon={Lock}
+                          label={t('auth.passwordLabel')}
+                          placeholder="••••••••"
+                          value={guestPassword}
+                          error={guestPasswordError || undefined}
+                          onChange={(e) => {
+                            setGuestPassword(e.target.value);
+                            if (guestPasswordError) setGuestPasswordError(null);
+                          }}
+                        />
+                        <Input
+                          type="password"
+                          dir="ltr"
+                          icon={Lock}
+                          label={t('auth.confirmPasswordLabel')}
+                          placeholder="••••••••"
+                          value={guestConfirmPassword}
+                          onChange={(e) => {
+                            setGuestConfirmPassword(e.target.value);
+                            if (guestPasswordError) setGuestPasswordError(null);
+                          }}
+                        />
+                        <p className="text-xs text-gray-400 font-cairo">{t('checkout.choosePasswordNote')}</p>
+                      </div>
+                    )}
                     <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('checkout.notesPlaceholder')} className="mb-4" rows={2} />
                     <div className="flex items-center justify-between pt-2 gap-2 sm:gap-0">
                       <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(2)}>{t('common.previous')}</Button>

@@ -1,13 +1,14 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingCart, Tag, Trash2, ArrowLeft, LogIn, User } from 'lucide-react';
+import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase';
 import { formatPrice, cn } from '@/utils';
 import { PAGES, FREE_SHIPPING_THRESHOLD } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
-import { EmptyState, Button, Input, Divider, Modal } from '@/components/ui';
+import { AccountGateModal } from '@/components/features/AccountGateModal';
+import { EmptyState, Button, Input, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 import type { Coupon } from '@/types';
 
@@ -180,45 +181,18 @@ export function CartPage() {
         </div>
       </div>
 
-      <Modal
+      <AccountGateModal
         isOpen={showAccountGate}
         onClose={() => setShowAccountGate(false)}
-        title={t('checkout.accountGateTitle')}
-        size="sm"
-      >
-        <p className="text-sm text-gray-500 font-cairo mb-5 text-center">
-          {t('checkout.accountGateDesc')}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Button
-            variant="secondary"
-            size="lg"
-            rounded="xl"
-            fullWidth
-            onClick={() => {
-              setShowAccountGate(false);
-              navigate(PAGES.LOGIN, { state: { from: PAGES.CHECKOUT } });
-            }}
-          >
-            <LogIn className="w-4 h-4" />
-            {t('checkout.yesHaveAccount')}
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            rounded="xl"
-            fullWidth
-            onClick={() => {
-              setShowAccountGate(false);
-              navigate(`${PAGES.CHECKOUT}?guest=1`);
-            }}
-          >
-            <User className="w-4 h-4" />
-            {t('checkout.noAccountContinue')}
-          </Button>
-        </div>
-        <p className="text-xs text-gray-400 font-cairo text-center mt-4">{t('checkout.accountGateNote')}</p>
-      </Modal>
+        onLogin={() => {
+          setShowAccountGate(false);
+          navigate(PAGES.LOGIN, { state: { from: PAGES.CHECKOUT } });
+        }}
+        onContinueGuest={() => {
+          setShowAccountGate(false);
+          navigate(`${PAGES.CHECKOUT}?guest=1`);
+        }}
+      />
     </div>
   );
 }

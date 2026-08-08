@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle, Package, ShoppingBag, KeyRound, Mail, Eye, EyeOff, Copy, ShieldCheck, AlertCircle } from 'lucide-react';
+import { CheckCircle, Package, ShoppingBag, KeyRound, Mail, Copy, ShieldCheck, AlertCircle } from 'lucide-react';
 import { useOrder } from '@/api';
 import { PAGES } from '@/constants';
 import { Button } from '@/components/ui';
-import { readGuestCredentials, clearGuestCredentials, type GuestAccountCredentials } from '@/lib/guestAccount';
+import { readGuestCredentials, type GuestAccountCredentials } from '@/lib/guestAccount';
 import toast from 'react-hot-toast';
 
 export function OrderSuccessPage() {
@@ -15,7 +15,6 @@ export function OrderSuccessPage() {
   const navigate = useNavigate();
   const { data: order } = useOrder(orderId);
   const [guestCredentials] = useState<GuestAccountCredentials | null>(() => readGuestCredentials());
-  const [revealed, setRevealed] = useState(false);
 
   const copyText = async (text: string, successKey: string) => {
     try {
@@ -24,11 +23,6 @@ export function OrderSuccessPage() {
     } catch {
       // clipboard unavailable — ignore
     }
-  };
-
-  const handleReveal = () => {
-    setRevealed(true);
-    clearGuestCredentials();
   };
 
   return (
@@ -110,29 +104,9 @@ export function OrderSuccessPage() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 p-3">
-              <KeyRound className="w-4 h-4 text-gray-400 shrink-0" />
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-xs font-cairo text-gray-400 mb-0.5">{t('orders.guestTempPassword')}</p>
-                <p dir="ltr" className="text-sm font-mono font-bold text-gray-900 truncate">
-                  {revealed ? guestCredentials.password : '••••••••••••'}
-                </p>
-              </div>
-              {!revealed ? (
-                <Button variant="outline" size="sm" rounded="md" onClick={handleReveal}>
-                  <Eye className="w-4 h-4" />
-                  {t('orders.guestRevealPassword')}
-                </Button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => copyText(guestCredentials.password, 'orders.guestCopiedPassword')}
-                  className="p-1.5 text-gray-400 hover:text-secondary transition-colors"
-                  aria-label={t('orders.guestCopyPassword')}
-                >
-                  <Copy className="w-4 h-4" />
-                </button>
-              )}
+            <div className="flex items-start gap-2 bg-white rounded-xl border border-gray-200 p-3">
+              <KeyRound className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+              <p className="text-xs font-cairo text-gray-600 leading-relaxed">{t('orders.guestChosenPassword')}</p>
             </div>
 
             {!guestCredentials.activated && (
@@ -141,8 +115,6 @@ export function OrderSuccessPage() {
                 {t('orders.guestActivation')}
               </div>
             )}
-
-            <p className="text-xs text-gray-400 font-cairo leading-relaxed">{t('orders.guestPasswordNotice')}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-4">
