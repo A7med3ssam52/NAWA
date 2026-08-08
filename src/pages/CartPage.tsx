@@ -44,6 +44,8 @@ export function CartPage() {
         toast.error(t('cart.couponExpired'));
       } else if (!error && data?.message === 'coupon disabled') {
         toast.error(t('cart.couponDisabled'));
+      } else if (!error && data?.message === 'usage limit reached') {
+        toast.error(t('cart.couponLimitReached'));
       } else {
         toast.error(t('cart.couponInvalid'));
       }

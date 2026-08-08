@@ -88,6 +88,8 @@ export function mapCoupon(data: any): Coupon {
     expiresAt: data.expires_at || new Date(Date.now() + 365 * 86400000).toISOString(),
     usageLimit: data.usage_limit ?? 0,
     usedCount: data.used_count || 0,
+    isActive: data.is_active ?? true,
+    createdAt: data.created_at || undefined,
   };
 }
 

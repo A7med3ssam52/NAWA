@@ -155,6 +155,8 @@ export interface Coupon {
   expiresAt: string;
   usageLimit: number;
   usedCount: number;
+  isActive?: boolean;
+  createdAt?: string;
 }
 
 export interface Testimonial {

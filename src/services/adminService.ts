@@ -225,14 +225,14 @@ export const adminService = {
 
   async createCoupon(data: Partial<Coupon>): Promise<Coupon> {
     const coupon: Coupon = {
-      id: genId('coupon'), code: (data.code || '').trim().toUpperCase(), discount: data.discount || 0,
-      type: data.type || 'percentage', minOrder: data.minOrder || 0, maxDiscount: data.maxDiscount || 0,
+      id: crypto.randomUUID(), code: (data.code || '').trim().toUpperCase(), discount: data.discount || 0,
+      type: data.type || 'percentage', minOrder: data.minOrder || 0, maxDiscount: data.maxDiscount && data.maxDiscount > 0 ? data.maxDiscount : 0,
       expiresAt: data.expiresAt || new Date(Date.now() + 365 * 86400000).toISOString(),
       usageLimit: data.usageLimit || 100, usedCount: 0,
     };
     const { error } = await supabase.from('coupons').insert({
       id: coupon.id, code: coupon.code, discount: coupon.discount, type: coupon.type,
-      min_order: coupon.minOrder, max_discount: coupon.maxDiscount,
+      min_order: coupon.minOrder, max_discount: coupon.maxDiscount > 0 ? coupon.maxDiscount : null,
       expires_at: coupon.expiresAt, usage_limit: coupon.usageLimit, used_count: 0,
       is_active: true,
     });
@@ -246,12 +246,19 @@ export const adminService = {
     if (data.discount !== undefined) dbRow.discount = data.discount;
     if (data.type !== undefined) dbRow.type = data.type;
     if (data.minOrder !== undefined) dbRow.min_order = data.minOrder;
-    if (data.maxDiscount !== undefined) dbRow.max_discount = data.maxDiscount;
+    if (data.maxDiscount !== undefined) dbRow.max_discount = data.maxDiscount && data.maxDiscount > 0 ? data.maxDiscount : null;
+    if (data.isActive !== undefined) dbRow.is_active = data.isActive;
     if (data.expiresAt !== undefined) dbRow.expires_at = data.expiresAt;
     if (data.usageLimit !== undefined) dbRow.usage_limit = data.usageLimit;
     const { data: updated, error } = await supabase.from('coupons').update(dbRow).eq('id', id).select().single();
     if (!error && updated) return mapCoupon(updated as any);
     return null;
+  },
+
+  async toggleCoupon(id: string): Promise<Coupon | null> {
+    const { data: current } = await supabase.from('coupons').select('is_active').eq('id', id).single();
+    if (!current) return null;
+    return this.updateCoupon(id, { isActive: !current.is_active });
   },
 
   async deleteCoupon(id: string): Promise<boolean> {

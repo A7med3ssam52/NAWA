@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
-  Plus, Search, Edit3, Trash2, Percent, Tag, X,
+  Plus, Search, Edit3, Trash2, Percent, Tag, X, Power,
 } from 'lucide-react';
 import { cn, formatDate } from '@/utils';
 import { adminService } from '@/services';
@@ -135,6 +135,7 @@ export function AdminCouponsPage() {
               <tbody>
                 {filtered.map((coupon) => {
                   const expired = isExpired(coupon.expiresAt);
+                  const disabled = coupon.isActive === false;
                   return (
                     <tr key={coupon.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3">
@@ -168,12 +169,18 @@ export function AdminCouponsPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <Badge variant={expired ? 'danger' : 'success'} size="sm">
-                          {expired ? t('admin.expired') : t('admin.active')}
+                        <Badge variant={expired ? 'danger' : disabled ? 'secondary' : 'success'} size="sm">
+                          {expired ? t('admin.expired') : disabled ? t('admin.disabled') : t('admin.active')}
                         </Badge>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
+                          <button onClick={() => adminService.toggleCoupon(coupon.id).then((updated) => {
+                            if (updated) {
+                              toast.success(updated.isActive ? t('admin.couponEnabledMsg') : t('admin.couponDisabledMsg'));
+                              fetchData();
+                            }
+                          })} title={disabled ? t('admin.activateCoupon') : t('admin.deactivateCoupon')} className={cn('p-1.5 rounded-lg transition-colors', disabled ? 'text-success hover:bg-success/10' : 'text-gray-400 hover:text-accent hover:bg-accent/10')}><Power className="w-3.5 h-3.5" /></button>
                           <button onClick={() => openEdit(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
                           <button onClick={() => setDeleteModal(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                         </div>

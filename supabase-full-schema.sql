@@ -401,6 +401,9 @@ BEGIN
             p_items, p_subtotal, p_shipping, p_discount, p_total,
             p_coupon_code, p_payment_method, p_shipping_address, p_notes)
     RETURNING * INTO v_order;
+    IF p_coupon_code IS NOT NULL AND p_coupon_code <> '' THEN
+        PERFORM increment_coupon_usage(p_coupon_code);
+    END IF;
     RETURN v_order;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
