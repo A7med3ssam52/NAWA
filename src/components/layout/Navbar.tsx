@@ -208,7 +208,7 @@ export const Navbar = memo(function Navbar() {
                 className="shrink-0 h-full flex items-center"
                 aria-label={t('nav.homePage')}
               >
-                <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-full w-auto object-contain" />
+                <img src="/images/zahieg.png" alt={SITE_NAME()} className="h-full w-auto object-contain" />
               </Link>
             </div>
 
@@ -292,7 +292,7 @@ export const Navbar = memo(function Navbar() {
 
                   <div
                     className={cn(
-                      'absolute top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-soft-xl transition-all duration-200',
+                      'absolute top-full z-50 mt-2 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-soft-xl transition-all duration-200',
                       categoriesOpen
                         ? 'visible pointer-events-auto translate-y-0 opacity-100'
                         : 'invisible pointer-events-none translate-y-1 opacity-0'
@@ -469,7 +469,7 @@ export const Navbar = memo(function Navbar() {
                       />
                     </button>
                     {showUserMenu && (
-                      <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden animate-fade-in">
+                      <div className="absolute top-full left-0 mt-2 w-56 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden animate-fade-in">
                         <div className="p-2">
                           <div className="px-3 py-2 border-b border-gray-100 mb-1">
                             <p className="text-sm font-bold font-cairo text-gray-900">{user.name}</p>

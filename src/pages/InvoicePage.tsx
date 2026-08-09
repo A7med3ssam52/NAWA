@@ -61,24 +61,26 @@ export function InvoicePage() {
           </div>
         </div>
 
-        <table className="w-full text-sm mb-4">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-right pb-2 font-cairo text-gray-500 font-medium">{t('orders.item')}</th>
-              <th className="text-center pb-2 font-cairo text-gray-500 font-medium">{t('cart.quantityLabel')}</th>
-              <th className="text-left pb-2 font-cairo text-gray-500 font-medium">{t('compare.price')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map((item) => (
-              <tr key={item.productId} className="border-b border-gray-50">
-                <td className="py-2 font-cairo text-gray-900">{item.productName}</td>
-                <td className="py-2 text-center font-cairo text-gray-900">{item.quantity}</td>
-                <td className="py-2 text-left font-cairo text-gray-900">{formatPrice(item.price * item.quantity)}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm mb-4">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="text-right pb-2 font-cairo text-gray-500 font-medium">{t('orders.item')}</th>
+                <th className="text-center pb-2 font-cairo text-gray-500 font-medium">{t('cart.quantityLabel')}</th>
+                <th className="text-left pb-2 font-cairo text-gray-500 font-medium">{t('compare.price')}</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {order.items.map((item) => (
+                <tr key={item.productId} className="border-b border-gray-50">
+                  <td className="py-2 font-cairo text-gray-900">{item.productName}</td>
+                  <td className="py-2 text-center font-cairo text-gray-900">{item.quantity}</td>
+                  <td className="py-2 text-left font-cairo text-gray-900">{formatPrice(item.price * item.quantity)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="space-y-1 text-sm border-t border-gray-100 pt-3">
           <div className="flex justify-between"><span className="text-gray-500 font-cairo">{t('cart.subtotal')}</span><span className="font-semibold font-cairo text-gray-900">{formatPrice(order.subtotal)}</span></div>

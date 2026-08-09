@@ -4,14 +4,21 @@ import { mapProduct } from '@/lib/mappers';
 
 export const productService = {
   async getAll(filters: Partial<FilterState>) {
-    let query = supabase.from('products').select('*', { count: 'exact' });
     const { search, category, brand, priceMin, priceMax, sort, page = 1, pageSize = 12 } = filters;
+
+    let query;
+    if (category?.length) {
+      query = supabase.from('products')
+        .select('*, product_categories!inner(category_id)', { count: 'exact' })
+        .in('product_categories.category_id', category);
+    } else {
+      query = supabase.from('products').select('*', { count: 'exact' });
+    }
 
     if (search) {
       const q = search.toLowerCase();
       query = query.or(`name.ilike.%${q}%,description.ilike.%${q}%`);
     }
-    if (category?.length) query = query.in('category_id', category);
     if (brand?.length) query = query.in('brand_id', brand);
     if (priceMin !== undefined && priceMin > 0) query = query.gte('price', priceMin);
     if (priceMax !== undefined && priceMax > 0) query = query.lte('price', priceMax);

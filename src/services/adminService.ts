@@ -11,6 +11,10 @@ function genId(prefix: string) {
   return `${prefix}-${num}`;
 }
 
+function nullableId(v: string | undefined | null): string | null {
+  return typeof v === 'string' && v.trim() !== '' ? v : null;
+}
+
 export type DashboardData = {
   stats: {
     totalProducts: number;
@@ -32,14 +36,19 @@ export type DashboardData = {
 
 export const adminService = {
   // ─── Products ─────────────────────────────────────
-  async getProducts(search?: string, categoryId?: string, brandId?: string, page = 1, pageSize = 10) {
-    let query = supabase.from('products').select('*', { count: 'exact' });
+  async getProducts(search?: string, categoryId?: string, page = 1, pageSize = 10) {
+    let query;
+    if (categoryId) {
+      query = supabase.from('products')
+        .select('*, product_categories!inner(category_id)', { count: 'exact' })
+        .eq('product_categories.category_id', categoryId);
+    } else {
+      query = supabase.from('products').select('*', { count: 'exact' });
+    }
     if (search) {
       const q = search.toLowerCase();
       query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
     }
-    if (categoryId) query = query.eq('category_id', categoryId);
-    if (brandId) query = query.eq('brand_id', brandId);
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
     const rows = !error && data !== null ? (data as unknown as any[]) : [];
@@ -52,14 +61,24 @@ export const adminService = {
     return null;
   },
 
+  async getProductCategoryIds(productId: string): Promise<string[]> {
+    const { data, error } = await supabase.from('product_categories').select('category_id').eq('product_id', productId);
+    if (error || !data) return [];
+    return (data as any[]).map((r) => r.category_id);
+  },
+
   async createProduct(data: Partial<Product>): Promise<Product> {
     const now = new Date().toISOString();
+    const categoryIds = data.categoryIds && data.categoryIds.length > 0
+      ? data.categoryIds
+      : (data.category ? [data.category] : []);
+    const primaryCategory = categoryIds[0] || '';
     const product: Product = {
       id: genId('prod'), name: data.name || '', slug: data.slug || '',
       description: data.description || '', shortDescription: data.shortDescription || '',
       price: data.price || 0, oldPrice: data.oldPrice || null, discount: data.discount || null,
       images: data.images || [],
-      category: data.category || '', brand: data.brand || '',
+      category: primaryCategory, brand: data.brand || '',
       rating: 0, reviewsCount: 0, stock: data.stock || 0, sku: data.sku || '',
       specifications: data.specifications || [], tags: data.tags || [],
       isNew: true, isFeatured: data.isFeatured || false, createdAt: now,
@@ -69,11 +88,12 @@ export const adminService = {
     let oldPrice = product.oldPrice;
     if (oldPrice != null && oldPrice < product.price) oldPrice = null;
     const discount = product.discount != null && product.discount >= 0 ? Math.floor(product.discount) : null;
+    if (discount != null && discount > 0 && oldPrice == null) oldPrice = product.price;
     const dbRow = {
       id: product.id, name: product.name, slug: product.slug,
       description: product.description, short_description: product.shortDescription,
       price: product.price, old_price: oldPrice, discount: discount,
-      images: product.images, category_id: product.category, brand_id: product.brand,
+      images: product.images, category_id: nullableId(primaryCategory), brand_id: nullableId(product.brand),
       rating: 0, reviews_count: 0, stock: product.stock, sku: product.sku,
       specifications: product.specifications, tags: product.tags,
       colors: product.colors, sizes: product.sizes,
@@ -82,10 +102,16 @@ export const adminService = {
     };
     const { error } = await supabase.from('products').insert(dbRow);
     if (error) throw error;
+    if (categoryIds.length > 0) {
+      const { error: linkError } = await supabase.from('product_categories').insert(
+        categoryIds.map((cid) => ({ product_id: product.id, category_id: cid }))
+      );
+      if (linkError) throw linkError;
+    }
     return product;
   },
 
-  async updateProduct(id: string, data: Partial<Product>): Promise<Product | null> {
+  async updateProduct(id: string, data: Partial<Product>): Promise<Product> {
     const dbRow: Record<string, any> = {};
     if (data.name !== undefined) dbRow.name = data.name;
     if (data.slug !== undefined) dbRow.slug = data.slug;
@@ -93,15 +119,29 @@ export const adminService = {
     if (data.shortDescription !== undefined) dbRow.short_description = data.shortDescription;
     if (data.price !== undefined) dbRow.price = data.price;
     if (data.oldPrice !== undefined) dbRow.old_price = data.oldPrice;
+    if (data.discount !== undefined) dbRow.discount = data.discount != null && data.discount >= 0 ? Math.floor(data.discount) : null;
     if (data.price !== undefined || data.oldPrice !== undefined) {
       const price = data.price ?? (await supabase.from('products').select('price').eq('id', id).single()).data?.price ?? 0;
       const oldPrice = data.oldPrice ?? (await supabase.from('products').select('old_price').eq('id', id).single()).data?.old_price;
       if (oldPrice != null && oldPrice < price) dbRow.old_price = null;
+      if ((dbRow.discount ?? 0) > 0 && dbRow.old_price == null) dbRow.old_price = price;
     }
-    if (data.discount !== undefined) dbRow.discount = data.discount != null && data.discount >= 0 ? Math.floor(data.discount) : null;
     if (data.images !== undefined) dbRow.images = data.images;
-    if (data.category !== undefined) dbRow.category_id = data.category;
-    if (data.brand !== undefined) dbRow.brand_id = data.brand;
+    if (data.category !== undefined || data.categoryIds !== undefined) {
+      const categoryIds = data.categoryIds && data.categoryIds.length > 0
+        ? data.categoryIds
+        : (data.category ? [data.category] : []);
+      dbRow.category_id = categoryIds[0] ? categoryIds[0] : null;
+      if (categoryIds.length > 0) {
+        const { error: delErr } = await supabase.from('product_categories').delete().eq('product_id', id);
+        if (delErr) throw delErr;
+        const { error: insErr } = await supabase.from('product_categories').insert(
+          categoryIds.map((cid) => ({ product_id: id, category_id: cid }))
+        );
+        if (insErr) throw insErr;
+      }
+    }
+    if (data.brand !== undefined) dbRow.brand_id = nullableId(data.brand);
     if (data.stock !== undefined) dbRow.stock = data.stock;
     if (data.sku !== undefined) dbRow.sku = data.sku;
     if (data.specifications !== undefined) dbRow.specifications = data.specifications;
@@ -112,8 +152,8 @@ export const adminService = {
     if (data.stockBySize !== undefined) dbRow.stock_by_size = data.stockBySize;
     if (data.isFeatured !== undefined) dbRow.is_featured = data.isFeatured;
     const { data: updated, error } = await supabase.from('products').update(dbRow).eq('id', id).select().single();
-    if (!error && updated) return mapProduct(updated as any);
-    return null;
+    if (error) throw error;
+    return mapProduct(updated as any);
   },
 
   async deleteProduct(id: string): Promise<boolean> {
@@ -228,7 +268,7 @@ export const adminService = {
       id: crypto.randomUUID(), code: (data.code || '').trim().toUpperCase(), discount: data.discount || 0,
       type: data.type || 'percentage', minOrder: data.minOrder || 0, maxDiscount: data.maxDiscount && data.maxDiscount > 0 ? data.maxDiscount : 0,
       expiresAt: data.expiresAt || new Date(Date.now() + 365 * 86400000).toISOString(),
-      usageLimit: data.usageLimit || 100, usedCount: 0,
+      usageLimit: data.usageLimit ?? 100, usedCount: 0,
     };
     const { error } = await supabase.from('coupons').insert({
       id: coupon.id, code: coupon.code, discount: coupon.discount, type: coupon.type,
@@ -240,7 +280,7 @@ export const adminService = {
     return coupon;
   },
 
-  async updateCoupon(id: string, data: Partial<Coupon>): Promise<Coupon | null> {
+  async updateCoupon(id: string, data: Partial<Coupon>): Promise<Coupon> {
     const dbRow: Record<string, any> = {};
     if (data.code !== undefined) dbRow.code = (data.code as string).trim().toUpperCase();
     if (data.discount !== undefined) dbRow.discount = data.discount;
@@ -251,13 +291,14 @@ export const adminService = {
     if (data.expiresAt !== undefined) dbRow.expires_at = data.expiresAt;
     if (data.usageLimit !== undefined) dbRow.usage_limit = data.usageLimit;
     const { data: updated, error } = await supabase.from('coupons').update(dbRow).eq('id', id).select().single();
-    if (!error && updated) return mapCoupon(updated as any);
-    return null;
+    if (error) throw error;
+    return mapCoupon(updated as any);
   },
 
-  async toggleCoupon(id: string): Promise<Coupon | null> {
-    const { data: current } = await supabase.from('coupons').select('is_active').eq('id', id).single();
-    if (!current) return null;
+  async toggleCoupon(id: string): Promise<Coupon> {
+    const { data: current, error } = await supabase.from('coupons').select('is_active').eq('id', id).single();
+    if (error) throw error;
+    if (!current) throw new Error('Coupon not found');
     return this.updateCoupon(id, { isActive: !current.is_active });
   },
 

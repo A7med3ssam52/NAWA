@@ -55,7 +55,7 @@ export function CartPreview() {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute top-full left-0 mt-2 w-80 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
+          className="absolute top-full left-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
         >
             <div className="p-3">
               <div className="flex items-center justify-between mb-2">
@@ -130,7 +130,7 @@ export function CartPreview() {
                           e.preventDefault();
                           removeItem(item.id);
                         }}
-                        className="p-1 rounded-lg text-gray-300 hover:text-danger hover:bg-danger/5 transition-colors opacity-0 group-hover:opacity-100"
+                        className="p-1 rounded-lg text-gray-300 hover:text-danger hover:bg-danger/5 transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
                         aria-label={t('cart.deleteProduct', { name: item.product.name })}
                       >
                         <Trash2 className="w-3.5 h-3.5" />

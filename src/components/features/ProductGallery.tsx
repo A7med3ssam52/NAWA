@@ -43,7 +43,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
     <div className="space-y-4">
       {/* Main Image */}
       <div
-        className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 cursor-crosshair"
+        className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 cursor-crosshair"
         onMouseEnter={() => !isMobile && setZoomed(true)}
         onMouseLeave={() => setZoomed(false)}
         onMouseMove={handleMouseMove}
@@ -87,7 +87,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   prev === 0 ? displayImages.length - 1 : prev - 1
                 )
               }
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
               aria-label="الصورة السابقة"
             >
               <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -98,7 +98,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                   prev === displayImages.length - 1 ? 0 : prev + 1
                 )
               }
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-0 group-hover:opacity-100"
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-xl bg-white/80 backdrop-blur-sm shadow-soft hover:bg-white transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100"
               aria-label="الصورة التالية"
             >
               <ChevronLeft className="w-5 h-5 text-gray-700" />

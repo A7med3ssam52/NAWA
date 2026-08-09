@@ -95,7 +95,7 @@ export function ContactUsPage() {
               <div className="hero-logo">
                 <img
                   className="hero-logo-img"
-                  src="/images/contacts.png"
+                  src="/images/zahieg.png"
                   alt={t('contactPage.heroTitle')}
                   width="120"
                   height="120"

@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Input, Select, Modal, Badge, EmptyState, Spinner, Tabs } from '@/components/ui';
+import { Button, Input, Select, Modal, Badge, EmptyState, Spinner, Tabs, Card } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { SpinPrize, SpinPrizeType } from '@/types';
 
@@ -149,7 +149,8 @@ export function AdminSpinPrizesPage() {
               action={!search ? { label: t('admin.addPrize'), onClick: openAdd } : undefined}
             />
           ) : (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
+            <>
+            <div className="hidden lg:block bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -242,6 +243,77 @@ export function AdminSpinPrizesPage() {
                 </table>
               </div>
             </div>
+
+            <div className="lg:hidden space-y-3">
+              {filtered.map((prize, i) => {
+                const chance = totalWeight > 0 ? ((prize.weight / totalWeight) * 100).toFixed(1) : '0';
+                return (
+                  <motion.div key={prize.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+                    <Card padding="md">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span
+                            className="w-4 h-4 rounded-lg shrink-0"
+                            style={{ backgroundColor: prize.color }}
+                          />
+                          <span className="text-sm font-bold font-cairo text-gray-900 truncate">{prize.label}</span>
+                        </div>
+                        <button onClick={() => toggleActive(prize)} className="shrink-0">
+                          <Badge variant={prize.isActive ? 'success' : 'secondary'} size="sm">
+                            {prize.isActive ? t('admin.active') : t('admin.inactive')}
+                          </Badge>
+                        </button>
+                      </div>
+                      <div className="flex items-center justify-between text-xs font-cairo text-gray-500">
+                        <span>
+                          {prize.type === 'percentage' ? t('spin.prizeTypePercentage')
+                            : prize.type === 'fixed' ? t('spin.prizeTypeFixed')
+                            : prize.type === 'freeShipping' ? t('spin.prizeTypeFreeShipping')
+                            : t('spin.prizeTypeTryAgain')}
+                          <span className="text-gray-400"> · {t('admin.prizeWeight')}: {prize.weight}</span>
+                        </span>
+                        <span className="text-sm font-cairo text-gray-600">
+                          {prize.type === 'percentage' ? `${prize.value}%`
+                            : prize.type === 'fixed' ? `${prize.value?.toLocaleString('ar-EG')} ${t('common.currency')}`
+                            : '—'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <div className="w-20 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all"
+                                style={{
+                                  width: `${chance}%`,
+                                  backgroundColor: prize.color,
+                                }}
+                              />
+                            </div>
+                            <span className="text-[10px] font-bold font-cairo text-gray-400">{chance}%</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => openEdit(prize)}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteModal(prize)}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+            </>
           )}
         </>
       )}

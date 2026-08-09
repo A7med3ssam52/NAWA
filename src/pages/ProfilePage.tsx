@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,12 +8,14 @@ import {
   Map, Home, Briefcase, MoreHorizontal, AlertCircle, Eye,
   EyeOff, Star as StarIcon, MessageSquare, RefreshCw, Filter,
   Check, XCircle, Search, Download, Calendar, FileText,
+  Loader2,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth, useWishlist } from '@/contexts';
 import { useMyOrders, useMyNotifications, useMarkNotificationRead, useMarkAllRead, useDeleteNotification } from '@/api';
 import { supabase } from '@/lib/supabase';
+import { uploadImage } from '@/lib/upload';
 import { mapReview } from '@/lib/mappers';
 import {
   Tabs, Button, Input, Modal, Badge, EmptyState, Divider, Spinner, Select, Textarea,
@@ -366,6 +368,24 @@ export function ProfilePage() {
 
   const [orderNotif, setOrderNotif] = useState(true);
   const [promoNotif, setPromoNotif] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return toast.error(t('profile.avatarInvalid'));
+    setUploadingAvatar(true);
+    try {
+      const url = await uploadImage('avatars', file, user?.id);
+      await updateProfile({ avatar: url });
+      toast.success(t('profile.avatarUpdated'));
+    } catch {
+      toast.error(t('profile.avatarUploadError'));
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   if (!user) {
     return (
@@ -485,11 +505,20 @@ export function ProfilePage() {
               )}
             </div>
             <button
-              className="absolute -bottom-1 -left-1 w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-secondary hover:border-secondary shadow-soft transition-all duration-200 opacity-0 group-hover:opacity-100"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="absolute -bottom-1 -left-1 w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-secondary hover:border-secondary shadow-soft transition-all duration-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 disabled:opacity-50"
               aria-label={t('profile.changePhoto')}
             >
-              <Camera className="w-4 h-4" />
+              {uploadingAvatar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
             </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
           </div>
           <div className="flex-1 text-center sm:text-right">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">

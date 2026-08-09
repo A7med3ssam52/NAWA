@@ -79,7 +79,7 @@ export function NotificationPopover() {
 
       {open && (
         <div
-          className="absolute left-0 top-full mt-2 w-[360px] sm:w-96 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
+          className="absolute left-0 top-full mt-2 w-[360px] max-w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-2xl shadow-soft-xl border border-gray-100 overflow-hidden z-50 animate-fade-in-up"
           dir="rtl"
         >
             {/* Header */}

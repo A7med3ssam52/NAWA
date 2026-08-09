@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { adminService } from '@/services';
-import { Input, Modal, Badge, EmptyState, Spinner } from '@/components/ui';
+import { Input, Modal, Badge, EmptyState, Spinner, Card } from '@/components/ui';
 import type { User } from '@/types';
 
 interface UserWithOrders extends User {
@@ -51,7 +51,8 @@ export function AdminUsersPage() {
       ) : users.length === 0 ? (
         <EmptyState icon={<Mail className="w-16 h-16" />} title={t('admin.noUsers')} description={t('admin.noSearchResults')} />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
+        <>
+        <div className="hidden lg:block bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -97,6 +98,42 @@ export function AdminUsersPage() {
             </table>
           </div>
         </div>
+
+        <div className="lg:hidden space-y-3">
+          {users.map((user, i) => (
+            <motion.div key={user.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+              <Card padding="md">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden bg-secondary flex items-center justify-center text-white text-sm font-bold font-cairo shrink-0">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" loading="lazy" />
+                    ) : (
+                      (user.name && user.name.charAt(0)) || '—'
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold font-cairo text-gray-900 truncate">{user.name}</p>
+                    <p className="text-xs font-cairo text-gray-500 truncate">{user.email}</p>
+                  </div>
+                  <button onClick={() => setViewModal(user)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors shrink-0">
+                    <Eye className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 text-xs font-cairo">
+                  <span className="text-gray-500 flex items-center gap-1.5 min-w-0">
+                    <Phone className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{user.phone || t('common.notAvailable')}</span>
+                  </span>
+                  <span className="text-gray-500 flex items-center gap-1.5 shrink-0">
+                    <ShoppingBag className="w-3.5 h-3.5" />
+                    <Badge variant="info" size="sm">{user.ordersCount}</Badge>
+                  </span>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+        </>
       )}
 
       <Modal isOpen={!!viewModal} onClose={() => setViewModal(null)} title={t('admin.userData')} size="lg">

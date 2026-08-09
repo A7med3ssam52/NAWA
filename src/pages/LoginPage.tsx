@@ -269,7 +269,7 @@ export function LoginPage() {
           </motion.div>
 
           {/* Form Card */}
-          <div className="sm:bg-white/80 sm: sm:backdrop-blur-xl sm:border sm:border-gray-100 sm: sm:rounded-3xl sm:shadow-soft-lg sm:p-6 lg:p-8 lg:border-0 lg:bg-transparent lg: lg:shadow-none lg:backdrop-blur-none lg:p-0">
+          <div className="sm:bg-white/80 sm:backdrop-blur-xl sm:border sm:border-gray-100 sm:rounded-3xl sm:shadow-soft-lg sm:p-6 lg:p-8 lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:p-0">
             <motion.div
               key={isRegister ? 'register' : 'login'}
               variants={containerVariants}
@@ -341,7 +341,7 @@ export function LoginPage() {
                     type="submit"
                     disabled={loading}
                     className={cn(
-                      'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden text-nowrap',
+                      'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden',
                       'bg-secondary text-white',
                       'shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 active:shadow-sm',
                       'hover:-translate-y-0.5 active:translate-y-0',
@@ -426,7 +426,7 @@ export function LoginPage() {
                     type="submit"
                     disabled={loading}
                     className={cn(
-                      'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden text-nowrap',
+                      'relative w-full h-12 rounded-2xl font-bold font-cairo text-[15px] sm:text-base transition-all duration-200 overflow-hidden',
                       'bg-secondary text-white',
                       'shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 active:shadow-sm',
                       'hover:-translate-y-0.5 active:translate-y-0',

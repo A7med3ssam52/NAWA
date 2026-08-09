@@ -96,7 +96,7 @@ export const ProductCard = memo(function ProductCard({
             </Badge>
           )}
 
-          <Badge variant="secondary" size="sm" className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <Badge variant="secondary" size="sm" className="absolute top-3 left-3 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
             {categories?.find((c) => c.id === product.category)?.name}
           </Badge>
 
@@ -106,7 +106,7 @@ export const ProductCard = memo(function ProductCard({
               'absolute bottom-3 left-3 p-2 rounded-xl backdrop-blur-sm transition-all duration-200',
               inWishlist
                 ? 'bg-danger/20 text-danger'
-                : 'bg-white/80 text-gray-400 hover:text-danger hover:bg-danger/10 opacity-0 group-hover:opacity-100'
+                : 'bg-white/80 text-gray-400 hover:text-danger hover:bg-danger/10 opacity-100 md:opacity-0 md:group-hover:opacity-100'
             )}
             aria-label={inWishlist ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}
           >

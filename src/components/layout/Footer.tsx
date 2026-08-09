@@ -89,7 +89,7 @@ export const Footer = memo(function Footer() {
           {/* Logo & Description */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to={PAGES.HOME} className="inline-block mb-3">
-              <img src="/images/zahilogo.png" alt={SITE_NAME()} className="h-16 sm:h-20 w-auto" />
+              <img src="/images/zahieg.png" alt={SITE_NAME()} className="h-16 sm:h-20 w-auto" />
             </Link>
             <p className="text-sm text-gray-500 font-cairo leading-relaxed mb-4">
               {SITE_DESCRIPTION()}

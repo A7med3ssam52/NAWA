@@ -39,31 +39,32 @@ export function CartPage() {
     setCouponLoading(true);
     const { data, error } = await supabase.rpc('get_coupon', { p_code: couponInput.trim().toUpperCase() });
     setCouponLoading(false);
-    if (error || !data?.valid) {
-      if (!error && data?.message === 'coupon expired') {
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row?.valid) {
+      if (!error && row?.message === 'coupon expired') {
         toast.error(t('cart.couponExpired'));
-      } else if (!error && data?.message === 'coupon disabled') {
+      } else if (!error && row?.message === 'coupon disabled') {
         toast.error(t('cart.couponDisabled'));
-      } else if (!error && data?.message === 'usage limit reached') {
+      } else if (!error && row?.message === 'usage limit reached') {
         toast.error(t('cart.couponLimitReached'));
       } else {
         toast.error(t('cart.couponInvalid'));
       }
       return;
     }
-    if (subtotal < Number(data.min_order)) {
-      toast.error(t('cart.couponMinOrder', { amount: formatPrice(Number(data.min_order)) }));
+    if (subtotal < Number(row.min_order)) {
+      toast.error(t('cart.couponMinOrder', { amount: formatPrice(Number(row.min_order)) }));
       return;
     }
-    const discountType = data.discount_type === 'free_shipping' ? 'freeShipping' : data.discount_type || 'percentage';
+    const discountType = row.discount_type === 'free_shipping' ? 'freeShipping' : row.discount_type || 'percentage';
     const coupon: Coupon = {
-      id: data.code,
-      code: data.code,
-      discount: Number(data.discount_value) || 0,
+      id: row.code,
+      code: row.code,
+      discount: Number(row.discount_value) || 0,
       type: discountType,
-      minOrder: Number(data.min_order) || 0,
-      maxDiscount: Number(data.max_discount) || 0,
-      expiresAt: data.expires_at || new Date(Date.now() + 365 * 86400000).toISOString(),
+      minOrder: Number(row.min_order) || 0,
+      maxDiscount: Number(row.max_discount) || 0,
+      expiresAt: row.expires_at || new Date(Date.now() + 365 * 86400000).toISOString(),
       usageLimit: 0,
       usedCount: 0,
     };

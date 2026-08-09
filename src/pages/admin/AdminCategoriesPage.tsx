@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Input, Modal, EmptyState, Spinner, ImageUpload } from '@/components/ui';
+import { Button, Input, Modal, EmptyState, Spinner, ImageUpload, Card } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { Category } from '@/types';
 
@@ -124,7 +124,7 @@ export function AdminCategoriesPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500 font-cairo">{cat.productsCount} {t('categories.productsCount', { count: '' }).replace('{count}', '')}</span>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                     <button onClick={() => openEdit(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
                     <button onClick={() => setDeleteModal(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
@@ -134,7 +134,8 @@ export function AdminCategoriesPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
+        <>
+        <div className="hidden lg:block bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -165,10 +166,39 @@ export function AdminCategoriesPage() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          <div className="lg:hidden space-y-3">
+            {filtered.map((cat, i) => (
+              <motion.div key={cat.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+                <Card padding="md">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                      <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" loading="lazy" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold font-cairo text-gray-900 truncate">{cat.name}</h3>
+                      <p className="text-xs text-gray-400 font-cairo truncate">{cat.slug}</p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button onClick={() => openEdit(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setDeleteModal(cat)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className="text-xs text-gray-500 font-cairo flex items-center gap-1.5">
+                      <Folder className="w-3.5 h-3.5" />
+                      {cat.productsCount} {t('categories.productsCount', { count: '' }).replace('{count}', '')}
+                    </span>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </>
       )}
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? t('admin.editCategoryForm') : t('admin.addCategoryForm')} size="md">

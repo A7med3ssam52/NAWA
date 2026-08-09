@@ -51,7 +51,7 @@ export function AnnouncementBar({ onDismiss, onVisibilityChange }: AnnouncementB
     <div className="fixed top-0 left-0 right-0 z-50 h-9 flex items-center justify-center bg-secondary text-white text-xs sm:text-sm font-cairo font-medium overflow-hidden">
       <div className="flex items-center gap-1.5 sm:gap-2">
         <Megaphone className="w-3.5 h-3.5 shrink-0" />
-        <span>{config.text}</span>
+        <span className="truncate max-w-[calc(100vw-6rem)]">{config.text}</span>
       </div>
       {config.dismissible && (
         <button

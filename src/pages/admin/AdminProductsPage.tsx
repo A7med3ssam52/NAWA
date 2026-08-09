@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Package, Search, Plus, Edit2, Trash2, Image as ImageIcon,
-  Star, AlertTriangle, X,
+  Star, AlertTriangle, X, RefreshCw,
 } from 'lucide-react';
-import { formatPrice } from '@/utils';
+import { formatPrice, cn } from '@/utils';
 import { adminService } from '@/services';
 import {
   Button, Input, Select, Badge, Modal,
@@ -24,7 +24,7 @@ const emptyForm = {
   stock: 0,
   sku: '',
   category: '',
-  brand: '',
+  categoryIds: [] as string[],
   description: '',
   shortDescription: '',
   images: [] as string[],
@@ -38,6 +38,13 @@ const emptyForm = {
 
 type FormData = typeof emptyForm;
 
+function genSku() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let suffix = '';
+  for (let i = 0; i < 6; i++) suffix += chars[Math.floor(Math.random() * chars.length)];
+  return `ZAH-${suffix}`;
+}
+
 export function AdminProductsPage() {
   const { t, i18n } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
@@ -46,7 +53,6 @@ export function AdminProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [brandFilter, setBrandFilter] = useState('');
   const [loading, setLoading] = useState(true);
 
   const [modalMode, setModalMode] = useState<'add' | 'edit' | null>(null);
@@ -59,27 +65,22 @@ export function AdminProductsPage() {
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [catList, setCatList] = useState<{ value: string; label: string }[]>([]);
-  const [brandList, setBrandList] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
     adminService.getCategories().then((cats) =>
       setCatList(cats.map((c) => ({ value: c.id, label: c.name })))
     );
-    adminService.getBrands().then((brands) =>
-      setBrandList(brands.map((b) => ({ value: b.id, label: b.name })))
-    );
   }, []);
 
   useEffect(() => {
     setPage(1);
-  }, [search, categoryFilter, brandFilter]);
+  }, [search, categoryFilter]);
 
   useEffect(() => {
     setLoading(true);
     adminService.getProducts(
       search || undefined,
       categoryFilter || undefined,
-      brandFilter || undefined,
       page,
       PAGE_SIZE
     ).then((result) => {
@@ -88,7 +89,7 @@ export function AdminProductsPage() {
       setTotalPages(result.totalPages);
       setLoading(false);
     });
-  }, [search, categoryFilter, brandFilter, page]);
+  }, [search, categoryFilter, page]);
 
   function stockBadge(stock: number) {
     if (stock > 10) return { variant: 'success' as const, label: t('admin.inStock') };
@@ -97,7 +98,7 @@ export function AdminProductsPage() {
   }
 
   function openAddModal() {
-    setForm(emptyForm);
+    setForm({ ...emptyForm, sku: genSku() });
     setModalMode('add');
   }
 
@@ -111,7 +112,7 @@ export function AdminProductsPage() {
       stock: product.stock,
       sku: product.sku,
       category: product.category,
-      brand: product.brand,
+      categoryIds: [],
       description: product.description,
       shortDescription: product.shortDescription,
       images: [...product.images],
@@ -124,6 +125,21 @@ export function AdminProductsPage() {
     });
     setEditId(product.id);
     setModalMode('edit');
+    adminService.getProductCategoryIds(product.id).then((ids) => {
+      setForm((prev) => ({
+        ...prev,
+        categoryIds: ids.length > 0 ? ids : (prev.category ? [prev.category] : []),
+      }));
+    });
+  }
+
+  function toggleCategory(id: string) {
+    setForm((prev) => ({
+      ...prev,
+      categoryIds: prev.categoryIds.includes(id)
+        ? prev.categoryIds.filter((c) => c !== id)
+        : [...prev.categoryIds, id],
+    }));
   }
 
   function handleImages(urls: string[]) {
@@ -184,6 +200,27 @@ export function AdminProductsPage() {
     });
   }
 
+  function updatePrice(value: number) {
+    setForm((prev) => {
+      const price = value;
+      const discount = computeDiscount(price, prev.oldPrice);
+      return { ...prev, price, discount };
+    });
+  }
+
+  function updateOldPrice(value: number) {
+    setForm((prev) => {
+      const oldPrice = value;
+      const discount = computeDiscount(prev.price, oldPrice);
+      return { ...prev, oldPrice, discount };
+    });
+  }
+
+  function computeDiscount(price: number, oldPrice: number) {
+    if (!price || !oldPrice || oldPrice <= price) return 0;
+    return Math.round(((oldPrice - price) / oldPrice) * 100);
+  }
+
   async function handleSave() {
     if (!form.name.trim()) {
       toast.error(t('admin.nameRequired'));
@@ -201,6 +238,10 @@ export function AdminProductsPage() {
       toast.error(t('admin.skuRequired'));
       return;
     }
+    if (form.categoryIds.length === 0) {
+      toast.error(t('admin.categoryRequired'));
+      return;
+    }
 
     setSaving(true);
     try {
@@ -212,8 +253,8 @@ export function AdminProductsPage() {
         discount: form.discount ? Number(form.discount) : null,
         stock: Number(form.stock),
         sku: form.sku,
-        category: form.category,
-        brand: form.brand,
+        category: form.categoryIds[0],
+        categoryIds: form.categoryIds,
         description: form.description,
         shortDescription: form.shortDescription,
         images: form.images,
@@ -236,15 +277,17 @@ export function AdminProductsPage() {
         const id = editId;
         if (!id) return;
         const updated = await adminService.updateProduct(id, data);
-        if (updated) {
-          setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
-          toast.success(t('admin.productUpdated'));
-        }
+        setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)));
+        toast.success(t('admin.productUpdated'));
       }
       setModalMode(null);
       setForm(emptyForm);
-    } catch {
-      toast.error(t('admin.saveError'));
+    } catch (err: unknown) {
+      console.error('save product error', err);
+      const code = (err as { code?: string } | null)?.code;
+      if (code === '23505') toast.error(t('admin.slugExists'));
+      else if (code === '23503') toast.error(t('admin.invalidCategory'));
+      else toast.error(t('admin.saveError'));
     } finally {
       setSaving(false);
     }
@@ -329,14 +372,6 @@ export function AdminProductsPage() {
               placeholder={t('admin.allCategories')}
             />
           </div>
-          <div className="w-full sm:w-48">
-            <Select
-              options={brandList}
-              value={brandFilter}
-              onChange={(e) => setBrandFilter(e.target.value)}
-              placeholder={t('admin.allBrands')}
-            />
-          </div>
         </div>
 
         {loading ? (
@@ -349,8 +384,8 @@ export function AdminProductsPage() {
           <EmptyState
             icon={<Package className="w-12 h-12" />}
             title={t('admin.noProducts')}
-            description={search || categoryFilter || brandFilter ? t('admin.noSearchResults') : t('admin.noProductsDesc')}
-            action={search || categoryFilter || brandFilter ? undefined : { label: t('admin.addProduct'), onClick: openAddModal }}
+            description={search || categoryFilter ? t('admin.noSearchResults') : t('admin.noProductsDesc')}
+            action={search || categoryFilter ? undefined : { label: t('admin.addProduct'), onClick: openAddModal }}
           />
         ) : (
           <>
@@ -542,19 +577,62 @@ export function AdminProductsPage() {
             <Input label={t('admin.productSlug')} value={form.slug} onChange={(e) => updateForm('slug', e.target.value)} placeholder="product-slug" dir="ltr" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Input label={t('admin.price')} type="number" value={form.price} onChange={(e) => updateForm('price', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label={t('admin.oldPrice')} type="number" value={form.oldPrice} onChange={(e) => updateForm('oldPrice', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label={t('admin.discount')} type="number" value={form.discount} onChange={(e) => updateForm('discount', Number(e.target.value))} placeholder="0" min={0} max={100} />
+            <Input label={t('admin.price')} type="number" value={form.price} onChange={(e) => updatePrice(Number(e.target.value))} placeholder="0" min={0} />
+            <Input label={t('admin.oldPrice')} type="number" value={form.oldPrice} onChange={(e) => updateOldPrice(Number(e.target.value))} placeholder="0" min={0} />
+            <Input label={t('admin.discount')} type="number" value={form.discount} onChange={(e) => updateForm('discount', Number(e.target.value))} placeholder="0" min={0} max={100} disabled />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label={t('admin.stock')} type="number" value={form.stock} onChange={(e) => updateForm('stock', Number(e.target.value))} placeholder="0" min={0} />
-            <Input label={t('admin.sku')} value={form.sku} onChange={(e) => updateForm('sku', e.target.value)} placeholder="SKU-001" />
-            <Select
-              label={t('admin.category')}
-              options={catList}
-              value={form.category}
-              onChange={(e) => updateForm('category', e.target.value)}
-            />
+            <div>
+              <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">{t('admin.sku')}</label>
+              <div className="flex gap-2">
+                <Input value={form.sku} onChange={(e) => updateForm('sku', e.target.value)} placeholder="SKU-001" />
+                <button
+                  type="button"
+                  onClick={() => updateForm('sku', genSku())}
+                  title={t('admin.regenerateSku')}
+                  aria-label={t('admin.regenerateSku')}
+                  className="shrink-0 px-3 rounded-xl border border-gray-200 text-gray-500 hover:text-secondary hover:border-secondary/40 hover:bg-secondary/5 transition-colors"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className="block mb-1.5 text-sm font-medium text-gray-700 font-cairo">{t('admin.category')}</label>
+            <p className="text-xs text-gray-400 font-cairo mb-2">{t('admin.selectMultipleCategories')}</p>
+            <div className="flex flex-wrap gap-2">
+              {catList.map((cat) => {
+                const selected = form.categoryIds.includes(cat.value);
+                return (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => toggleCategory(cat.value)}
+                    className={cn(
+                      'px-3 py-1.5 rounded-xl text-sm font-bold font-cairo border-2 transition-all',
+                      selected
+                        ? 'bg-secondary text-white border-secondary shadow-md shadow-secondary/25 scale-105'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-secondary/50 hover:text-secondary',
+                    )}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+            {form.categoryIds.length === 0 && (
+              <p className="flex items-center gap-1.5 mt-2 text-xs text-danger font-cairo">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                {t('admin.categoryRequired')}
+              </p>
+            )}
+            {form.categoryIds.length > 0 && (
+              <p className="text-xs text-gray-400 font-cairo mt-2">
+                {t('admin.selectedCategories', { count: form.categoryIds.length })}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label={t('admin.tags')} value={form.tags} onChange={(e) => updateForm('tags', e.target.value)} placeholder="tag1, tag2, tag3" />

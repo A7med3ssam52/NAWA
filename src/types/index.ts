@@ -9,6 +9,7 @@ export interface Product {
   discount: number | null;
   images: string[];
   category: string;
+  categoryIds?: string[];
   brand: string;
   rating: number;
   reviewsCount: number;
@@ -235,4 +236,37 @@ export interface AccountingEntry {
   entry_date: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface AccountGroup {
+  id: string;
+  name: string;
+  parentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+export type AccountType = 'income' | 'expense';
+export interface LedgerAccount {
+  id: string;
+  groupId: string | null;
+  name: string;
+  type: AccountType;
+  amount: number;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface AccountGroupNode extends AccountGroup {
+  children: AccountGroupNode[];
+  accounts: LedgerAccount[];
+  incomeTotal: number;
+  expenseTotal: number;
+  total: number;
+  totalGroups: number;
+  totalAccounts: number;
+}
+export interface AccountsTree {
+  rootGroups: AccountGroupNode[];
+  rootAccounts: LedgerAccount[];
+  allGroups: AccountGroup[];
 }

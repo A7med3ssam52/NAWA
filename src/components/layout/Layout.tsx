@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { SpinEntryButton, PaletteToggle } from '@/components/features';
+import { PaletteToggle } from '@/components/features';
 
 export function Layout() {
   const { t, i18n } = useTranslation();
@@ -21,7 +21,6 @@ export function Layout() {
       </main>
       <Footer />
       <PaletteToggle />
-      <SpinEntryButton />
     </div>
   );
 }

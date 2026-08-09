@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { cn, formatDate } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Select, Modal, Badge, EmptyState, Spinner } from '@/components/ui';
+import { Button, Select, Modal, Badge, EmptyState, Spinner, Card } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { Review, Product } from '@/types';
 
@@ -82,7 +82,8 @@ export function AdminReviewsPage() {
       ) : reviews.length === 0 ? (
         <EmptyState icon={<MessageSquareQuote className="w-16 h-16" />} title={t('admin.noReviews')} description={t('admin.noReviewsDesc')} />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
+        <>
+        <div className="hidden lg:block bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -143,6 +144,39 @@ export function AdminReviewsPage() {
             </table>
           </div>
         </div>
+
+        <div className="lg:hidden space-y-3">
+          {reviews.map((review, i) => {
+            const product = products.find((p) => p.id === review.productId);
+            return (
+              <motion.div key={review.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+                <Card padding="md">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+                        <img src={product?.images?.[0] || ''} alt={product?.name || ''} className="w-full h-full object-cover" loading="lazy" />
+                      </div>
+                      <span className="text-sm font-semibold font-cairo text-gray-900 truncate">{product?.name || review.productId}</span>
+                    </div>
+                    <button onClick={() => setDeleteModal(review)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors shrink-0">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-50 shrink-0">
+                      <img src={review.userAvatar} alt={review.userName} className="w-full h-full object-cover" loading="lazy" />
+                    </div>
+                    <span className="text-xs font-cairo text-gray-700">{review.userName}</span>
+                    <span className="text-xs text-gray-400 font-cairo mr-auto">{formatDate(review.createdAt)}</span>
+                  </div>
+                  <div className="mt-2">{renderStars(review.rating)}</div>
+                  <p className="text-xs font-cairo text-gray-500 mt-2 line-clamp-2">{review.comment}</p>
+                </Card>
+            </motion.div>
+          );
+          })}
+        </div>
+        </>
       )}
 
       <Modal isOpen={!!deleteModal} onClose={() => setDeleteModal(null)} title={t('common.confirmDelete')} size="sm">

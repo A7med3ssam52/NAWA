@@ -6,7 +6,7 @@ import { useCompare } from '@/contexts/CompareContext';
 import { useCart } from '@/contexts';
 import { formatPrice, cn } from '@/utils';
 import { PAGES } from '@/constants';
-import { Button, EmptyState, Rating } from '@/components/ui';
+import { Button, Card, EmptyState, Rating } from '@/components/ui';
 import toast from 'react-hot-toast';
 
 export function ComparePage() {
@@ -43,13 +43,13 @@ export function ComparePage() {
         <Button variant="ghost" size="sm" rounded="xl" onClick={clearAll}>{t('compare.clearAll')}</Button>
       </div>
 
-      <div className="overflow-x-auto pb-4">
-        <table className="w-full min-w-[600px] border-collapse">
+      <div className="hidden lg:block overflow-x-auto pb-4 overscroll-x-contain">
+        <table className="w-full min-w-[540px] border-collapse">
           <thead>
             <tr>
               <th className="text-right p-3 w-32 sm:w-40" />
               {items.map((product) => (
-                <th key={product.id} className="p-3 text-center min-w-[180px]">
+                <th key={product.id} className="p-3 text-center min-w-[160px]">
                   <div className="relative">
                     <button onClick={() => removeItem(product.id)} className="absolute -top-1 -left-1 w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-danger hover:text-white transition-colors">
                       <X className="w-3 h-3" />
@@ -119,6 +119,62 @@ export function ComparePage() {
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div className="lg:hidden space-y-3">
+        {items.map((product, i) => (
+          <motion.div
+            key={product.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.03 }}
+          >
+            <Card padding="md">
+              <div className="flex items-start gap-3">
+                <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <Link to={PAGES.PRODUCT_DETAILS.replace(':slug', product.slug)} className="text-sm font-bold font-cairo text-gray-900 hover:text-secondary line-clamp-2">
+                      {product.name}
+                    </Link>
+                    <button
+                      onClick={() => removeItem(product.id)}
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors shrink-0"
+                      aria-label={t('compare.removeProduct')}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <Rating value={product.rating} size="sm" />
+                  </div>
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    <span className="text-base font-bold font-cairo text-gray-900">{formatPrice(product.price)}</span>
+                    {product.oldPrice && product.oldPrice > product.price && (
+                      <span className="text-xs text-gray-400 line-through font-cairo">{formatPrice(product.oldPrice)}</span>
+                    )}
+                  </div>
+                  <p className={cn('mt-1 text-xs font-cairo', product.stock > 0 ? 'text-success' : 'text-danger')}>
+                    {product.stock > 0 ? t('compare.inStock') : t('compare.outOfStock')}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+                <Button variant="secondary" size="sm" rounded="xl" className="flex-1" onClick={() => { addItem(product, 1); toast.success(t('products.addedToCart')); }}>
+                  <ShoppingCart className="w-3 h-3" /> {t('products.addToCart')}
+                </Button>
+                <Link
+                  to={PAGES.PRODUCT_DETAILS.replace(':slug', product.slug)}
+                  className="inline-flex items-center justify-center px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold font-cairo text-gray-700 hover:border-secondary hover:text-secondary transition-colors shrink-0"
+                >
+                  {t('profile.viewDetails')}
+                </Link>
+              </div>
+            </Card>
+          </motion.div>
+        ))}
       </div>
     </motion.div>
   );

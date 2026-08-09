@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { cn, formatDate } from '@/utils';
 import { adminService } from '@/services';
-import { Button, Input, Select, Modal, Badge, EmptyState, Spinner } from '@/components/ui';
+import { Button, Input, Select, Modal, Badge, EmptyState, Spinner, Card } from '@/components/ui';
 import { toast } from '@/components/ui';
 import type { Coupon } from '@/types';
 
@@ -117,7 +117,8 @@ export function AdminCouponsPage() {
       ) : filtered.length === 0 ? (
         <EmptyState icon={<Tag className="w-16 h-16" />} title={t('admin.noCoupons')} description={search ? t('admin.noSearchResults') : t('admin.couponsDesc')} action={!search ? { label: t('admin.addCoupon'), onClick: openAdd } : undefined} />
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
+        <>
+        <div className="hidden lg:block bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -160,7 +161,7 @@ export function AdminCouponsPage() {
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-sm font-cairo text-gray-600">
-                          {coupon.usedCount} / {coupon.usageLimit}
+                          {coupon.usageLimit === 0 ? t('admin.unlimited') : `${coupon.usedCount} / ${coupon.usageLimit}`}
                         </span>
                       </td>
                       <td className="px-4 py-3">
@@ -176,11 +177,9 @@ export function AdminCouponsPage() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
                           <button onClick={() => adminService.toggleCoupon(coupon.id).then((updated) => {
-                            if (updated) {
-                              toast.success(updated.isActive ? t('admin.couponEnabledMsg') : t('admin.couponDisabledMsg'));
-                              fetchData();
-                            }
-                          })} title={disabled ? t('admin.activateCoupon') : t('admin.deactivateCoupon')} className={cn('p-1.5 rounded-lg transition-colors', disabled ? 'text-success hover:bg-success/10' : 'text-gray-400 hover:text-accent hover:bg-accent/10')}><Power className="w-3.5 h-3.5" /></button>
+                            toast.success(updated.isActive ? t('admin.couponEnabledMsg') : t('admin.couponDisabledMsg'));
+                            fetchData();
+                          }).catch(() => toast.error(t('admin.couponToggleError')))} title={disabled ? t('admin.activateCoupon') : t('admin.deactivateCoupon')} className={cn('p-1.5 rounded-lg transition-colors', disabled ? 'text-success hover:bg-success/10' : 'text-gray-400 hover:text-accent hover:bg-accent/10')}><Power className="w-3.5 h-3.5" /></button>
                           <button onClick={() => openEdit(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
                           <button onClick={() => setDeleteModal(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                         </div>
@@ -188,10 +187,55 @@ export function AdminCouponsPage() {
                     </tr>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+        <div className="lg:hidden space-y-3">
+          {filtered.map((coupon, i) => {
+            const expired = isExpired(coupon.expiresAt);
+            const disabled = coupon.isActive === false;
+            return (
+              <motion.div key={coupon.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}>
+                <Card padding="md">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-secondary/10 text-secondary text-sm font-bold font-cairo">
+                      <Percent className="w-3 h-3" /> {coupon.code}
+                    </span>
+                    <Badge variant={expired ? 'danger' : disabled ? 'secondary' : 'success'} size="sm">
+                      {expired ? t('admin.expired') : disabled ? t('admin.disabled') : t('admin.active')}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-sm font-cairo">
+                    <span className="font-bold text-gray-900">
+                      {coupon.type === 'percentage' ? `${coupon.discount}%` : `${coupon.discount.toLocaleString('ar-EG')} ${t('common.currency')}`}
+                    </span>
+                    <span className="text-xs text-gray-500">{coupon.type === 'percentage' ? t('admin.percentage') : t('admin.fixed')}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-2 text-xs font-cairo text-gray-500">
+                    <span>{t('admin.couponMinOrder')}: {coupon.minOrder > 0 ? `${coupon.minOrder.toLocaleString('ar-EG')} ${t('common.currency')}` : t('admin.noMinimum')}</span>
+                    <span>{coupon.usageLimit === 0 ? t('admin.unlimited') : `${coupon.usedCount} / ${coupon.usageLimit}`}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className={cn('text-xs font-cairo', expired ? 'text-danger' : 'text-gray-600')}>
+                      {formatDate(coupon.expiresAt)}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => adminService.toggleCoupon(coupon.id).then((updated) => {
+                        toast.success(updated.isActive ? t('admin.couponEnabledMsg') : t('admin.couponDisabledMsg'));
+                        fetchData();
+                      }).catch(() => toast.error(t('admin.couponToggleError')))} title={disabled ? t('admin.activateCoupon') : t('admin.deactivateCoupon')} className={cn('p-1.5 rounded-lg transition-colors', disabled ? 'text-success hover:bg-success/10' : 'text-gray-400 hover:text-accent hover:bg-accent/10')}><Power className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => openEdit(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-secondary hover:bg-secondary/10 transition-colors"><Edit3 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setDeleteModal(coupon)} className="p-1.5 rounded-lg text-gray-400 hover:text-danger hover:bg-danger/10 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </div>
+                </Card>
+            </motion.div>
+          );
+          })}
         </div>
+        </>
       )}
 
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? t('admin.editCoupon') : t('admin.addCouponForm')} size="md">
