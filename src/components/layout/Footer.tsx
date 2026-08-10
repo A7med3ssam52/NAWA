@@ -42,6 +42,7 @@ const socialLinks = [
 const paymentMethods = [
   { name: 'utils.paymentMethods.instapay' },
   { name: 'utils.paymentMethods.wallet' },
+  { name: 'utils.paymentMethods.cod' },
 ];
 
 export const Footer = memo(function Footer() {

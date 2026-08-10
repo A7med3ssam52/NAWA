@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Landmark, Wallet, CreditCard, Copy } from 'lucide-react';
+import { Landmark, Wallet, CreditCard, Copy, Banknote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { INSTAPAY_PHONE, WALLET_PHONE } from '@/constants';
 import toast from 'react-hot-toast';
@@ -35,6 +35,17 @@ export function PaymentPage() {
       bg: 'bg-slate-50',
       phone: WALLET_PHONE,
       phoneLabel: t('payment.walletPhone'),
+      details: [],
+    },
+    {
+      id: 'cod',
+      name: t('payment.cod'),
+      desc: t('payment.codDesc'),
+      icon: Banknote,
+      color: '#16A34A',
+      bg: 'bg-green-50',
+      phone: '',
+      phoneLabel: '',
       details: [],
     },
   ];
@@ -82,13 +93,15 @@ export function PaymentPage() {
                   <p className="text-sm text-gray-500 font-cairo mb-4">
                     {method.desc}
                   </p>
-                  <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-100 mb-3">
-                    <span className="text-xs font-cairo text-gray-500">{method.phoneLabel}</span>
-                    <span dir="ltr" className="flex-1 text-sm font-bold font-cairo text-gray-900">{method.phone}</span>
-                    <button type="button" onClick={() => copyText(method.phone, 'checkout.copiedNumber')} className="p-1.5 text-gray-400 hover:text-secondary transition-colors" aria-label={method.phoneLabel}>
-                      <Copy className="w-4 h-4" />
-                    </button>
-                  </div>
+                  {method.phone && (
+                    <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-100 mb-3">
+                      <span className="text-xs font-cairo text-gray-500">{method.phoneLabel}</span>
+                      <span dir="ltr" className="flex-1 text-sm font-bold font-cairo text-gray-900">{method.phone}</span>
+                      <button type="button" onClick={() => copyText(method.phone, 'checkout.copiedNumber')} className="p-1.5 text-gray-400 hover:text-secondary transition-colors" aria-label={method.phoneLabel}>
+                        <Copy className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                   {(method.details || []).length > 0 && (
                   <ul className="space-y-1.5">
                     {(method.details || []).map((detail) => (

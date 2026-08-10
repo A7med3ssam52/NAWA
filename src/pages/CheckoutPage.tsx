@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Landmark, Mail, Lock, LogIn, Copy, AlertCircle, KeyRound, Tag } from 'lucide-react';
+import { ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Landmark, Mail, Lock, LogIn, Copy, AlertCircle, KeyRound, Tag, Banknote } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { orderService } from '@/services';
 import { formatPrice, cn } from '@/utils';
@@ -92,7 +92,7 @@ export function CheckoutPage() {
       toast.error(t('checkout.paymentRequired'));
       return;
     }
-    if (!transferDone || !receiptUrl) {
+    if (paymentMethod !== PAYMENT_METHODS.COD && (!transferDone || !receiptUrl)) {
       toast.error(t('checkout.receiptRequired'));
       return;
     }
@@ -168,8 +168,8 @@ export function CheckoutPage() {
           isDefault: false,
         },
         paymentMethod,
-        paymentPhone: paymentMethod === PAYMENT_METHODS.INSTAPAY ? INSTAPAY_PHONE : WALLET_PHONE,
-        paymentReceiptUrl: receiptUrl,
+        paymentPhone: paymentMethod === PAYMENT_METHODS.INSTAPAY ? INSTAPAY_PHONE : paymentMethod === PAYMENT_METHODS.WALLET ? WALLET_PHONE : undefined,
+        paymentReceiptUrl: paymentMethod === PAYMENT_METHODS.COD ? undefined : receiptUrl,
         notes,
       });
       await supabase.from('order_email_logs').insert({
@@ -392,6 +392,7 @@ export function CheckoutPage() {
                       {[
                         { id: PAYMENT_METHODS.INSTAPAY, labelKey: 'instapay', descKey: 'instapayDesc', icon: Landmark },
                         { id: PAYMENT_METHODS.WALLET, labelKey: 'wallet', descKey: 'walletDesc', icon: Wallet },
+                        { id: PAYMENT_METHODS.COD, labelKey: 'cod', descKey: 'codDesc', icon: Banknote },
                       ].map((method) => {
                         const Icon = method.icon;
                         return (
@@ -408,7 +409,7 @@ export function CheckoutPage() {
                         );
                       })}
                     </div>
-                    {paymentMethod && (
+                    {paymentMethod && paymentMethod !== PAYMENT_METHODS.COD && (
                       <div className="mt-3 p-4 bg-secondary/5 rounded-xl border border-secondary/20 space-y-3">
                         <p className="text-sm font-bold font-cairo text-gray-900">{t('checkout.transferToNumber')}</p>
                         <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 px-3.5 h-11">

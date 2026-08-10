@@ -69,7 +69,7 @@ export const TAX_RATE = 0.14;
 
 export const INSTAPAY_PHONE = '01091202785';
 export const WALLET_PHONE = '01037223730';
-export const PAYMENT_METHODS = { INSTAPAY: 'instapay', WALLET: 'wallet' } as const;
+export const PAYMENT_METHODS = { INSTAPAY: 'instapay', WALLET: 'wallet', COD: 'cod' } as const;
 
 
 export const COLORS = {
