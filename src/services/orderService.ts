@@ -1,49 +1,77 @@
-import { supabase } from '@/lib/supabase';
-import { mapOrder } from '@/lib/mappers';
 import type { Order } from '@/types';
 
+const LOCAL_ORDERS_KEY = 'nawa_orders';
+
+function getStoredOrders(): Order[] {
+  try {
+    const raw = localStorage.getItem(LOCAL_ORDERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveStoredOrders(orders: Order[]) {
+  try {
+    localStorage.setItem(LOCAL_ORDERS_KEY, JSON.stringify(orders));
+  } catch {}
+}
+
 export const orderService = {
-  getById: async (orderId: string) => {
-    const { data, error } = await supabase.from('orders').select('*').eq('id', orderId).maybeSingle();
-    if (!error && data) return mapOrder(data);
-    return null;
+  getById: async (orderId: string): Promise<Order | null> => {
+    const orders = getStoredOrders();
+    return orders.find(o => o.id === orderId || o.orderNumber === orderId) || null;
   },
 
-  getUserOrders: async (userId: string) => {
-    const { data, error } = await supabase.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false });
-    if (!error && data) return (data as any[]).map(mapOrder);
-    return [] as Order[];
+  getUserOrders: async (userId: string): Promise<Order[]> => {
+    const orders = getStoredOrders();
+    return orders.filter(o => o.userId === userId || !userId);
   },
 
-  create: async (data: Partial<Order>) => {
-    const { data: orderRow, error } = await supabase.rpc('create_order', {
-      p_user_id: data.userId || null,
-      p_items: data.items || [],
-      p_subtotal: data.subtotal || 0,
-      p_shipping: data.shipping || 0,
-      p_discount: data.discount || 0,
-      p_total: data.total || 0,
-      p_coupon_code: data.couponCode || null,
-      p_payment_method: data.paymentMethod || 'instapay',
-      p_shipping_address: data.shippingAddress || null,
-      p_notes: data.notes || '',
-      p_payment_receipt_url: data.paymentReceiptUrl || null,
-      p_payment_phone: data.paymentPhone || null,
-    });
-    if (error) throw error;
+  create: async (data: Partial<Order>): Promise<Order> => {
+    const now = new Date().toISOString();
+    const orderNumber = `NW-${Math.floor(100000 + Math.random() * 900000)}`;
+    const newOrder: Order = {
+      id: `ord-${Date.now()}`,
+      userId: data.userId || 'guest-user',
+      orderNumber,
+      status: 'pending',
+      items: data.items || [],
+      total: data.total || 0,
+      subtotal: data.subtotal || 0,
+      shipping: data.shipping || 0,
+      discount: data.discount || 0,
+      couponCode: data.couponCode,
+      shippingAddress: data.shippingAddress || {
+        id: 'addr-1',
+        label: 'المنزل',
+        fullName: 'عميل نوى',
+        phone: '+201000000000',
+        street: 'شارع التجاري',
+        city: 'القاهرة',
+        state: 'القاهرة',
+        isDefault: true,
+      },
+      paymentMethod: data.paymentMethod || 'cod',
+      notes: data.notes,
+      paymentReceiptUrl: data.paymentReceiptUrl,
+      paymentPhone: data.paymentPhone,
+      createdAt: now,
+      updatedAt: now,
+      tracking: [
+        {
+          status: 'pending',
+          date: now,
+          description: 'تم إرسال الطلب بنجاح وهو قيد المراجعة',
+          completed: true,
+        },
+      ],
+    };
 
-    const order = mapOrder(orderRow);
-    if (order.items.length > 0) {
-      const rows = order.items.map((item) => ({
-        order_id: order.id,
-        product_id: item.productId,
-        product_name: item.productName,
-        product_image: item.productImage || null,
-        quantity: item.quantity,
-        price: item.price,
-      }));
-      await supabase.from('order_items').insert(rows);
-    }
-    return order;
+    const existing = getStoredOrders();
+    existing.unshift(newOrder);
+    saveStoredOrders(existing);
+
+    return newOrder;
   },
 };

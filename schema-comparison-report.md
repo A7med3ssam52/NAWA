@@ -1,4 +1,4 @@
-# تقرير مقارنة سكيما ZAHIEG بين `supabase-complete.sql` وملفات `back-end schema` المجزأة
+# تقرير مقارنة سكيما NAWA بين `supabase-complete.sql` وملفات `back-end schema` المجزأة
 
 **التاريخ:** 2026-08-07
 **الأداة:** تحليل يدوي/برمجي لجميع ملفات SQL في المشروع

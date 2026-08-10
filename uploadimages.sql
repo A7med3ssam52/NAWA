@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Image Upload Storage
+-- NAWA - Image Upload Storage
 -- Create storage buckets and RLS policies for image uploads
 -- Run this in Supabase SQL Editor
 -- ============================================================================

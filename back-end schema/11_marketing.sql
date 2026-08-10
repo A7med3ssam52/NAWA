@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Marketing & Contact Schema
+-- NAWA - Marketing & Contact Schema
 -- Standalone tables for marketing and customer interaction
 -- ============================================================================
 

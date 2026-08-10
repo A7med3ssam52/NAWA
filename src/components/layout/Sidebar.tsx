@@ -40,7 +40,7 @@ const navLinks = [
 const contactItems = [
   { icon: MapPin, tKey: 'nav.location' as const },
   { icon: Phone, text: '+20 100 123 4567', dir: 'ltr' as const },
-  { icon: Mail, text: 'info@zahieg.com' },
+  { icon: Mail, text: 'info@nawaeg.com' },
 ];
 
 const catColors = [

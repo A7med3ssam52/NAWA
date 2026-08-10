@@ -1,4 +1,4 @@
-const CACHE = 'zahi-v3';
+const CACHE = 'nawa-v1';
 const ASSETS = ['/', '/index.html'];
 
 self.addEventListener('install', (event) => {

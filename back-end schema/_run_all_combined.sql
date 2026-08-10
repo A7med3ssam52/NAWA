@@ -1,5 +1,5 @@
 ﻿-- ============================================================================
--- ZAHIEG - COMPLETE DATABASE SCHEMA (Single File)
+-- NAWA - COMPLETE DATABASE SCHEMA (Single File)
 -- ============================================================================
 -- This file combines all individual schema files into one.
 -- Copy and paste the entire contents into Supabase SQL Editor.
@@ -10,7 +10,7 @@
 -- FILE: 01_categories_brands.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Categories & Brands Schema
+-- NAWA - Categories & Brands Schema
 -- Base tables with no dependencies on other tables
 -- ============================================================================
 
@@ -54,7 +54,7 @@ COMMENT ON COLUMN brands.logo IS 'Brand logo image URL (Supabase Storage)';
 -- FILE: 02_products.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Products Schema
+-- NAWA - Products Schema
 -- Depends on: categories, brands
 -- ============================================================================
 
@@ -138,7 +138,7 @@ COMMENT ON COLUMN products.search_vector IS 'Pre-computed full-text search vecto
 -- FILE: 03_profiles.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - User Profiles Schema
+-- NAWA - User Profiles Schema
 -- Linked to Supabase Auth (auth.users) via foreign key
 -- ============================================================================
 
@@ -220,7 +220,7 @@ COMMENT ON FUNCTION is_admin IS 'Returns true if the current authenticated user 
 -- FILE: 04_addresses.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - User Addresses Schema
+-- NAWA - User Addresses Schema
 -- Depends on: profiles
 -- ============================================================================
 
@@ -272,7 +272,7 @@ COMMENT ON FUNCTION ensure_single_default_address IS 'Ensures only one address p
 -- FILE: 05_cart_wishlist.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Cart & Wishlist Schema
+-- NAWA - Cart & Wishlist Schema
 -- Depends on: profiles, products
 -- ============================================================================
 
@@ -313,7 +313,7 @@ COMMENT ON COLUMN wishlist_items.added_at IS 'When the product was added to wish
 -- FILE: 06_orders.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Orders Schema
+-- NAWA - Orders Schema
 -- Depends on: profiles, products, addresses
 -- ============================================================================
 
@@ -457,7 +457,7 @@ COMMENT ON FUNCTION orders_set_order_number IS 'Auto-generates a unique order nu
 -- FILE: 07_reviews.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Reviews Schema
+-- NAWA - Reviews Schema
 -- Depends on: profiles, products
 -- ============================================================================
 
@@ -524,7 +524,7 @@ COMMENT ON FUNCTION update_product_rating IS 'Recalculates products.rating and p
 -- FILE: 08_coupons.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Coupons Schema
+-- NAWA - Coupons Schema
 -- Standalone table for discount coupons
 -- ============================================================================
 
@@ -625,7 +625,7 @@ COMMENT ON FUNCTION validate_coupon IS 'Validates a coupon code for a given orde
 -- FILE: 09_notifications.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Notifications Schema
+-- NAWA - Notifications Schema
 -- Depends on: profiles
 -- ============================================================================
 
@@ -665,7 +665,7 @@ COMMENT ON COLUMN notifications.read IS 'Whether the user has read this notifica
 -- FILE: 10_spin_wheel.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Spin Wheel Schema
+-- NAWA - Spin Wheel Schema
 -- Depends on: profiles
 -- ============================================================================
 
@@ -735,7 +735,7 @@ COMMENT ON COLUMN spin_history.claimed IS 'Whether the prize was claimed';
 -- FILE: 11_marketing.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Marketing & Contact Schema
+-- NAWA - Marketing & Contact Schema
 -- Standalone tables for marketing and customer interaction
 -- ============================================================================
 
@@ -801,7 +801,7 @@ COMMENT ON COLUMN back_in_stock_requests.notified IS 'Whether the customer has b
 -- FILE: 12_settings.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Settings Schema
+-- NAWA - Settings Schema
 -- Key-Value store for application configuration
 -- ============================================================================
 
@@ -835,7 +835,7 @@ COMMENT ON FUNCTION settings_set_updated_at IS 'Auto-updates settings.updated_at
 -- ── Seed default settings ─────────────────────────────────────────────────
 INSERT INTO settings (key, value) VALUES
     ('announcement', '{"text": "توصيل مجاني للطلبات فوق 500 ج.م", "enabled": true, "dismissible": true}'::jsonb),
-    ('store_info', '{"name": "زاهي", "description": "متجر إلكتروني مصري", "currency": "ج.م", "phone": "", "email": "", "whatsapp": ""}'::jsonb),
+    ('store_info', '{"name": "نوى", "description": "متجر إلكتروني مصري", "currency": "ج.م", "phone": "", "email": "", "whatsapp": ""}'::jsonb),
     ('shipping', '{"cost": 30, "free_threshold": 500, "tax_rate": 0.14}'::jsonb)
 ON CONFLICT (key) DO NOTHING;
 
@@ -850,7 +850,7 @@ COMMENT ON TABLE  settings IS 'Seed data for default application settings';
 -- FILE: 13_optional_features.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Optional Features Schema
+-- NAWA - Optional Features Schema
 -- Depends on: profiles, products
 -- These are non-critical features that enhance UX
 -- ============================================================================
@@ -887,7 +887,7 @@ COMMENT ON TABLE  recent_searches IS 'Track recent search queries per user for q
 -- FILE: 14_storage_buckets.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Supabase Storage Buckets Schema
+-- NAWA - Supabase Storage Buckets Schema
 -- SQL is informational only; buckets are created via Supabase Dashboard or API
 -- ============================================================================
 
@@ -967,7 +967,7 @@ COMMENT ON TABLE  recent_searches IS 'Track recent search queries per user for q
 -- FILE: 17_functions_triggers.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Cross-Cutting Functions & Triggers
+-- NAWA - Cross-Cutting Functions & Triggers
 -- Functions that span multiple tables or are used by the application layer
 -- NOTE: Table-specific triggers are in their respective files
 -- ============================================================================
@@ -1026,7 +1026,7 @@ COMMENT ON FUNCTION is_low_stock IS 'Returns true if product stock is below the 
 -- FILE: 16_indexes.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Database Indexes
+-- NAWA - Database Indexes
 -- Performance optimization for common queries
 -- ============================================================================
 
@@ -1108,7 +1108,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_coupons_code     ON coupons(UPPER(code));
 -- FILE: 18_dashboard_views.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Dashboard Views
+-- NAWA - Dashboard Views
 -- Pre-computed aggregations for admin and user dashboards
 -- ============================================================================
 
@@ -1308,7 +1308,7 @@ COMMENT ON FUNCTION get_dashboard_data IS 'Returns all dashboard data as a singl
 -- FILE: 15_rls_policies.sql
 -- ========================================================================
 -- ============================================================================
--- ZAHIEG - Row Level Security (RLS) Policies
+-- NAWA - Row Level Security (RLS) Policies
 -- Applied to ALL tables after they are created
 -- ============================================================================
 
@@ -1749,7 +1749,7 @@ DROP POLICY IF EXISTS "store_settings_update" ON store_settings;
 CREATE POLICY "store_settings_update" ON store_settings FOR UPDATE USING (is_admin());
 
 INSERT INTO store_settings (id, name, description, phone, email, address, shipping_cost, free_shipping_threshold)
-VALUES ('default', 'زاهي', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@zahieg.com', 'القاهرة، مصر', 30, 500)
+VALUES ('default', 'نوى', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@nawaeg.com', 'القاهرة، مصر', 30, 500)
 ON CONFLICT (id) DO NOTHING;
 
 -- ── Announcements (dedicated table for adminService) ───────────────────────

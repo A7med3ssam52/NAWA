@@ -1,5 +1,5 @@
 -- ===========================================================
--- ZAHIEG E-Commerce — Full Schema + Seed (run once in SQL Editor)
+-- NAWA E-Commerce — Full Schema + Seed (run once in SQL Editor)
 -- ===========================================================
 
 -- ─── Profiles (extends auth.users) ───
@@ -263,7 +263,7 @@ ON CONFLICT (id) DO NOTHING;
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES
 ('coup-1', 'WELCOME10', 10, 'percentage', 0, 100, '2026-12-31T00:00:00Z', 1000, 45),
-('coup-2', 'ZAHI20', 20, 'percentage', 500, 200, '2026-06-30T00:00:00Z', 500, 128),
+('coup-2', 'NAWA20', 20, 'percentage', 500, 200, '2026-06-30T00:00:00Z', 500, 128),
 ('coup-3', 'SALE50', 50, 'fixed', 300, 50, '2026-03-31T00:00:00Z', 200, 67),
 ('coup-4', 'FREESHIP', 100, 'percentage', 200, 30, '2026-09-30T00:00:00Z', 300, 89)
 ON CONFLICT (id) DO NOTHING;
@@ -300,7 +300,7 @@ ON CONFLICT (id) DO NOTHING;
 
 -- ─── Store Settings ───
 INSERT INTO store_settings (id, name, description, phone, email, address, shipping_cost, free_shipping_threshold) VALUES
-('default', 'Zahi', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@zahieg.com', 'القاهرة، مصر', 30, 500)
+('default', 'NAWA', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@nawaeg.com', 'القاهرة، مصر', 30, 500)
 ON CONFLICT (id) DO NOTHING;
 
 -- ─── Announcements ───
@@ -335,11 +335,11 @@ REVOKE ALL ON FUNCTION public.link_guest_order(TEXT) FROM public;
 GRANT EXECUTE ON FUNCTION public.link_guest_order(TEXT) TO anon, authenticated;
 
 -- ===========================================================
--- How to create the kiady@zahieg.com auth user:
+-- How to create the admin@nawaeg.com auth user:
 -- 1. Go to Supabase Dashboard > Authentication > Add User
--- 2. Email: kiady@zahieg.com, Password: 123456
+-- 2. Email: admin@nawaeg.com, Password: 123456
 -- 3. Then run:
 --    INSERT INTO profiles (auth_id, name, email, phone, avatar)
---    VALUES ('THE-UUID-FROM-AUTH', 'Kiady Zahi', 'kiady@zahieg.com',
---            '+201000000000', 'https://ui-avatars.com/api/?name=Kiady+Zahi&background=2563EB&color=fff');
+--    VALUES ('THE-UUID-FROM-AUTH', 'Nawa Admin', 'admin@nawaeg.com',
+--            '+201000000000', 'https://ui-avatars.com/api/?name=Nawa+Admin&background=2563EB&color=fff');
 -- ===========================================================

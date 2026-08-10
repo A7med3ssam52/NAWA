@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG — COUPONS FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
+-- NAWA — COUPONS FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
 -- ----------------------------------------------------------------------------
 -- Fixes:
 --  1. get_coupon() RPC crashed for EVERY call with Postgres error 42702
@@ -9,7 +9,7 @@
 --     Fix: qualify the table column (coupons.code). We also split the old
 --     "coupon unavailable" message into "coupon disabled" / "coupon expired"
 --     so the frontend can show a specific Arabic message.
---  2. Seeds the 4 standard coupons (WELCOME10, ZAHI20, SALE50, FREESHIP) if the
+--  2. Seeds the 4 standard coupons (WELCOME10, NAWA20, SALE50, FREESHIP) if the
 --     live DB does not have them (verified: live DB did NOT — validate_coupon
 --     returned 'invalid code'), and extends any seed row that is expiring
 --     within 30 days out to 2027 so coupons never die unexpectedly.
@@ -64,7 +64,7 @@ UPDATE coupons SET max_discount = NULL WHERE max_discount = 0;
 DO $$
 DECLARE
     id_is_uuid BOOLEAN;
-    seed_codes text[] := ARRAY['WELCOME10','ZAHI20','SALE50','FREESHIP'];
+    seed_codes text[] := ARRAY['WELCOME10','NAWA20','SALE50','FREESHIP'];
     c RECORD;
 BEGIN
     SELECT EXISTS (
@@ -75,7 +75,7 @@ BEGIN
 
     FOR c IN SELECT * FROM (VALUES
         ('WELCOME10','percentage',10,0,100,'2027-12-31'::timestamptz,1000),
-        ('ZAHI20','percentage',20,500,200,'2027-06-30'::timestamptz,500),
+        ('NAWA20','percentage',20,500,200,'2027-06-30'::timestamptz,500),
         ('SALE50','fixed',50,300,50,'2027-03-31'::timestamptz,200),
         ('FREESHIP','free_shipping',30,200,30,'2027-09-30'::timestamptz,300)
     ) AS t(code, type, discount, min_order, max_discount, expires_at, usage_limit)
@@ -102,7 +102,7 @@ END $$;
 
 -- Seed coupons must never die: any seed row expiring within 30 days → extended.
 UPDATE coupons SET expires_at = '2027-12-31'
-    WHERE code IN ('WELCOME10','ZAHI20','SALE50','FREESHIP')
+    WHERE code IN ('WELCOME10','NAWA20','SALE50','FREESHIP')
       AND expires_at < now() + interval '30 days';
 
 -- ── 4. Function EXECUTE hardening (matches golden schema) ───────────────────

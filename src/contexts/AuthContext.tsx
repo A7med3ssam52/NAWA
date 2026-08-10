@@ -1,8 +1,5 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
 import type { User, Address } from '@/types';
-import { mapProfile } from '@/lib/mappers';
-import { useAddresses } from '@/api';
 
 interface AuthState {
   user: User | null;
@@ -33,6 +30,8 @@ interface AuthContextType extends AuthState {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const AUTH_STORAGE_KEY = 'nawa_user';
+
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'SET_USER':
@@ -62,155 +61,111 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(authReducer, {
-    user: null, isAuthenticated: false, defaultAddressId: null, loading: true,
+    user: null,
+    isAuthenticated: false,
+    defaultAddressId: null,
+    loading: true,
   });
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await loadProfile(session.user.id);
-        if (profile) dispatch({ type: 'SET_USER', payload: profile });
-      }
-      dispatch({ type: 'SET_LOADING', payload: false });
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
-          const profile = await loadProfile(session.user.id);
-          if (profile) dispatch({ type: 'SET_USER', payload: profile });
-        }
-      } else {
-        dispatch({ type: 'LOGOUT' });
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const loadProfile = useCallback(async (authId: string): Promise<User | null> => {
     try {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', authId).maybeSingle();
-      if (!error && data) return mapProfile(data);
-    } catch {
-      return null;
-    }
-    return null;
+      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (stored) {
+        const u = JSON.parse(stored);
+        dispatch({ type: 'SET_USER', payload: u });
+      }
+    } catch {}
+    dispatch({ type: 'SET_LOADING', payload: false });
   }, []);
 
   const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; error?: string; role?: 'admin' | 'customer' }> => {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { success: false, error: error.message };
-      if (data.user) {
-        try {
-          const profile = await loadProfile(data.user.id);
-          if (profile) {
-            dispatch({ type: 'SET_USER', payload: profile });
-            return { success: true, role: profile.role };
-          }
-        } catch {
-          return { success: true };
-        }
-      }
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: err instanceof Error ? err.message : 'Login failed' };
-    }
-  }, [loadProfile]);
+    const role: 'admin' | 'customer' = email.includes('admin') ? 'admin' : 'customer';
+    const mockUser: User = {
+      id: `user-${Date.now()}`,
+      name: email.split('@')[0] || 'مستخدم نوى',
+      email,
+      phone: '+201000000000',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      role,
+      addresses: [],
+      orders: [],
+      wishlist: [],
+      notifications: [],
+    };
+
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockUser));
+    dispatch({ type: 'SET_USER', payload: mockUser });
+    return { success: true, role };
+  }, []);
 
   const register = useCallback(async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name, avatar: '' } },
-      });
-      if (error) return { success: false, error: error.message };
-      if (data.user) {
-        let profile: User | null = null;
-        for (let i = 0; i < 8 && !profile; i++) {
-          profile = await loadProfile(data.user.id);
-          if (!profile && i < 7) await new Promise((r) => setTimeout(r, 250));
-        }
-        if (!profile) {
-          const { data: inserted, error: insertError } = await supabase
-            .from('profiles')
-            .insert({ id: data.user.id, name, email, avatar: '', role: 'customer' })
-            .select()
-            .single();
-          if (insertError) {
-            return { success: true, error: undefined };
-          }
-          if (inserted) profile = mapProfile(inserted);
-        }
-        if (profile) dispatch({ type: 'SET_USER', payload: profile });
-      }
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: err instanceof Error ? err.message : 'Registration failed' };
-    }
-  }, [loadProfile]);
+    const mockUser: User = {
+      id: `user-${Date.now()}`,
+      name,
+      email,
+      phone: '+201000000000',
+      avatar: '',
+      role: 'customer',
+      addresses: [],
+      orders: [],
+      wishlist: [],
+      notifications: [],
+    };
+
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(mockUser));
+    dispatch({ type: 'SET_USER', payload: mockUser });
+    return { success: true };
+  }, []);
 
   const logout = useCallback(() => {
-    supabase.auth.signOut();
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     dispatch({ type: 'LOGOUT' });
   }, []);
 
   const updateProfile = useCallback(async (data: Partial<User>) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const updateData: Record<string, any> = {};
-      if (data.name !== undefined) updateData.name = data.name;
-      if (data.phone !== undefined) updateData.phone = data.phone;
-      if (data.avatar !== undefined) updateData.avatar = data.avatar;
-      if (Object.keys(updateData).length > 0) {
-        await supabase.from('profiles').update(updateData).eq('id', session.user.id);
-      }
-      if (data.email !== undefined) {
-        await supabase.auth.updateUser({ email: data.email });
-      }
-      const profile = await loadProfile(session.user.id);
-      if (profile) dispatch({ type: 'SET_USER', payload: profile });
-      else dispatch({ type: 'UPDATE_PROFILE', payload: data });
+    dispatch({ type: 'UPDATE_PROFILE', payload: data });
+    if (state.user) {
+      const updated = { ...state.user, ...data };
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(updated));
     }
-  }, [loadProfile]);
+  }, [state.user]);
 
   const addAddress = useCallback(async (address: Address) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await supabase.from('addresses').insert({
-        id: address.id, user_id: session.user.id, label: address.label,
-        full_name: address.fullName, phone: address.phone,
-        street: address.street, city: address.city, state: address.state,
-        is_default: address.isDefault,
-      });
-    }
     dispatch({ type: 'ADD_ADDRESS', payload: address });
   }, []);
 
   const removeAddress = useCallback(async (id: string) => {
-    await supabase.from('addresses').delete().eq('id', id).eq('user_id', state.user?.id || '');
     dispatch({ type: 'REMOVE_ADDRESS', payload: id });
-  }, [state.user]);
+  }, []);
 
   const setDefaultAddress = useCallback(async (id: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await supabase.from('addresses').update({ is_default: true }).eq('id', id).eq('user_id', session.user.id);
-    }
     dispatch({ type: 'SET_DEFAULT_ADDRESS', payload: id });
   }, []);
 
-  const { data: dbAddresses } = useAddresses(state.user?.id);
-
-  const addresses = useMemo(() => dbAddresses || [], [dbAddresses]);
+  const addresses: Address[] = useMemo(() => [
+    {
+      id: 'addr-default',
+      label: 'المنزل',
+      fullName: state.user?.name || 'عميل نوى',
+      phone: state.user?.phone || '+201000000000',
+      street: 'شارع التجاري',
+      city: 'القاهرة',
+      state: 'القاهرة',
+      isDefault: true,
+    },
+  ], [state.user]);
 
   const value = useMemo(() => ({
     ...state,
     defaultAddressId: state.defaultAddressId,
-    login, register, logout, updateProfile,
-    addAddress, removeAddress, setDefaultAddress, addresses,
+    login,
+    register,
+    logout,
+    updateProfile,
+    addAddress,
+    removeAddress,
+    setDefaultAddress,
+    addresses,
   }), [state, login, register, logout, updateProfile, addAddress, removeAddress, setDefaultAddress, addresses]);
 
   return (
@@ -220,8 +175,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
-};
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  return context;
+}

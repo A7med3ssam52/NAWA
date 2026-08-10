@@ -1,4 +1,4 @@
--- ZAHIEG E-Commerce Database Schema
+-- NAWA E-Commerce Database Schema
 -- Run this in your Supabase SQL Editor
 
 -- ─── Profiles (extends auth.users) ───
@@ -237,7 +237,7 @@ CREATE POLICY "store_settings_read" ON store_settings FOR SELECT USING (true);
 CREATE POLICY "store_settings_write" ON store_settings FOR ALL USING (auth.role() = 'service_role' OR auth.role() = 'authenticated');
 
 INSERT INTO store_settings (id, name, description, phone, email, address) VALUES
-('default', 'Zahi', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@zahieg.com', 'القاهرة، مصر')
+('default', 'NAWA', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@nawaeg.com', 'القاهرة، مصر')
 ON CONFLICT (id) DO NOTHING;
 
 -- ─── Announcements ───

@@ -1,12 +1,12 @@
--- ZAHIEG Seed Data
+-- NAWA Seed Data
 -- Run this AFTER supabase-schema.sql in the Supabase SQL Editor
 
 -- ─── Profiles ───
 -- Note: profiles are linked to auth.users. Create auth users first via Dashboard > Authentication > Users
 -- Then insert profiles with matching auth_id.
--- For kiady@zahieg.com / 123456, create the user in Dashboard > Authentication > Add User
+-- For admin@nawaeg.com / 123456, create the user in Dashboard > Authentication > Add User
 -- Then run: INSERT INTO profiles (auth_id, name, email, phone, avatar, addresses, orders, wishlist, notifications)
--- VALUES ('THE-AUTH-UUID', 'Kiady Zahi', 'kiady@zahieg.com', '+201000000000', 'https://ui-avatars.com/api/?name=Kiady+Zahi&background=2563EB&color=fff', '{}', '{}', '{}', '{}');
+-- VALUES ('THE-AUTH-UUID', 'Nawa Admin', 'admin@nawaeg.com', '+201000000000', 'https://ui-avatars.com/api/?name=Nawa+Admin&background=2563EB&color=fff', '{}', '{}', '{}', '{}');
 
 INSERT INTO profiles (id, name, email, phone, avatar, addresses, orders, wishlist, notifications) VALUES
 ('user-1', 'محمد الكيادي', 'ahmed@example.com', '+201234567890', 'https://picsum.photos/seed/avatar1/200/200', '{addr-1,addr-2}', '{ord-1,ord-3}', '{}', '{notif-1,notif-2,notif-3}'),
@@ -32,7 +32,7 @@ INSERT INTO brands (id, name, slug, logo, products_count) VALUES
 -- ─── Coupons ───
 INSERT INTO coupons (id, code, discount, type, min_order, max_discount, expires_at, usage_limit, used_count) VALUES
 ('coup-1', 'WELCOME10', 10, 'percentage', 0, 100, '2026-12-31T00:00:00Z', 1000, 45),
-('coup-2', 'ZAHI20', 20, 'percentage', 500, 200, '2026-06-30T00:00:00Z', 500, 128),
+('coup-2', 'NAWA20', 20, 'percentage', 500, 200, '2026-06-30T00:00:00Z', 500, 128),
 ('coup-3', 'SALE50', 50, 'fixed', 300, 50, '2026-03-31T00:00:00Z', 200, 67),
 ('coup-4', 'FREESHIP', 100, 'percentage', 200, 30, '2026-09-30T00:00:00Z', 300, 89);
 

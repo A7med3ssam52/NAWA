@@ -1,19 +1,48 @@
-import { supabase } from '@/lib/supabase';
 import type { Product, Category, Brand, Coupon, Order, Review, Notification, AnnouncementConfig, SpinPrize, User } from '@/types';
 import {
-  mapProduct, mapCategory, mapBrand, mapOrder, mapReview, mapNotification,
-  mapSpinPrize, mapCoupon, mapProfile, SPIN_TYPE_MAP,
-} from '@/lib/mappers';
-import i18n from '@/i18n';
+  INITIAL_CATEGORIES,
+  INITIAL_BRANDS,
+  INITIAL_PRODUCTS,
+  INITIAL_TESTIMONIALS,
+  INITIAL_COUPONS,
+  INITIAL_SPIN_PRIZES,
+} from '@/data/mockData';
 
 function genId(prefix: string) {
-  const num = crypto.randomUUID().slice(0, 8);
-  return `${prefix}-${num}`;
+  return `${prefix}-${crypto.randomUUID().slice(0, 8)}`;
 }
 
-function nullableId(v: string | undefined | null): string | null {
-  return typeof v === 'string' && v.trim() !== '' ? v : null;
-}
+let localCategories: Category[] = [...INITIAL_CATEGORIES];
+let localBrands: Brand[] = [...INITIAL_BRANDS];
+let localProducts: Product[] = [...INITIAL_PRODUCTS];
+let localCoupons: Coupon[] = [...INITIAL_COUPONS];
+let localSpinPrizes: SpinPrize[] = [...INITIAL_SPIN_PRIZES];
+let localTestimonials = [...INITIAL_TESTIMONIALS];
+let localOrders: Order[] = [];
+let localNotifications: Notification[] = [];
+let localStoreSettings = {
+  name: 'NAWA',
+  description: 'أفضل متجر إلكتروني في مصر',
+  phone: '+201234567890',
+  email: 'info@nawaeg.com',
+  address: 'القاهرة، مصر',
+  shippingCost: 30,
+  freeShippingThreshold: 500,
+};
+let localUsers: User[] = [
+  {
+    id: 'user-1',
+    name: 'عميل تجريبي',
+    email: 'user@nawaeg.com',
+    phone: '+201000000000',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+    role: 'customer',
+    addresses: [],
+    orders: [],
+    wishlist: [],
+    notifications: [],
+  },
+];
 
 export type DashboardData = {
   stats: {
@@ -37,539 +66,376 @@ export type DashboardData = {
 export const adminService = {
   // ─── Products ─────────────────────────────────────
   async getProducts(search?: string, categoryId?: string, page = 1, pageSize = 10) {
-    let query = supabase.from('products').select('*', { count: 'exact' });
-    if (categoryId) query = query.eq('category_id', categoryId);
+    let items = [...localProducts];
+    if (categoryId) items = items.filter(p => p.category === categoryId);
     if (search) {
       const q = search.toLowerCase();
-      query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
+      items = items.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q));
     }
+    const total = items.length;
     const start = (page - 1) * pageSize;
-    const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    const rows = !error && data !== null ? (data as unknown as any[]) : [];
-    return { items: rows.map(mapProduct), total: count || rows.length, totalPages: Math.ceil((count || rows.length) / pageSize), page };
+    const paginated = items.slice(start, start + pageSize);
+    return { items: paginated, total, totalPages: Math.ceil(total / pageSize) || 1, page };
   },
 
   async getProduct(id: string) {
-    const { data, error } = await supabase.from('products').select('*').eq('id', id).maybeSingle();
-    if (!error && data) return mapProduct(data as any);
-    return null;
+    return localProducts.find(p => p.id === id) || null;
   },
 
   async getProductCategoryIds(productId: string): Promise<string[]> {
-    const { data, error } = await supabase.from('products').select('category_id').eq('id', productId).maybeSingle();
-    if (error || !data) return [];
-    return data.category_id ? [data.category_id] : [];
+    const prod = localProducts.find(p => p.id === productId);
+    return prod?.category ? [prod.category] : [];
   },
 
   async createProduct(data: Partial<Product>): Promise<Product> {
-    const now = new Date().toISOString();
-    const categoryIds = data.categoryIds && data.categoryIds.length > 0
-      ? data.categoryIds
-      : (data.category ? [data.category] : []);
-    const primaryCategory = categoryIds[0] || '';
-    const product: Product = {
-      id: genId('prod'), name: data.name || '', slug: data.slug || '',
-      description: data.description || '', shortDescription: data.shortDescription || '',
-      price: data.price || 0, oldPrice: data.oldPrice || null, discount: data.discount || null,
-      images: data.images || [],
-      category: primaryCategory, brand: data.brand || '',
-      rating: 0, reviewsCount: 0, stock: data.stock || 0, sku: data.sku || '',
-      specifications: data.specifications || [], tags: data.tags || [],
-      isNew: true, isFeatured: data.isFeatured || false, createdAt: now,
-      colors: data.colors || [], sizes: data.sizes || [],
-      stockByColor: data.stockByColor || {}, stockBySize: data.stockBySize || {},
+    const newProduct: Product = {
+      id: genId('prod'),
+      name: data.name || '',
+      slug: data.slug || `product-${Date.now()}`,
+      description: data.description || '',
+      shortDescription: data.shortDescription || '',
+      price: data.price || 0,
+      oldPrice: data.oldPrice || null,
+      discount: data.discount || null,
+      images: data.images || ['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=800&q=80'],
+      category: data.category || localCategories[0]?.id || '',
+      brand: data.brand || localBrands[0]?.id || '',
+      rating: 5,
+      reviewsCount: 0,
+      stock: data.stock || 10,
+      sku: data.sku || `SKU-${Date.now()}`,
+      specifications: data.specifications || [],
+      tags: data.tags || [],
+      isNew: true,
+      isFeatured: data.isFeatured || false,
+      colors: data.colors || [],
+      sizes: data.sizes || [],
+      stockByColor: data.stockByColor || {},
+      stockBySize: data.stockBySize || {},
+      createdAt: new Date().toISOString(),
     };
-    let oldPrice = product.oldPrice;
-    if (oldPrice != null && oldPrice < product.price) oldPrice = null;
-    const discount = product.discount != null && product.discount >= 0 ? Math.floor(product.discount) : null;
-    if (discount != null && discount > 0 && oldPrice == null) oldPrice = product.price;
-    const dbRow = {
-      id: product.id, name: product.name, slug: product.slug,
-      description: product.description, short_description: product.shortDescription,
-      price: product.price, old_price: oldPrice, discount: discount,
-      images: product.images, category_id: nullableId(primaryCategory), brand_id: nullableId(product.brand),
-      rating: 0, reviews_count: 0, stock: product.stock, sku: product.sku,
-      specifications: product.specifications, tags: product.tags,
-      colors: product.colors, sizes: product.sizes,
-      stock_by_color: product.stockByColor, stock_by_size: product.stockBySize,
-      is_new: true, is_featured: product.isFeatured, created_at: now,
-    };
-    const { error } = await supabase.from('products').insert(dbRow);
-    if (error) throw error;
-    return product;
+    localProducts.unshift(newProduct);
+    return newProduct;
   },
 
   async updateProduct(id: string, data: Partial<Product>): Promise<Product> {
-    const dbRow: Record<string, any> = {};
-    if (data.name !== undefined) dbRow.name = data.name;
-    if (data.slug !== undefined) dbRow.slug = data.slug;
-    if (data.description !== undefined) dbRow.description = data.description;
-    if (data.shortDescription !== undefined) dbRow.short_description = data.shortDescription;
-    if (data.price !== undefined) dbRow.price = data.price;
-    if (data.oldPrice !== undefined) dbRow.old_price = data.oldPrice;
-    if (data.discount !== undefined) dbRow.discount = data.discount != null && data.discount >= 0 ? Math.floor(data.discount) : null;
-    if (data.price !== undefined || data.oldPrice !== undefined) {
-      const price = data.price ?? (await supabase.from('products').select('price').eq('id', id).maybeSingle()).data?.price ?? 0;
-      const oldPrice = data.oldPrice ?? (await supabase.from('products').select('old_price').eq('id', id).maybeSingle()).data?.old_price;
-      if (oldPrice != null && oldPrice < price) dbRow.old_price = null;
-      if ((dbRow.discount ?? 0) > 0 && dbRow.old_price == null) dbRow.old_price = price;
-    }
-    if (data.images !== undefined) dbRow.images = data.images;
-    if (data.category !== undefined || data.categoryIds !== undefined) {
-      const categoryIds = data.categoryIds && data.categoryIds.length > 0
-        ? data.categoryIds
-        : (data.category ? [data.category] : []);
-      dbRow.category_id = categoryIds[0] ? categoryIds[0] : null;
-    }
-    if (data.brand !== undefined) dbRow.brand_id = nullableId(data.brand);
-    if (data.stock !== undefined) dbRow.stock = data.stock;
-    if (data.sku !== undefined) dbRow.sku = data.sku;
-    if (data.specifications !== undefined) dbRow.specifications = data.specifications;
-    if (data.tags !== undefined) dbRow.tags = data.tags;
-    if (data.colors !== undefined) dbRow.colors = data.colors;
-    if (data.sizes !== undefined) dbRow.sizes = data.sizes;
-    if (data.stockByColor !== undefined) dbRow.stock_by_color = data.stockByColor;
-    if (data.stockBySize !== undefined) dbRow.stock_by_size = data.stockBySize;
-    if (data.isFeatured !== undefined) dbRow.is_featured = data.isFeatured;
-    const { data: updated, error } = await supabase.from('products').update(dbRow).eq('id', id).select().maybeSingle();
-    if (error) throw error;
-    if (!updated) throw new Error('PRODUCT_NOT_FOUND');
-    return mapProduct(updated as any);
+    const idx = localProducts.findIndex(p => p.id === id);
+    if (idx === -1) throw new Error('PRODUCT_NOT_FOUND');
+    localProducts[idx] = { ...localProducts[idx], ...data };
+    return localProducts[idx];
   },
 
   async deleteProduct(id: string): Promise<boolean> {
-    const { error } = await supabase.from('products').delete().eq('id', id);
-    return !error;
+    localProducts = localProducts.filter(p => p.id !== id);
+    return true;
   },
 
   // ─── Categories ────────────────────────────────────
   async getCategories() {
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*, products(count)');
-    if (!error && data !== null) return (data as any[]).map(mapCategory);
-    const { data: fallback, error: fallbackError } = await supabase.from('categories').select('*');
-    if (!fallbackError && fallback !== null) return (fallback as any[]).map(mapCategory);
-    return [];
+    return [...localCategories];
   },
 
   async getCategory(id: string) {
-    const { data, error } = await supabase.from('categories').select('*').eq('id', id).single();
-    if (!error && data) return mapCategory(data as any);
-    return null;
+    return localCategories.find(c => c.id === id) || null;
   },
 
   async createCategory(data: Partial<Category>): Promise<Category> {
     const cat: Category = {
-      id: genId('cat'), name: data.name || '', slug: data.slug || '',
-      image: data.image || '', icon: data.icon || 'Folder', productsCount: 0,
+      id: genId('cat'),
+      name: data.name || '',
+      slug: data.slug || `category-${Date.now()}`,
+      image: data.image || 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?auto=format&fit=crop&w=600&q=80',
+      icon: data.icon || 'Folder',
+      productsCount: 0,
     };
-    const { error } = await supabase.from('categories').insert({
-      id: cat.id, name: cat.name, slug: cat.slug, image: cat.image, icon: cat.icon,
-    });
-    if (error) throw error;
+    localCategories.push(cat);
     return cat;
   },
 
   async updateCategory(id: string, data: Partial<Category>): Promise<Category | null> {
-    const dbRow: Record<string, any> = {};
-    if (data.name !== undefined) dbRow.name = data.name;
-    if (data.slug !== undefined) dbRow.slug = data.slug;
-    if (data.image !== undefined) dbRow.image = data.image;
-    if (data.icon !== undefined) dbRow.icon = data.icon;
-    const { data: updated, error } = await supabase.from('categories').update(dbRow).eq('id', id).select().single();
-    if (!error && updated) return mapCategory(updated as any);
-    return null;
+    const idx = localCategories.findIndex(c => c.id === id);
+    if (idx === -1) return null;
+    localCategories[idx] = { ...localCategories[idx], ...data };
+    return localCategories[idx];
   },
 
   async deleteCategory(id: string): Promise<boolean> {
-    const { error } = await supabase.from('categories').delete().eq('id', id);
-    return !error;
+    localCategories = localCategories.filter(c => c.id !== id);
+    return true;
   },
 
   // ─── Brands ────────────────────────────────────────
   async getBrands() {
-    const { data, error } = await supabase
-      .from('brands')
-      .select('*, products(count)');
-    if (!error && data !== null) return (data as any[]).map(mapBrand);
-    const { data: fallback, error: fallbackError } = await supabase.from('brands').select('*');
-    if (!fallbackError && fallback !== null) return (fallback as any[]).map(mapBrand);
-    return [];
+    return [...localBrands];
   },
 
   async getBrand(id: string) {
-    const { data, error } = await supabase.from('brands').select('*').eq('id', id).single();
-    if (!error && data) return mapBrand(data as any);
-    return null;
+    return localBrands.find(b => b.id === id) || null;
   },
 
   async createBrand(data: Partial<Brand>): Promise<Brand> {
     const brand: Brand = {
-      id: genId('brand'), name: data.name || '', slug: data.slug || '',
-      logo: data.logo || '', productsCount: 0,
+      id: genId('brand'),
+      name: data.name || '',
+      slug: data.slug || `brand-${Date.now()}`,
+      logo: data.logo || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=200&q=80',
+      productsCount: 0,
     };
-    const { error } = await supabase.from('brands').insert({
-      id: brand.id, name: brand.name, slug: brand.slug, logo: brand.logo,
-    });
-    if (error) throw error;
+    localBrands.push(brand);
     return brand;
   },
 
   async updateBrand(id: string, data: Partial<Brand>): Promise<Brand | null> {
-    const dbRow: Record<string, any> = {};
-    if (data.name !== undefined) dbRow.name = data.name;
-    if (data.slug !== undefined) dbRow.slug = data.slug;
-    if (data.logo !== undefined) dbRow.logo = data.logo;
-    const { data: updated, error } = await supabase.from('brands').update(dbRow).eq('id', id).select().single();
-    if (!error && updated) return mapBrand(updated as any);
-    return null;
+    const idx = localBrands.findIndex(b => b.id === id);
+    if (idx === -1) return null;
+    localBrands[idx] = { ...localBrands[idx], ...data };
+    return localBrands[idx];
   },
 
   async deleteBrand(id: string): Promise<boolean> {
-    const { error } = await supabase.from('brands').delete().eq('id', id);
-    return !error;
+    localBrands = localBrands.filter(b => b.id !== id);
+    return true;
   },
 
   // ─── Coupons ───────────────────────────────────────
   async getCoupons() {
-    const { data, error } = await supabase.from('coupons').select('*');
-    if (!error && data !== null) return (data as any[]).map(mapCoupon);
-    return [];
+    return [...localCoupons];
   },
 
   async getCoupon(id: string) {
-    const { data, error } = await supabase.from('coupons').select('*').eq('id', id).single();
-    if (!error && data) return mapCoupon(data as any);
-    return null;
+    return localCoupons.find(c => c.id === id) || null;
   },
 
   async createCoupon(data: Partial<Coupon>): Promise<Coupon> {
-    const coupon: Coupon = {
-      id: crypto.randomUUID(), code: (data.code || '').trim().toUpperCase(), discount: data.discount || 0,
-      type: data.type || 'percentage', minOrder: data.minOrder || 0, maxDiscount: data.maxDiscount && data.maxDiscount > 0 ? data.maxDiscount : 0,
-      expiresAt: data.expiresAt || new Date(Date.now() + 365 * 86400000).toISOString(),
-      usageLimit: data.usageLimit ?? 100, usedCount: 0,
+    const coup: Coupon = {
+      id: genId('coup'),
+      code: data.code || 'COUPON10',
+      discount: data.discount || 10,
+      type: data.type || 'percentage',
+      minOrder: data.minOrder || 0,
+      maxDiscount: data.maxDiscount || 100,
+      expiresAt: data.expiresAt || new Date(Date.now() + 30 * 86400000).toISOString(),
+      usageLimit: data.usageLimit || 100,
+      usedCount: 0,
     };
-    const { error } = await supabase.from('coupons').insert({
-      id: coupon.id, code: coupon.code, discount: coupon.discount, type: coupon.type,
-      min_order: coupon.minOrder, max_discount: coupon.maxDiscount > 0 ? coupon.maxDiscount : null,
-      expires_at: coupon.expiresAt, usage_limit: coupon.usageLimit, used_count: 0,
-      is_active: true,
-    });
-    if (error) throw error;
-    return coupon;
+    localCoupons.push(coup);
+    return coup;
   },
 
-  async updateCoupon(id: string, data: Partial<Coupon>): Promise<Coupon> {
-    const dbRow: Record<string, any> = {};
-    if (data.code !== undefined) dbRow.code = (data.code as string).trim().toUpperCase();
-    if (data.discount !== undefined) dbRow.discount = data.discount;
-    if (data.type !== undefined) dbRow.type = data.type;
-    if (data.minOrder !== undefined) dbRow.min_order = data.minOrder;
-    if (data.maxDiscount !== undefined) dbRow.max_discount = data.maxDiscount && data.maxDiscount > 0 ? data.maxDiscount : null;
-    if (data.isActive !== undefined) dbRow.is_active = data.isActive;
-    if (data.expiresAt !== undefined) dbRow.expires_at = data.expiresAt;
-    if (data.usageLimit !== undefined) dbRow.usage_limit = data.usageLimit;
-    const { data: updated, error } = await supabase.from('coupons').update(dbRow).eq('id', id).select().single();
-    if (error) throw error;
-    return mapCoupon(updated as any);
+  async updateCoupon(id: string, data: Partial<Coupon>): Promise<Coupon | null> {
+    const idx = localCoupons.findIndex(c => c.id === id);
+    if (idx === -1) return null;
+    localCoupons[idx] = { ...localCoupons[idx], ...data };
+    return localCoupons[idx];
+  },
+
+  async toggleCouponActive(id: string): Promise<boolean> {
+    return true;
   },
 
   async toggleCoupon(id: string): Promise<Coupon> {
-    const { data: current, error } = await supabase.from('coupons').select('is_active').eq('id', id).single();
-    if (error) throw error;
-    if (!current) throw new Error('Coupon not found');
-    return this.updateCoupon(id, { isActive: !current.is_active });
+    const idx = localCoupons.findIndex(c => c.id === id);
+    if (idx === -1) throw new Error('COUPON_NOT_FOUND');
+    localCoupons[idx] = { ...localCoupons[idx], isActive: !(localCoupons[idx].isActive === false) };
+    return localCoupons[idx];
   },
 
   async deleteCoupon(id: string): Promise<boolean> {
-    const { error } = await supabase.from('coupons').delete().eq('id', id);
-    return !error;
+    localCoupons = localCoupons.filter(c => c.id !== id);
+    return true;
   },
 
   // ─── Orders ────────────────────────────────────────
   async getOrders(status?: string, search?: string, page = 1, pageSize = 10) {
-    let query = supabase.from('orders').select('*', { count: 'exact' });
-    if (status) query = query.eq('status', status);
-    if (search) query = query.ilike('order_number', `%${search}%`);
+    let items = [...localOrders];
+    if (status && status !== 'all') items = items.filter(o => o.status === status);
+    if (search) {
+      const q = search.toLowerCase();
+      items = items.filter(o => o.orderNumber.toLowerCase().includes(q));
+    }
+    const total = items.length;
     const start = (page - 1) * pageSize;
-    const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    const rows = !error && data !== null ? (data as unknown as any[]) : [];
-    return { items: rows.map(mapOrder), total: count || rows.length, totalPages: Math.ceil((count || rows.length) / pageSize), page };
+    return { items: items.slice(start, start + pageSize), total, totalPages: Math.ceil(total / pageSize) || 1, page };
   },
 
   async getOrder(id: string) {
-    const { data, error } = await supabase.from('orders').select('*').eq('id', id).single();
-    if (!error && data) return mapOrder(data as any);
-    return null;
+    return localOrders.find(o => o.id === id) || null;
   },
 
-  async updateOrderStatus(id: string, status: Order['status']): Promise<Order | null> {
-    const trackingEntry = {
-      status,
-      date: new Date().toISOString(),
-      description: status === 'confirmed' ? i18n.t('orders.trackingConfirmed')
-        : status === 'processing' ? i18n.t('orders.trackingProcessing')
-        : status === 'shipped' ? i18n.t('orders.trackingShipped')
-        : status === 'delivered' ? i18n.t('orders.trackingDelivered')
-        : status === 'cancelled' ? i18n.t('orders.trackingCancelled')
-        : i18n.t('orders.trackingUpdated', { status }),
-      completed: status === 'delivered' || status === 'cancelled',
-    };
-    const { data: existing } = await supabase.from('orders').select('tracking').eq('id', id).single();
-    const currentTracking = existing?.tracking || [];
-    const newTracking = [...currentTracking, trackingEntry];
-    const { data: updated, error } = await supabase.from('orders').update({
-      status, updated_at: new Date().toISOString(), tracking: newTracking,
-    }).eq('id', id).select().single();
-    if (!error && updated) return mapOrder(updated as any);
-    return null;
+  async updateOrderStatus(id: string, status: string, notes?: string): Promise<Order | null> {
+    const idx = localOrders.findIndex(o => o.id === id);
+    if (idx === -1) return null;
+    localOrders[idx].status = status;
+    if (notes) localOrders[idx].notes = notes;
+    return localOrders[idx];
   },
 
   async deleteOrder(id: string): Promise<boolean> {
-    const { error } = await supabase.from('orders').delete().eq('id', id);
-    return !error;
+    localOrders = localOrders.filter(o => o.id !== id);
+    return true;
   },
 
   // ─── Reviews ───────────────────────────────────────
   async getReviews(productId?: string, page = 1, pageSize = 10) {
-    let query = supabase.from('reviews').select('*', { count: 'exact' });
-    if (productId) query = query.eq('product_id', productId);
-    const start = (page - 1) * pageSize;
-    const { data, error, count } = await query.range(start, start + pageSize - 1).order('created_at', { ascending: false });
-    const rows = !error && data !== null ? (data as unknown as any[]) : [];
-    return { items: rows.map(mapReview), total: count || rows.length, totalPages: Math.ceil((count || rows.length) / pageSize), page };
+    return { items: [], total: 0, totalPages: 1, page };
   },
 
   async deleteReview(id: string): Promise<boolean> {
-    const { error } = await supabase.from('reviews').delete().eq('id', id);
-    return !error;
+    return true;
   },
 
   // ─── Notifications ─────────────────────────────────
-  async getNotifications(page = 1, pageSize = 20) {
-    let query = supabase.from('notifications').select('*', { count: 'exact' }).order('created_at', { ascending: false });
-    const start = (page - 1) * pageSize;
-    const { data, error, count } = await query.range(start, start + pageSize - 1);
-    const rows = !error && data !== null ? (data as unknown as any[]) : [];
-    return { items: rows.map(mapNotification), total: count || rows.length, totalPages: Math.ceil((count || rows.length) / pageSize), page };
+  async getNotifications(page = 1, pageSize = 10) {
+    return { items: localNotifications, total: localNotifications.length, totalPages: 1, page };
   },
 
   async createNotification(data: Partial<Notification>): Promise<Notification> {
     const notif: Notification = {
-      id: genId('notif'), userId: data.userId, type: data.type || 'info', title: data.title || '',
-      message: data.message || '', read: false, createdAt: new Date().toISOString(),
+      id: genId('notif'),
+      type: data.type || 'info',
+      title: data.title || '',
+      message: data.message || '',
+      read: false,
+      createdAt: new Date().toISOString(),
     };
-    const { error } = await supabase.from('notifications').insert({
-      id: notif.id, type: notif.type, title: notif.title,
-      message: notif.message, read: false, created_at: notif.createdAt,
-      user_id: data.userId || '',
-    });
-    if (error) throw error;
+    localNotifications.unshift(notif);
     return notif;
   },
 
   async markNotificationRead(id: string): Promise<boolean> {
-    const { error } = await supabase.from('notifications').update({ read: true }).eq('id', id);
-    return !error;
+    const idx = localNotifications.findIndex(n => n.id === id);
+    if (idx !== -1) localNotifications[idx].read = true;
+    return true;
   },
 
   async deleteNotification(id: string): Promise<boolean> {
-    const { error } = await supabase.from('notifications').delete().eq('id', id);
-    return !error;
+    localNotifications = localNotifications.filter(n => n.id !== id);
+    return true;
   },
 
-  // ─── Users ─────────────────────────────────────────
-  async getUsers(search?: string) {
-    const { data, error } = await supabase.from('profiles').select('*');
-    if (!error && data !== null) {
-      let rows: User[] = (data as any[]).map(mapProfile);
-      if (search) {
-        const q = search.toLowerCase();
-        rows = rows.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
-      }
-      const ids = rows.map((u) => u.id);
-      let counts: Record<string, number> = {};
-      if (ids.length > 0) {
-        const { data: orderRows } = await supabase.from('orders').select('user_id');
-        if (orderRows) {
-          counts = orderRows.reduce((acc: Record<string, number>, o) => {
-            const uid = (o as any).user_id || '';
-            acc[uid] = (acc[uid] || 0) + 1;
-            return acc;
-          }, {});
-        }
-      }
-      return rows.map((u) => ({ ...u, ordersCount: counts[u.id] || 0 }));
-    }
-    return [];
-  },
-
-  // ─── Stats ─────────────────────────────────────────
-  async getStats() {
-    const { data, error } = await supabase.rpc('get_dashboard_data');
-    if (!error && data) {
-      const d = data as any;
-      return {
-        totalProducts: (d.total_products ?? data.stats?.total_products) || 0,
-        totalOrders: (d.total_orders ?? data.stats?.total_orders) || 0,
-        totalRevenue: (d.total_revenue ?? data.stats?.total_revenue) || 0,
-        totalUsers: (d.total_users ?? data.stats?.total_users) || 0,
-        totalCategories: (d.total_categories ?? data.stats?.total_categories) || 0,
-        totalBrands: (d.total_brands ?? data.stats?.total_brands) || 0,
-        totalCoupons: (d.total_coupons ?? data.stats?.total_coupons) || 0,
-        pendingOrders: (d.pending_orders ?? data.stats?.pending_orders) || 0,
-        lowStockProducts: (d.low_stock_products ?? data.stats?.low_stock_products) || 0,
-      };
-    }
-    const { count: totalProducts } = await supabase.from('products').select('*', { count: 'exact', head: true });
-    const { data: ordersData } = await supabase.from('orders').select('status,total,user_id');
-    const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-    const { count: totalCategories } = await supabase.from('categories').select('*', { count: 'exact', head: true });
-    const { count: totalBrands } = await supabase.from('brands').select('*', { count: 'exact', head: true });
-    const { count: totalCoupons } = await supabase.from('coupons').select('*', { count: 'exact', head: true });
-    const ordersList = ordersData || [];
-    const totalRevenue = ordersList.reduce((s, o) => s + (o.total || 0), 0);
-    const pendingOrders = ordersList.filter((o) => o.status === 'pending').length;
-    return {
-      totalProducts: totalProducts ?? 0,
-      totalOrders: ordersList.length,
-      totalRevenue,
-      totalUsers: totalUsers ?? 0,
-      totalCategories: totalCategories ?? 0,
-      totalBrands: totalBrands ?? 0,
-      totalCoupons: totalCoupons ?? 0,
-      pendingOrders,
-      lowStockProducts: 0,
-    };
-  },
-
-  // ─── Dashboard ─────────────────────────────────────
-  async getDashboardData(): Promise<DashboardData> {
-    const { data, error } = await supabase.rpc('get_dashboard_data');
-    if (!error && data) {
-      const d = data as any;
-      const st = d.stats ?? {};
-      return {
-        stats: {
-          totalProducts: st.total_products ?? 0,
-          totalOrders: st.total_orders ?? 0,
-          totalRevenue: Number(st.total_revenue) || 0,
-          totalUsers: st.total_users ?? 0,
-          totalCategories: st.total_categories ?? 0,
-          totalBrands: st.total_brands ?? 0,
-          totalCoupons: st.total_coupons ?? 0,
-          pendingOrders: st.pending_orders ?? 0,
-          lowStockProducts: st.low_stock_products ?? 0,
-        },
-        monthlyRevenue: d.monthly_revenue ?? [],
-        orderStatuses: d.order_statuses ?? [],
-        topProducts: d.top_products ?? [],
-        recentOrders: d.recent_orders ?? [],
-        lowStockProducts: d.low_stock_products ?? [],
-      };
-    }
-    return {
-      stats: await this.getStats(),
-      monthlyRevenue: [], orderStatuses: [], topProducts: [], recentOrders: [], lowStockProducts: [],
-    };
-  },
-
-  // ─── Spin Prizes ────────────────────────────────────
+  // ─── Spin Prizes ───────────────────────────────────
   async getSpinPrizes() {
-    const { data, error } = await supabase.from('spin_prizes').select('*');
-    if (!error && data !== null) return (data as any[]).map(mapSpinPrize);
-    return [];
-  },
-
-  async getSpinPrize(id: string) {
-    const { data, error } = await supabase.from('spin_prizes').select('*').eq('id', id).single();
-    if (!error && data) return mapSpinPrize(data as any);
-    return null;
+    return [...localSpinPrizes];
   },
 
   async createSpinPrize(data: Partial<SpinPrize>): Promise<SpinPrize> {
     const prize: SpinPrize = {
-      id: genId('spin'), label: data.label || '', type: data.type || 'tryAgain',
-      value: data.value, color: data.color || '#2563EB',
-      weight: data.weight || 1, isActive: data.isActive ?? true,
+      id: genId('prize'),
+      label: data.label || '',
+      type: data.type || 'percentage',
+      value: data.value,
+      couponCode: data.couponCode,
+      color: data.color || '#2563EB',
+      weight: data.weight || 10,
+      isActive: data.isActive ?? true,
     };
-    const { error } = await supabase.from('spin_prizes').insert({
-      id: prize.id, label: prize.label, type: SPIN_TYPE_MAP[prize.type] || prize.type,
-      value: prize.value, color: prize.color, weight: prize.weight, is_active: prize.isActive,
-      coupon_code: data.couponCode || null,
-    });
-    if (error) throw error;
+    localSpinPrizes.push(prize);
     return prize;
   },
 
-  async updateSpinPrize(id: string, data: Partial<SpinPrize>): Promise<SpinPrize | null> {
-    const dbRow: Record<string, any> = {};
-    if (data.label !== undefined) dbRow.label = data.label;
-    if (data.type !== undefined) dbRow.type = SPIN_TYPE_MAP[data.type] || data.type;
-    if (data.value !== undefined) dbRow.value = data.value;
-    if (data.color !== undefined) dbRow.color = data.color;
-    if (data.weight !== undefined) dbRow.weight = data.weight;
-    if (data.isActive !== undefined) dbRow.is_active = data.isActive;
-    if (data.couponCode !== undefined) dbRow.coupon_code = data.couponCode;
-    const { data: updated, error } = await supabase.from('spin_prizes').update(dbRow).eq('id', id).select().single();
-    if (!error && updated) return mapSpinPrize(updated as any);
-    return null;
-  },
-
   async deleteSpinPrize(id: string): Promise<boolean> {
-    const { error } = await supabase.from('spin_prizes').delete().eq('id', id);
-    return !error;
+    localSpinPrizes = localSpinPrizes.filter(p => p.id !== id);
+    return true;
   },
 
-  // ─── Store Settings ──────────────────────────────
-  async getStoreSettings() {
-    const { data } = await supabase.from('store_settings').select('*').single();
-    return {
-      name: data?.name || '',
-      description: data?.description || '',
-      phone: data?.phone || '+201234567890',
-      email: data?.email || 'info@zahieg.com',
-      address: data?.address || '',
-      shippingCost: Number(data?.shipping_cost) || 30,
-      freeShippingThreshold: Number(data?.free_shipping_threshold) || 500,
-    };
+  async updateSpinPrize(id: string, data: Partial<SpinPrize>): Promise<SpinPrize | null> {
+    const idx = localSpinPrizes.findIndex(p => p.id === id);
+    if (idx === -1) return null;
+    localSpinPrizes[idx] = { ...localSpinPrizes[idx], ...data };
+    return localSpinPrizes[idx];
   },
 
-  async updateStoreSettings(settings: Record<string, any>) {
-    const dbRow: Record<string, any> = {};
-    if (settings.name !== undefined) dbRow.name = settings.name;
-    if (settings.description !== undefined) dbRow.description = settings.description;
-    if (settings.phone !== undefined) dbRow.phone = settings.phone;
-    if (settings.email !== undefined) dbRow.email = settings.email;
-    if (settings.address !== undefined) dbRow.address = settings.address;
-    if (settings.shippingCost !== undefined) dbRow.shipping_cost = settings.shippingCost;
-    if (settings.freeShippingThreshold !== undefined) dbRow.free_shipping_threshold = settings.freeShippingThreshold;
-    const { data } = await supabase.from('store_settings').upsert({ id: 'default', ...dbRow }).select().single();
-    return {
-      name: data?.name || dbRow.name || '',
-      description: data?.description || dbRow.description || '',
-      phone: data?.phone || dbRow.phone || '+201234567890',
-      email: data?.email || dbRow.email || 'info@zahieg.com',
-      address: data?.address || dbRow.address || '',
-      shippingCost: Number(data?.shipping_cost ?? dbRow.shipping_cost) || 30,
-      freeShippingThreshold: Number(data?.free_shipping_threshold ?? dbRow.free_shipping_threshold) || 500,
-    };
+  async toggleSpinPrizeActive(id: string): Promise<boolean> {
+    const idx = localSpinPrizes.findIndex(p => p.id === id);
+    if (idx !== -1) localSpinPrizes[idx].isActive = !localSpinPrizes[idx].isActive;
+    return true;
   },
 
-  // ─── Announcement Bar ──────────────────────────────
+  // ─── Users ─────────────────────────────────────────
+  async getUsers(search?: string, role?: string, page = 1, pageSize = 10) {
+    let items = [...localUsers];
+    if (role && role !== 'all') items = items.filter(u => u.role === role);
+    if (search) {
+      const q = search.toLowerCase();
+      items = items.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
+    }
+    const total = items.length;
+    return { items, total, totalPages: 1, page };
+  },
+
+  async updateUserRole(id: string, role: 'admin' | 'customer'): Promise<boolean> {
+    const idx = localUsers.findIndex(u => u.id === id);
+    if (idx !== -1) localUsers[idx].role = role;
+    return true;
+  },
+
+  // ─── Store Settings / Announcement ────────────────
   async getAnnouncement(): Promise<AnnouncementConfig> {
-    const { data } = await supabase.from('announcements').select('*').single();
-    return { text: data?.text || '', enabled: data ? !!data.enabled : true, dismissible: data ? (data.dismissible ?? true) : true };
+    return {
+      enabled: true,
+      text: 'عروض الصيف المذهلة! خصومات تصل إلى 50% على تشكيلة نوى حصرياً',
+      dismissible: true,
+    };
   },
 
   async updateAnnouncement(config: Partial<AnnouncementConfig>): Promise<AnnouncementConfig> {
-    const dbRow: Record<string, any> = { id: 'default' };
-    if (config.text !== undefined) dbRow.text = config.text;
-    if (config.enabled !== undefined) dbRow.enabled = config.enabled;
-    if (config.dismissible !== undefined) dbRow.dismissible = config.dismissible;
-    const { data } = await supabase.from('announcements').upsert(dbRow).select().single();
-    return { text: data?.text || config.text || '', enabled: data ? !!data.enabled : (config.enabled ?? true), dismissible: data ? (data.dismissible ?? true) : (config.dismissible ?? true) };
+    return {
+      enabled: config.enabled ?? true,
+      text: config.text || '',
+      dismissible: config.dismissible ?? true,
+    };
+  },
+
+  async getStoreSettings() {
+    return { ...localStoreSettings };
+  },
+
+  async updateStoreSettings(data: Partial<typeof localStoreSettings>) {
+    localStoreSettings = { ...localStoreSettings, ...data };
+    return { ...localStoreSettings };
+  },
+
+  // ─── Dashboard Stats ──────────────────────────────
+  async getDashboardData(): Promise<DashboardData> {
+    return {
+      stats: {
+        totalProducts: localProducts.length,
+        totalOrders: localOrders.length,
+        totalRevenue: 12500,
+        totalUsers: localUsers.length,
+        totalCategories: localCategories.length,
+        totalBrands: localBrands.length,
+        totalCoupons: localCoupons.length,
+        pendingOrders: 0,
+        lowStockProducts: 0,
+      },
+      monthlyRevenue: [
+        { month_date: '2026-01', month_key: 'يناير', orders_count: 12, revenue: 4500 },
+        { month_date: '2026-02', month_key: 'فبراير', orders_count: 18, revenue: 8000 },
+      ],
+      orderStatuses: [
+        { status: 'delivered', count: 15 },
+        { status: 'shipped', count: 3 },
+      ],
+      topProducts: localProducts.slice(0, 5).map(p => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        price: p.price,
+        images: p.images,
+        rating: p.rating,
+        reviews_count: p.reviewsCount,
+        stock: p.stock,
+        is_featured: p.isFeatured,
+      })),
+      recentOrders: [],
+      lowStockProducts: [],
+    };
+  },
+
+  async clearAllData(): Promise<boolean> {
+    localProducts = [];
+    localOrders = [];
+    return true;
   },
 };

@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - User Profiles Schema
+-- NAWA - User Profiles Schema
 -- Linked to Supabase Auth (auth.users) via foreign key
 -- ============================================================================
 

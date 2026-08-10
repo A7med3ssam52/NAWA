@@ -1,8 +1,8 @@
-# تقرير الفحص الشامل — جاهزية موقع زاهي للإنتاج (Production)
+# تقرير الفحص الشامل — جاهزية موقع نوى للإنتاج (Production)
 
 **التاريخ:** 2 أغسطس 2026
-**المشروع:** ZAHIEG (Vite 6 + React 19 + TypeScript + Tailwind + Supabase)
-**المرجع:** https://zahieg.com — ريبو GitHub: `A7med3ssam52/zahieg`
+**المشروع:** NAWA (Vite 6 + React 19 + TypeScript + Tailwind + Supabase)
+**المرجع:** https://nawaeg.com — ريبو GitHub: `A7med3ssam52/nawaeg`
 
 ---
 

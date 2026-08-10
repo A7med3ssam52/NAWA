@@ -12,7 +12,7 @@ export function AdminSettingsPage() {
   const { t, i18n } = useTranslation();
   const [storeInfo, setStoreInfo] = useState({ name: SITE_NAME(), description: SITE_DESCRIPTION() });
   const [shipping, setShipping] = useState({ cost: '30', freeThreshold: '500' });
-  const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@zahieg.com', address: t('nav.location') });
+  const [contact, setContact] = useState({ phone: '+201234567890', email: 'info@nawaeg.com', address: t('nav.location') });
   const [announcement, setAnnouncement] = useState<{ text: string; enabled: boolean; dismissible: boolean }>({ text: '', enabled: false, dismissible: true });
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export function AdminSettingsPage() {
       if (s) {
         setStoreInfo({ name: s.name || SITE_NAME(), description: s.description || SITE_DESCRIPTION() });
         setShipping({ cost: String(s.shippingCost || 30), freeThreshold: String(s.freeShippingThreshold || 500) });
-        setContact({ phone: s.phone || '+201234567890', email: s.email || 'info@zahieg.com', address: s.address || t('nav.location') });
+        setContact({ phone: s.phone || '+201234567890', email: s.email || 'info@nawaeg.com', address: s.address || t('nav.location') });
       }
     });
   }, []);

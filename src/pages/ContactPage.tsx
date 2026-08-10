@@ -80,7 +80,7 @@ export function ContactPage() {
               </div>
               <div>
                 <p className="text-sm font-bold font-cairo text-gray-900">{t('nav.email')}</p>
-                <a href="mailto:info@zahieg.com" className="text-xs text-secondary font-cairo hover:underline">info@zahieg.com</a>
+                <a href="mailto:info@nawaeg.com" className="text-xs text-secondary font-cairo hover:underline">info@nawaeg.com</a>
               </div>
             </div>
             <div className="flex items-center gap-3 mb-4">

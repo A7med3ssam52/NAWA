@@ -1,5 +1,5 @@
-import { supabase } from '@/lib/supabase';
 import type { AccountingEntry } from '@/types';
+import { supabase } from '@/lib/supabase';
 
 export const ACCOUNTING_CATEGORIES = [
   { value: 'fabric', labelAr: 'القماش', labelEn: 'Fabric' },

@@ -22,8 +22,8 @@ export function AdminUsersPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const data = await adminService.getUsers(search || undefined) as UserWithOrders[];
-    setUsers(data);
+    const data = await adminService.getUsers(search || undefined);
+    setUsers(data.items as UserWithOrders[]);
     setLoading(false);
   }, [search]);
 

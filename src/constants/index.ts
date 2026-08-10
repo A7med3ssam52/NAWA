@@ -2,7 +2,7 @@ import i18n from '@/i18n';
 
 export const SITE_NAME = () => i18n.t('common.siteName');
 export const SITE_DESCRIPTION = () => i18n.t('common.siteDescription');
-export const SITE_URL = 'https://zahieg.com';
+export const SITE_URL = 'https://nawaeg.com';
 
 export const API_BASE_URL = '/api';
 

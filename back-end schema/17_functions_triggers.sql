@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Cross-Cutting Functions & Triggers
+-- NAWA - Cross-Cutting Functions & Triggers
 -- Functions that span multiple tables or are used by the application layer
 -- NOTE: Table-specific triggers are in their respective files
 -- ============================================================================

@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Optional Features Schema
+-- NAWA - Optional Features Schema
 -- Depends on: profiles, products
 -- These are non-critical features that enhance UX
 -- ============================================================================

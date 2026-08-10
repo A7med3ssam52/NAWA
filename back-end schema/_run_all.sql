@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Comprehensive Database Schema
+-- NAWA - Comprehensive Database Schema
 -- Run files in this exact order to respect foreign key dependencies
 -- Each file is idempotent (safe to run multiple times)
 -- ============================================================================

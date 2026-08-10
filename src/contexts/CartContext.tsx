@@ -1,7 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, useState, type ReactNode } from 'react';
 import type { CartItem, Product, Coupon } from '@/types';
 import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
-import { supabase } from '@/lib/supabase';
 
 interface CartState {
   items: CartItem[];
@@ -104,27 +103,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return initial;
   });
 
-  const [shippingConfig, setShippingConfig] = useState({ cost: SHIPPING_COST, threshold: FREE_SHIPPING_THRESHOLD });
-
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const { data } = await supabase
-          .from('store_settings')
-          .select('shipping_cost, free_shipping_threshold')
-          .single();
-        if (!active) return;
-        if (data) {
-          setShippingConfig({
-            cost: Number(data.shipping_cost) || SHIPPING_COST,
-            threshold: Number(data.free_shipping_threshold) || FREE_SHIPPING_THRESHOLD,
-          });
-        }
-      } catch {}
-    })();
-    return () => { active = false; };
-  }, []);
+  const [shippingConfig] = useState({ cost: SHIPPING_COST, threshold: FREE_SHIPPING_THRESHOLD });
 
   useEffect(() => {
     const timer = setTimeout(() => {

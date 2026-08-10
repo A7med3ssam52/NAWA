@@ -1,5 +1,4 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
 import { mapProduct } from '@/lib/mappers';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Product } from '@/types';
@@ -50,54 +49,19 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      loadWishlistFromProfile();
-    }
-  }, [user?.id, isAuthenticated]);
-
-  async function loadWishlistFromProfile() {
-    if (!user?.id) return;
-    const { data } = await supabase.from('wishlist_items').select('product_id').eq('user_id', user.id);
-    if (data && data.length > 0) {
-      const productIds = data.map((item) => item.product_id);
-      const { data: products } = await supabase.from('products').select('*').in('id', productIds);
-      if (products) dispatch({ type: 'SET', payload: (products as any[]).map(mapProduct) });
-    }
-  }
-
-  async function syncWishlistToProfile(productIds: string[]) {
-    if (!user?.id) return;
-    await supabase.from('wishlist_items').delete().eq('user_id', user.id);
-    if (productIds.length > 0) {
-      const inserts = productIds.map((product_id) => ({ user_id: user.id, product_id }));
-      await supabase.from('wishlist_items').insert(inserts);
-    }
-  }
-
-  useEffect(() => {
     const timer = setTimeout(() => {
       localStorage.setItem('wishlist', JSON.stringify(state));
     }, 300);
     return () => clearTimeout(timer);
   }, [state]);
 
-  const toggleItem = useCallback(async (product: Product) => {
-    const exists = state.items.find((p) => p.id === product.id);
-    let newIds: string[];
-    if (exists) {
-      newIds = state.items.filter((p) => p.id !== product.id).map((p) => p.id);
-    } else {
-      newIds = [product.id, ...state.items.map((p) => p.id)];
-    }
-    if (isAuthenticated) await syncWishlistToProfile(newIds);
+  const toggleItem = useCallback((product: Product) => {
     dispatch({ type: 'TOGGLE', payload: product });
-  }, [state.items, isAuthenticated]);
+  }, []);
 
-  const removeItem = useCallback(async (id: string) => {
-    const newIds = state.items.filter((p) => p.id !== id).map((p) => p.id);
-    if (isAuthenticated) await syncWishlistToProfile(newIds);
+  const removeItem = useCallback((id: string) => {
     dispatch({ type: 'REMOVE', payload: id });
-  }, [state.items, isAuthenticated]);
+  }, []);
 
   const isInWishlist = useCallback((id: string) =>
     state.items.some((p) => p.id === id),

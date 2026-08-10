@@ -1,6 +1,6 @@
 # تقرير Agent #7 — فحص توافق عجلة الحظ (Spin Wheel)
 
-**المشروع:** ZAHIEG — متجر (React + TypeScript + Supabase)
+**المشروع:** NAWA — متجر (React + TypeScript + Supabase)
 **التاريخ:** 2026-08-02
 **النطاق:** جداول `spin_prizes` و`spin_history` في السكيما، صفحة `AdminSpinPrizesPage`، طبقة `adminService`، سياق المتجر `SpinContext` ومكوّنات العجلة.
 **الوضع:** فحص فقط — لم يتم تعديل أي كود.

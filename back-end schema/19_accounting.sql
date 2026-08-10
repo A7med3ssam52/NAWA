@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Accounting / Bookkeeping Module
+-- NAWA - Accounting / Bookkeeping Module
 -- Simple ledger for recording expenses, income, and tracking net profit
 -- ============================================================================
 

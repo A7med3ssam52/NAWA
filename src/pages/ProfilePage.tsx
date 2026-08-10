@@ -14,9 +14,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth, useWishlist } from '@/contexts';
 import { useMyOrders, useMyNotifications, useMarkNotificationRead, useMarkAllRead, useDeleteNotification } from '@/api';
-import { supabase } from '@/lib/supabase';
 import { uploadImage } from '@/lib/upload';
 import { mapReview } from '@/lib/mappers';
+import { supabase } from '@/lib/supabase';
 import {
   Tabs, Button, Input, Modal, Badge, EmptyState, Divider, Spinner, Select, Textarea,
 } from '@/components/ui';

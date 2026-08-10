@@ -1,10 +1,10 @@
-# ZAHIEG — خطة تنفيذ الربط الكامل (Admin + Client) مع Supabase الحقيقي
+# NAWA — خطة تنفيذ الربط الكامل (Admin + Client) مع Supabase الحقيقي
 
 > Execution target: make BOTH the admin dashboard and the client storefront fully functional against the real Supabase schema (`supabase-full-schema.sql`), removing all mock/static/seed-data dependencies, keeping the app usable (empty-state UI) when the DB is empty.
 
 ## 0. Ground truth (verified 2026-08-07 — DO NOT contradict)
 
-- **The ONLY authoritative schema file is `C:\Users\admin\Downloads\ZAHIEG\supabase-full-schema.sql`** (1411 lines). The files `supabase-schema.sql`, `supabase-complete.sql`, `supabase-seed.sql` and the `back-end schema/` folder are **LEGACY / OUTDATED** (they use `profiles(auth_id)` instead of `profiles(id = auth.users.id)`). Run statements for DB changes must come from `supabase-full-schema.sql` (or new migration files that mirror its conventions). Never port code from the legacy files.
+- **The ONLY authoritative schema file is `C:\Users\admin\Desktop\NAWAEG\supabase-full-schema.sql`** (1411 lines). The files `supabase-schema.sql`, `supabase-complete.sql`, `supabase-seed.sql` and the `back-end schema/` folder are **LEGACY / OUTDATED** (they use `profiles(auth_id)` instead of `profiles(id = auth.users.id)`). Run statements for DB changes must come from `supabase-full-schema.sql` (or new migration files that mirror its conventions). Never port code from the legacy files.
 - `.env` already contains a live project: `VITE_SUPABASE_URL=https://iphoatsfnzhgqmcmzosk.supabase.co`, `VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_*`. Do not change them.
 - `npm run lint` = `tsc --noEmit`. `npm run build` = `tsc -b && vite build`. There **is no eslint installed** (the `lint:eslint` script references a missing dependency) — do not use it.
 - Current data flow (to be removed): `src/data/index.ts` (module arrays seeded from `src/data/*.json`) ← `loadAllData()` in `src/App.tsx` ← services write back via `set*Data()`.
@@ -151,7 +151,7 @@ Always drive everything from `supabase.auth`. The profiles row is auto-created b
 - Wire them in `src/routes/index.tsx` around the affected children.
 - `LoginPage` (LoginPage.tsx) — verify it uses the new `login()` and redirects `role==='admin' ? '/admin' : '/'` and renders the register path properly.
 
-**Exit criteria:** login with `kiady@zahieg.com / 123456` (or any user whose `profiles.role='admin'`) lands on `/admin`; customers get role-gated out of `/admin`.
+**Exit criteria:** login with `admin@nawaeg.com / 123456` (or any user whose `profiles.role='admin'`) lands on `/admin`; customers get role-gated out of `/admin`.
 
 ---
 
@@ -159,7 +159,7 @@ Always drive everything from `supabase.auth`. The profiles row is auto-created b
 
 Every admin page already calls `adminService.*`; the fixes are data-source and mapping. Exact file→method→table:
 
-| File (absolute path under `C:\Users\admin\Downloads\ZAHIEG\`) | Method(s) | Source (table/view) |
+| File (absolute path under `C:\Users\admin\Desktop\NAWAEG\`) | Method(s) | Source (table/view) |
 |---|---|---|
 | `src/pages/admin/AdminDashboardPage.tsx` | `adminService.getDashboardData()` | `get_dashboard_data()` RPC (stats, monthly_revenue, order_statuses, top_products, recent_orders, low_stock_products) |
 | `src/pages/admin/AdminProductsPage.tsx` | `getProducts/createProduct/updateProduct/deleteProduct` + `uploadImage('products',file)` | `products` |
@@ -263,7 +263,7 @@ Keeps `discount_value` and `valid` semantics. For `free_shipping` set the discou
   - After any admin mutation: `queryClient.invalidateQueries({queryKey:['products']})`, `['categories']`, `['brands']`, `['coupons']`, `['orders']`, `['reviews']`, `['notifications']`, `['admin-dashboard']`, `['spin-prizes']`.
   - After order status change: invalidate `['orders']`, `['product-detail',*]` (if stock changed), `['my-orders']`, `['admin-dashboard']`.
   - After review submit: invalidate `['product-reviews', productId]`, `['product', slug]`, `['reviews']`.
-- **Realtime**: the schema does NOT enable `supabase_realtime`. Create ONE migration file `C:\Users\admin\Downloads\ZAHIEG\supabase-realtime.sql` (idempotent):
+- **Realtime**: the schema does NOT enable `supabase_realtime`. Create ONE migration file `C:\Users\admin\Desktop\NAWAEG\supabase-realtime.sql` (idempotent):
 ```sql
 alter publication supabase_realtime add table notifications;
 alter publication supabase_realtime add table orders;
@@ -327,7 +327,7 @@ npm run build         # tsc -b && vite build (final gate)
 ```
 Manual test checklist (two browser contexts):
 
-**Admin (kiady@zahieg.com / 123456 — must have `profiles.role='admin'`, created via SQL `UPDATE profiles SET role='admin' WHERE email='kiady@zahieg.com';` after the auth user exists):**
+**Admin (admin@nawaeg.com / 123456 — must have `profiles.role='admin'`, created via SQL `UPDATE profiles SET role='admin' WHERE email='admin@nawaeg.com';` after the auth user exists):**
 - Login lands `/admin`, badge counts orders, dashboard card numbers match `SELECT * FROM get_dashboard_data();`.
 - Products: create → row visible; edit price/stock; delete.
 - Categories/brands: create with image uploads to the right bucket.
@@ -351,7 +351,7 @@ Manual test checklist (two browser contexts):
 ## 8. Risks / unknowns (flag for the executor)
 
 1. **Multiple SQL files** — only `supabase-full-schema.sql` is authoritative; legacy `supabase-schema.sql`/`supabase-complete.sql`/`supabase-seed.sql` use a different `profiles(auth_id)` shape and MUST NOT be applied. The repo also has uncommitted `supabase-full-schema.sql.bak` (backup copy of the authoritative file) — treat it as read-only reference.
-2. **Admin user creation** — admin account exists in seed only as `users.json` (fake `cid-*`); the real DB has `auth.users` + `profiles`. The executor must run `UPDATE profiles SET role='admin' WHERE email='kiady@zahieg.com';` and ensure `kiady@zahieg.com` exists as an auth user (create via `supabase dashboard → Authentication → Add user`, with password `123456`) before testing /admin.
+2. **Admin user creation** — admin account exists in seed only as `users.json` (fake `cid-*`); the real DB has `auth.users` + `profiles`. The executor must run `UPDATE profiles SET role='admin' WHERE email='admin@nawaeg.com';` and ensure `admin@nawaeg.com` exists as an auth user (create via `supabase dashboard → Authentication → Add user`, with password `123456`) before testing /admin.
 3. **Realtime** requires `supabase-realtime.sql` migration; until applied, notifications/orders only update on refetch — acceptable fallback behavior must be kept.
 4. **Coupon usage counter** won't increment via client path (trigger revoked `increment_coupon_usage`); consider `GRANT EXECUTE … TO authenticated` in a small migration if needed — otherwise `used_count` stays static (seed values only).
 5. **Spin prize coupon issuance** is admin-gated (`coupons` insert needs `is_admin()`); customers will 415 on `claimPrize` → implement the no-op message + spin_history recording only (Growth #8 in Risks).

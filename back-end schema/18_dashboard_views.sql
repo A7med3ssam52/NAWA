@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Dashboard Views
+-- NAWA - Dashboard Views
 -- Pre-computed aggregations for admin and user dashboards
 -- ============================================================================
 

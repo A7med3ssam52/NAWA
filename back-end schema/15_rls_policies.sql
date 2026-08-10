@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Row Level Security (RLS) Policies
+-- NAWA - Row Level Security (RLS) Policies
 -- Applied to ALL tables after they are created
 -- ============================================================================
 

@@ -5,8 +5,6 @@ import {
   Store,
   MessageCircle,
   Facebook,
-  Instagram,
-  Music2,
   Languages,
   MapPin,
   type LucideIcon,
@@ -23,21 +21,16 @@ type ContactLink = {
 };
 
 const socialLinks: ContactLink[] = [
-  { id: 2, key: 'store', url: 'https://zahieg.com/products', icon: Store, color: '#C79B4A' },
+  { id: 2, key: 'store', url: 'https://nawaeg.com/products', icon: Store, color: '#C79B4A' },
   { id: 5, key: 'whatsapp', url: `https://wa.me/${WHATSAPP_NUMBER}`, icon: MessageCircle, color: '#25D366' },
   { id: 6, key: 'facebook', url: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
-  { id: 7, key: 'instagram', url: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', icon: Instagram, color: '#E4405F' },
-  { id: 8, key: 'tiktok', url: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', icon: Music2, color: '#000000' },
   { id: 1, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#214458' },
 ];
 
 const footerSocials: ContactLink[] = [
   { id: 1, key: 'whatsapp', url: `https://wa.me/${WHATSAPP_NUMBER}`, icon: MessageCircle, color: '#25D366' },
   { id: 2, key: 'facebook', url: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', icon: Facebook, color: '#1877F2' },
-  { id: 3, key: 'instagram', url: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', icon: Instagram, color: '#E4405F' },
-  { id: 4, key: 'tiktok', url: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', icon: Music2, color: '#000000' },
   { id: 5, key: 'contact', url: `tel:+${WHATSAPP_NUMBER}`, icon: Phone, color: '#4CAF50' },
-  { id: 6, key: 'location', url: 'https://www.google.com/maps/search/?api=1&query=Zahieg+Cairo', icon: MapPin, color: '#F77F00' },
 ];
 
 export function ContactUsPage() {
@@ -65,7 +58,7 @@ export function ContactUsPage() {
           <div className="header-brand">
             <img
               className="header-logo"
-              src="/images/zahieg.png"
+              src="/images/nawa.png"
               alt={t('contactPage.headerTitle')}
               width="56"
               height="56"
@@ -95,7 +88,7 @@ export function ContactUsPage() {
               <div className="hero-logo">
                 <img
                   className="hero-logo-img"
-                  src="/images/zahieg.png"
+                  src="/images/nawa.png"
                   alt={t('contactPage.heroTitle')}
                   width="120"
                   height="120"

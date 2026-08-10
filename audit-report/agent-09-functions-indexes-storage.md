@@ -1,6 +1,6 @@
 # تقرير Agent #9 — الدوال، الـ Triggers، الفهارس، التخزين (Compatibility Audit)
 
-**النطاق:** `back-end schema/*.sql` (16_indexes، 17_functions_triggers، 14_storage_buckets، fix_schema، _run_all) مقابل `src/services/*` و `src/lib/*` و `src/pages/admin/*` الكاملة في مشروع ZAHIEG.
+**النطاق:** `back-end schema/*.sql` (16_indexes، 17_functions_triggers، 14_storage_buckets، fix_schema، _run_all) مقابل `src/services/*` و `src/lib/*` و `src/pages/admin/*` الكاملة في مشروع NAWA.
 **التاريخ:** 2026-08-02 — **نوع الفحص: قراءة فقط، بدون أي تعديل على الكود أو السكيما.**
 
 ---

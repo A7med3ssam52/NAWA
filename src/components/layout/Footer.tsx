@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Facebook,
-  Instagram,
-  Music2,
   MessageCircle,
   Mail,
   MapPin,
@@ -34,8 +32,6 @@ const customerServiceLinks = [
 
 const socialLinks = [
   { icon: Facebook, href: 'https://www.facebook.com/share/1EKpLrYND6/?mibextid=wwXIfr', label: 'footer.facebook' },
-  { icon: Instagram, href: 'https://www.instagram.com/zahieg?igsh=N3FsNWl4czQyMHMy&utm_source=qr', label: 'footer.instagram' },
-  { icon: Music2, href: 'https://www.tiktok.com/@zahieg_?_r=1&_t=ZS-977bxSRHr9h', label: 'footer.tiktok' },
   { icon: MessageCircle, href: `https://wa.me/${WHATSAPP_NUMBER}`, label: 'footer.whatsapp' },
 ];
 
@@ -85,7 +81,7 @@ export const Footer = memo(function Footer() {
           {/* Logo & Description */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to={PAGES.HOME} className="inline-block mb-3">
-              <img src="/images/zahieg.png" alt={SITE_NAME()} className="h-16 sm:h-20 w-auto" />
+              <span className="font-extrabold text-3xl tracking-wider text-gray-900 font-cairo">نوى</span>
             </Link>
             <p className="text-sm text-gray-500 font-cairo leading-relaxed mb-4">
               {SITE_DESCRIPTION()}
@@ -101,7 +97,7 @@ export const Footer = memo(function Footer() {
               </div>
               <div className="flex items-center gap-2.5 text-sm text-gray-500 font-cairo">
                 <Mail className="w-4 h-4 shrink-0 text-secondary" />
-                <span dir="ltr">sales@zahieg.com</span>
+                <span dir="ltr">sales@nawaeg.com</span>
               </div>
             </div>
           </div>

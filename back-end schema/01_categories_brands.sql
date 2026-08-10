@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Categories & Brands Schema
+-- NAWA - Categories & Brands Schema
 -- Base tables with no dependencies on other tables
 -- ============================================================================
 

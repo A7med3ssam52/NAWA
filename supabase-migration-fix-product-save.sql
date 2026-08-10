@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG — UNIFIED PRODUCT SAVE FIX MIGRATION  (run in Supabase SQL Editor)
+-- NAWA — UNIFIED PRODUCT SAVE FIX MIGRATION  (run in Supabase SQL Editor)
 -- ----------------------------------------------------------------------------
 -- Combines, in a single idempotent script:
 --  1. Rename legacy products.category -> category_id and products.brand ->
@@ -11,7 +11,7 @@
 --  4. Create the product_categories junction table (+ indexes + backfill),
 --     enable RLS and add its policies.
 --  5. Rebuild the products RLS policies (public read, admin write).
---  6. Promote kiady@zahieg.com to admin (auth_id/id aware).
+--  6. Promote admin@nawaeg.com to admin (auth_id/id aware).
 -- Everything is idempotent — safe to run repeatedly.
 -- ============================================================================
 
@@ -122,7 +122,7 @@ BEGIN
         ALTER TABLE profiles DISABLE TRIGGER trg_protect_profile_role;
     END IF;
     BEGIN
-        UPDATE profiles SET role = 'admin' WHERE email = 'kiady@zahieg.com';
+        UPDATE profiles SET role = 'admin' WHERE email = 'admin@nawaeg.com';
         IF has_auth_id THEN
             INSERT INTO profiles (auth_id, name, email, avatar, role)
             SELECT id,
@@ -131,7 +131,7 @@ BEGIN
                    COALESCE(raw_user_meta_data->>'avatar_url', ''),
                    'admin'
             FROM auth.users
-            WHERE email = 'kiady@zahieg.com'
+            WHERE email = 'admin@nawaeg.com'
             ON CONFLICT (auth_id) DO NOTHING;
         ELSE
             INSERT INTO profiles (id, name, email, avatar, role)
@@ -141,7 +141,7 @@ BEGIN
                    COALESCE(raw_user_meta_data->>'avatar_url', ''),
                    'admin'
             FROM auth.users
-            WHERE email = 'kiady@zahieg.com'
+            WHERE email = 'admin@nawaeg.com'
             ON CONFLICT (id) DO NOTHING;
         END IF;
     EXCEPTION WHEN OTHERS THEN
@@ -171,5 +171,5 @@ END $$;
 -- ORDER BY tablename, cmd;
 --
 -- ── admin role (expect: role = 'admin'):
--- SELECT id, name, email, role FROM profiles WHERE email = 'kiady@zahieg.com';
+-- SELECT id, name, email, role FROM profiles WHERE email = 'admin@nawaeg.com';
 -- ============================================================================

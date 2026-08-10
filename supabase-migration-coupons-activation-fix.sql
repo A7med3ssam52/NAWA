@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG — COUPONS ACTIVATION FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
+-- NAWA — COUPONS ACTIVATION FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
 -- ----------------------------------------------------------------------------
 -- Problem: "يحدث مشكلة عند تفعيل الكوبونات" — toggling / using coupons fails.
 -- Fixes:
@@ -19,7 +19,7 @@
 --     trigger, and the full server-side create_order() RPC.
 --  6. Replaces the coupons RLS policies with admin-only ones (the old
 --     public `coupons_read` leaked every coupon code to anon).
---  7. Promotes kiady@zahieg.com to admin (dual auth_id/id aware).
+--  7. Promotes admin@nawaeg.com to admin (dual auth_id/id aware).
 -- Everything is idempotent — safe to run repeatedly.
 -- ============================================================================
 
@@ -225,7 +225,7 @@ BEGIN
         ALTER TABLE profiles DISABLE TRIGGER trg_protect_profile_role;
     END IF;
     BEGIN
-        UPDATE profiles SET role = 'admin' WHERE email = 'kiady@zahieg.com';
+        UPDATE profiles SET role = 'admin' WHERE email = 'admin@nawaeg.com';
         IF has_auth_id THEN
             INSERT INTO profiles (auth_id, name, email, avatar, role)
             SELECT id,
@@ -234,7 +234,7 @@ BEGIN
                    COALESCE(raw_user_meta_data->>'avatar_url', ''),
                    'admin'
             FROM auth.users
-            WHERE email = 'kiady@zahieg.com'
+            WHERE email = 'admin@nawaeg.com'
             ON CONFLICT (auth_id) DO NOTHING;
         ELSE
             INSERT INTO profiles (id, name, email, avatar, role)
@@ -244,7 +244,7 @@ BEGIN
                    COALESCE(raw_user_meta_data->>'avatar_url', ''),
                    'admin'
             FROM auth.users
-            WHERE email = 'kiady@zahieg.com'
+            WHERE email = 'admin@nawaeg.com'
             ON CONFLICT (id) DO NOTHING;
         END IF;
     EXCEPTION WHEN OTHERS THEN
@@ -269,7 +269,7 @@ BEGIN
 
     FOR c IN SELECT * FROM (VALUES
         ('WELCOME10','percentage',10,0,100,'2027-12-31'::timestamptz,1000),
-        ('ZAHI20','percentage',20,500,200,'2027-12-31'::timestamptz,500),
+        ('NAWA20','percentage',20,500,200,'2027-12-31'::timestamptz,500),
         ('SALE50','fixed',50,300,50,'2027-12-31'::timestamptz,200),
         ('FREESHIP','free_shipping',30,200,30,'2027-12-31'::timestamptz,300)
     ) AS t(code, type, discount, min_order, max_discount, expires_at, usage_limit)
@@ -296,7 +296,7 @@ END $$;
 
 -- Extend only the 4 known seed codes (targeted — never resurrect arbitrary coupons):
 UPDATE coupons SET expires_at = '2027-12-31'
-    WHERE code IN ('WELCOME10','ZAHI20','SALE50','FREESHIP')
+    WHERE code IN ('WELCOME10','NAWA20','SALE50','FREESHIP')
       AND (expires_at IS NULL OR expires_at < now() + interval '30 days');
 
 -- ── 8. VERIFY (run afterwards) ─────────────────────────────────────────────
@@ -308,7 +308,7 @@ UPDATE coupons SET expires_at = '2027-12-31'
 --           min_order=0, max_discount=100 (raw, no coalesce), message='valid'
 -- SELECT id, code, is_active, usage_limit, used_count, max_discount FROM coupons;
 -- → expect: is_active NOT NULL, max_discount NULL when uncapped
--- SELECT id, email, role FROM profiles WHERE email = 'kiady@zahieg.com';
+-- SELECT id, email, role FROM profiles WHERE email = 'admin@nawaeg.com';
 -- → expect: role = 'admin'
 -- SELECT polname, polcmd, pg_get_expr(polqual, polrelid)
 --   FROM pg_policy WHERE polrelid = 'coupons'::regclass;

@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Product Images Storage
+-- NAWA - Product Images Storage
 -- Run this in Supabase SQL Editor to set up product images storage
 -- After running, upload images via Supabase Dashboard > Storage > product-images
 -- Or use the admin panel's ImageUpload component

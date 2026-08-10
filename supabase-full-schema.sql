@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG — MASTER Schema (Unified / Idempotent / Runs many times)
+-- NAWA — MASTER Schema (Unified / Idempotent / Runs many times)
 -- ----------------------------------------------------------------------------
 -- This file merges the best of:
 --   * back-end schema/  (normalized split files 01..19)
@@ -1343,7 +1343,7 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO coupons (id, code, type, discount, min_order, max_discount, expires_at, usage_limit, used_count)
 VALUES
 ('coup-1','WELCOME10','percentage',10,0,100,'2027-12-31',1000,0),
-('coup-2','ZAHI20','percentage',20,500,200,'2027-06-30',500,0),
+('coup-2','NAWA20','percentage',20,500,200,'2027-06-30',500,0),
 ('coup-3','SALE50','fixed',50,300,50,'2027-03-31',200,0),
 ('coup-4','FREESHIP','free_shipping',30,200,30,'2027-09-30',300,0)
 ON CONFLICT (id) DO NOTHING;
@@ -1370,7 +1370,7 @@ INSERT INTO testimonials (id, name, avatar, rating, comment, role) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO store_settings (id, name, description, phone, email, address, shipping_cost, free_shipping_threshold)
-VALUES ('default','Zahi','أفضل متجر إلكتروني في مصر','+201234567890','info@zahieg.com','القاهرة، مصر',30,500)
+VALUES ('default','NAWA','أفضل متجر إلكتروني في مصر','+201234567890','info@nawaeg.com','القاهرة، مصر',30,500)
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO announcements (id, text, enabled, dismissible)
@@ -1379,7 +1379,7 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO settings (key, value) VALUES
   ('announcement','{"text":"توصيل مجاني للطلبات فوق 500 ج.م","enabled":true,"dismissible":true}'::jsonb),
-  ('store_info','{"name":"زاهي","description":"متجر إلكتروني مصري","currency":"ج.م","phone":"","email":"","whatsapp":""}'::jsonb)
+  ('store_info','{"name":"نوى","description":"متجر إلكتروني مصري","currency":"ج.م","phone":"","email":"","whatsapp":""}'::jsonb)
 ON CONFLICT (key) DO NOTHING;
 
 -- ============================================================================
@@ -1417,7 +1417,7 @@ REVOKE ALL ON FUNCTION prevent_order_mutation() FROM anon, authenticated;
 UPDATE coupons SET expires_at = '2027-12-31'
     WHERE code = 'WELCOME10' AND expires_at < now() + interval '30 days';
 UPDATE coupons SET expires_at = '2027-06-30'
-    WHERE code = 'ZAHI20' AND expires_at < now() + interval '30 days';
+    WHERE code = 'NAWA20' AND expires_at < now() + interval '30 days';
 UPDATE coupons SET expires_at = '2027-03-31'
     WHERE code = 'SALE50' AND expires_at < now() + interval '30 days';
 UPDATE coupons SET expires_at = '2027-09-30'
@@ -1455,7 +1455,7 @@ DROP FUNCTION IF EXISTS get_user_count(uuid);
 -- ============================================================================
 -- HOW TO CREATE YOUR FIRST ADMIN  (Supabase Dashboard → SQL Editor)
 --   UPDATE profiles SET role = 'admin'
---   WHERE email = 'your-admin@zahieg.com';
+--   WHERE email = 'your-admin@nawaeg.com';
 -- ============================================================================
 -- VERIFY (optional):
 --   SELECT table_name FROM information_schema.tables

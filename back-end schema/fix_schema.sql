@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - SCHEMA FIXES: Add missing tables & align enum values for code compat
+-- NAWA - SCHEMA FIXES: Add missing tables & align enum values for code compat
 -- Run this AFTER _run_all_combined.sql in the Supabase SQL Editor
 -- ============================================================================
 
@@ -24,7 +24,7 @@ DROP POLICY IF EXISTS "store_settings_update" ON store_settings;
 CREATE POLICY "store_settings_update" ON store_settings FOR UPDATE USING (is_admin());
 
 INSERT INTO store_settings (id, name, description, phone, email, address, shipping_cost, free_shipping_threshold)
-VALUES ('default', 'زاهي', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@zahieg.com', 'القاهرة، مصر', 30, 500)
+VALUES ('default', 'نوى', 'أفضل متجر إلكتروني في مصر', '+201234567890', 'info@nawaeg.com', 'القاهرة، مصر', 30, 500)
 ON CONFLICT (id) DO NOTHING;
 
 -- ─── 2. Announcements (singleton row) ───────────────────────────────────────

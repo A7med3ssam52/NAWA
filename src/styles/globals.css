@@ -9,8 +9,8 @@
     --color-accent: 233 195 148;
     --color-success: 34 197 94;
     --color-danger: 239 68 68;
-    --color-background: 239 237 226;
-    --color-card: 239 237 226;
+    --color-background: 255 255 255;
+    --color-card: 255 255 255;
   }
 
   html {
@@ -374,7 +374,7 @@
 }
 
 /* ============================================================
-   Contact Us Page (زاهي) — design replicated from dajajsta.com/contacts
+   Contact Us Page (نوى) — design replicated from dajajsta.com/contacts
    ============================================================ */
 .contact-us-page {
   --primary-red: #214458;

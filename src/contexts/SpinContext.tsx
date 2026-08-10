@@ -1,7 +1,6 @@
 import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
-import type { SpinPrize, SpinHistoryEntry, DailySpinState } from '@/types';
 import { adminService } from '@/services';
-import { supabase } from '@/lib/supabase';
+import type { SpinPrize, SpinHistoryEntry, DailySpinState } from '@/types';
 import { useAuth } from '@/contexts';
 
 function genId() {
@@ -182,29 +181,7 @@ export function SpinProvider({ children }: { children: ReactNode }) {
       couponCode = `SPIN-${genId().slice(-6).toUpperCase()}`;
     }
     dispatch({ type: 'SPIN_COMPLETE', payload: { prize, couponCode } });
-    const guestPhone = localStorage.getItem(PHONE_STORAGE_KEY) || '';
-    if (user?.id) {
-      supabase.from('spin_history').insert({
-        user_id: user.id,
-        prize_id: prize.id,
-        prize_label: prize.label,
-        type: prize.type,
-        value: prize.value ?? null,
-        coupon_code: couponCode ?? null,
-        claimed: false,
-      }).then(() => {});
-    } else if (guestPhone) {
-      supabase.from('spin_history').insert({
-        guest_phone: guestPhone,
-        prize_id: prize.id,
-        prize_label: prize.label,
-        type: prize.type,
-        value: prize.value ?? null,
-        coupon_code: couponCode ?? null,
-        claimed: false,
-      }).then(() => {});
-    }
-  }, [state.prizes, user?.id]);
+  }, [state.prizes]);
 
   const claimPrize = useCallback(() => {
     if (state.currentPrize?.type === 'tryAgain') {
@@ -214,15 +191,9 @@ export function SpinProvider({ children }: { children: ReactNode }) {
     const latest = state.history.find((h) => !h.claimed);
     if (latest) {
       dispatch({ type: 'CLAIM_PRIZE', payload: latest.id });
-      if (user?.id && latest.couponCode) {
-        supabase.from('spin_history').update({ claimed: true })
-          .eq('user_id', user.id)
-          .eq('coupon_code', latest.couponCode)
-          .then(() => {});
-      }
     }
     dispatch({ type: 'DISMISS_RESULT' });
-  }, [state.currentPrize, state.history, user?.id]);
+  }, [state.currentPrize, state.history]);
 
   const dismissResult = useCallback(() => {
     dispatch({ type: 'DISMISS_RESULT' });

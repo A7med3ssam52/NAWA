@@ -33,7 +33,7 @@ const BASE_NAV_ITEMS: Omit<NavItem, 'badge'>[] = [
   { label: 'admin.settings', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
 ];
 
-const SITE_NAME = 'Zahi';
+const SITE_NAME = 'NAWA';
 
 const itemVariants = {
   hidden: { opacity: 0, x: -20 },

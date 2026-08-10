@@ -1,6 +1,6 @@
 # تقرير Agent #4 — فحص توافق الكوبونات (coupons)
 
-**المشروع:** متجر ZAHIEG (React + TypeScript + Supabase)
+**المشروع:** متجر NAWA (React + TypeScript + Supabase)
 **التاريخ:** 2026-08-02
 **النطاق:** جدول `coupons`، دالتا `validate_coupon` / `increment_coupon_usage`، سياسات RLS، واجهة `AdminCouponsPage`، طبقة `adminService`، استخدام الكوبون في السلة/الدفع.
 **الملفات المرجعية:**

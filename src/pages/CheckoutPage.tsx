@@ -13,9 +13,9 @@ import { formatPrice, cn } from '@/utils';
 import { PAGES, EGYPT_GOVERNORATES, INSTAPAY_PHONE, WALLET_PHONE, PAYMENT_METHODS } from '@/constants';
 import { Button, Input, Select, Textarea, Divider, Spinner, ImageUpload } from '@/components/ui';
 import { AccountGateModal } from '@/components/features/AccountGateModal';
-import { supabase } from '@/lib/supabase';
 import { generateTemporaryPassword, saveGuestCredentials } from '@/lib/guestAccount';
 import toast from 'react-hot-toast';
+import { supabase } from '@/lib/supabase';
 
 type ShippingData = {
   fullName: string;

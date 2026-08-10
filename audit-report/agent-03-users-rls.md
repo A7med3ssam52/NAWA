@@ -1,6 +1,6 @@
 # تقرير Agent #3 — فحص التوافق: المستخدمون (Users/Profiles) و RLS
 
-**المشروع:** ZAHIEG — متجر إلكتروني (React + TypeScript + Supabase)
+**المشروع:** NAWA — متجر إلكتروني (React + TypeScript + Supabase)
 **التاريخ:** 2026-08-02
 **النطاق (الملفات المفحوصة):**
 - `back-end schema/03_profiles.sql` — جدول `profiles` + `handle_new_user` trigger + `is_admin()`

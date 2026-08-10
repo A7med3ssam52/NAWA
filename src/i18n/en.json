@@ -1,7 +1,7 @@
 {
   "common": {
-    "siteName": "Zahi",
-    "siteDescription": "Zahi - Elegance That Adorns You",
+    "siteName": "NAWA",
+    "siteDescription": "NAWA - Elegance Begins From the Core",
     "loading": "Loading",
     "error": "Error",
     "success": "Success",
@@ -111,7 +111,7 @@
     "newsletterPlaceholder": "Enter your email",
     "subscribe": "Contact Us",
     "newsletterSuccess": "Successfully subscribed to newsletter!",
-    "copyright": "© Zahi 2026 - All Rights Reserved",
+    "copyright": "© NAWA 2026 - All Rights Reserved",
     "location": "Cairo, Egypt",
     "backToStore": "Back to Store"
   },
@@ -161,13 +161,13 @@
     "loginFailed": "Login failed",
     "registerFailed": "Account creation failed",
     "forgotPassword": "Forgot password?",
-    "brandSubtitle": "Elegance that adorns you — Locally made products with premium quality at affordable prices",
+    "brandSubtitle": "Elegance begins from the core — Locally made products with premium quality at affordable prices",
     "productLabel": "Product",
     "customerLabel": "Customer",
     "ratingLabel": "Rating"
   },
   "home": {
-    "title": "Zahi - Elegance That Adorns You",
+    "title": "NAWA - Elegance Begins From the Core",
     "categories": "Categories",
     "newProducts": "New Products",
     "bestSelling": "Best Selling",
@@ -322,7 +322,7 @@
     "cancelled": "Cancelled",
     "noOrders": "No Orders",
     "orderSuccessTitle": "Order Confirmed!",
-    "orderSuccessDesc": "Thank you for shopping with Zahi. We will contact you to confirm the order.",
+    "orderSuccessDesc": "Thank you for shopping with NAWA. We will contact you to confirm the order.",
     "orderDetails": "Order Details {{number}}",
     "orderTimeline": "Order Timeline",
     "customerInfo": "Customer Info",
@@ -457,7 +457,7 @@
     "emptyDesc": "Add products you like to your wishlist to view them later",
     "shopNow": "Shop Now",
     "addToCart": "Product added to cart",
-    "shareTitle": "My Zahi Wishlist",
+    "shareTitle": "My NAWA Wishlist",
     "shareCopied": "Wishlist link copied",
     "removedFromWishlist": "Product removed from wishlist"
   },
@@ -583,7 +583,7 @@
     "noOrders": "No Orders",
     "noOrdersDesc": "You haven't placed any orders yet",
     "default": "Default",
-    "appVersion": "Zahi - Version 1.0.0",
+    "appVersion": "NAWA - Version 1.0.0",
     "changePassword": "Change",
     "addressLabel": "Address Label",
     "labelHome": "Home",
@@ -664,7 +664,7 @@
     "mission": "Our Mission",
     "vision": "Our Vision",
     "team": "Our Team",
-    "introText": "At Zahi, we believe shopping should be an enjoyable and easy experience. Our store was founded to offer the best authentic fashion products at the best prices, with fast and reliable delivery across Egypt.",
+    "introText": "At NAWA, we believe shopping should be an enjoyable and easy experience. Our store was founded to offer the best authentic fashion products at the best prices, with fast and reliable delivery across Egypt.",
     "missionText": "To provide an exceptional online shopping experience by offering high-quality products at competitive prices, ensuring customer satisfaction, and providing the best after-sales services.",
     "visionText": "To become the premier destination for online shopping in Egypt and the Arab region, and be the optimal choice for those seeking quality and trust.",
     "customers": "Happy Customers",
@@ -698,10 +698,10 @@
     "friHours": "1:00 PM - 10:00 PM"
   },
   "contactPage": {
-    "headerTitle": "ZAHI",
-    "heroTitle": "ZAHI",
-    "heroSubtitle": "Elegance That Adorns You",
-    "heroDescription": "Shop the latest fashion collections and original products at Zahi online store. A premium shopping experience with fast customer service and delivery to all governorates.",
+    "headerTitle": "NAWA",
+    "heroTitle": "NAWA",
+    "heroSubtitle": "Elegance Begins From the Core",
+    "heroDescription": "Shop the latest fashion collections and original products at NAWA online store. A premium shopping experience with fast customer service and delivery to all governorates.",
     "language": "AR",
     "links": {
       "contact": "Contact Us",
@@ -714,8 +714,8 @@
       "tiktok": "TikTok"
     },
     "address": "Cairo, Egypt",
-    "copyright": "© 2026 Zahi - All Rights Reserved",
-    "credit": "Elegance That Adorns You"
+    "copyright": "© 2026 NAWA - All Rights Reserved",
+    "credit": "Elegance Begins From the Core"
   },
   "faq": {
     "title": "FAQ",
@@ -733,7 +733,7 @@
     "q6": "Are the products authentic and guaranteed?",
     "q6a": "Yes, all products in our store are 100% authentic and guaranteed. We offer products from trusted global brands with quality assurance.",
     "q7": "How can I contact customer service?",
-    "q7a": "You can contact us via the Contact Us page on the website, or by email at info@zahi.store, or by phone at +20 123 456 7890 from Saturday to Thursday from 9 AM to 10 PM.",
+    "q7a": "You can contact us via the Contact Us page on the website, or by email at info@nawaeg.com, or by phone at +20 123 456 7890 from Saturday to Thursday from 9 AM to 10 PM.",
     "q8": "Can I cancel my order after confirmation?",
     "q8a": "You can cancel the order within 24 hours of confirmation. After that, if preparation has begun, we may not be able to cancel. Please contact customer service for assistance.",
     "q9": "What is the privacy policy?",
@@ -744,7 +744,7 @@
   "privacy": {
     "title": "Privacy Policy",
     "lastUpdated": "Last Updated: January 2026",
-    "intro": "At Zahi, we are committed to protecting the privacy of our visitors and customers. This privacy policy explains how we collect, use, and protect the personal information you provide when using our website.",
+    "intro": "At NAWA, we are committed to protecting the privacy of our visitors and customers. This privacy policy explains how we collect, use, and protect the personal information you provide when using our website.",
     "section1Title": "Information We Collect",
     "section1Content": "We may collect the following types of information:",
     "section1Item1": "Personal information: name, email, phone number, delivery address",
@@ -773,12 +773,12 @@
     "section7Title": "Updates to the Privacy Policy",
     "section7Content": "We may update this policy from time to time. We will notify you of any material changes by email or through a notice on our website.",
     "section8Title": "Contact Us",
-    "section8Content": "If you have any questions about this privacy policy, please contact us at: info@zahi.store"
+    "section8Content": "If you have any questions about this privacy policy, please contact us at: info@nawaeg.com"
   },
   "terms": {
     "title": "Terms & Conditions",
     "lastUpdated": "Last Updated: January 2026",
-    "intro": "Please read these terms and conditions carefully before using the Zahi website. By using the website, you agree to be bound by these terms.",
+    "intro": "Please read these terms and conditions carefully before using the NAWA website. By using the website, you agree to be bound by these terms.",
     "section1Title": "Acceptance of Terms",
     "section1Content": "By using our website, you acknowledge that you have read, understood, and agree to be bound by these terms and conditions. If you do not agree with any of these terms, please do not use the website.",
     "section2Title": "Accounts and Registration",
@@ -801,7 +801,7 @@
     "section5Item3": "Personal and intimate items cannot be returned for health reasons",
     "section5Item4": "Refunds are processed within 5-10 business days after receiving the returned product",
     "section6Title": "Intellectual Property",
-    "section6Content": "All content on this website, including text, images, logos, and software, is owned by Zahi or licensed to us, and is protected by intellectual property laws. No content may be copied, distributed, or used without prior written permission.",
+    "section6Content": "All content on this website, including text, images, logos, and software, is owned by NAWA or licensed to us, and is protected by intellectual property laws. No content may be copied, distributed, or used without prior written permission.",
     "section7Title": "Limitation of Liability",
     "section7Content": "We shall not be liable for any indirect, incidental, or consequential damages arising from the use or inability to use our website or products. Our maximum liability is the value of the purchased product.",
     "section8Title": "Modification of Terms",
@@ -809,7 +809,7 @@
     "section9Title": "Governing Law",
     "section9Content": "These terms and conditions are governed by and construed in accordance with the laws of the Arab Republic of Egypt. Any dispute arising from these terms shall be subject to the jurisdiction of Egyptian courts.",
     "section10Title": "Contact Us",
-    "section10Content": "For any inquiries regarding these terms and conditions, please contact us at: info@zahi.store"
+    "section10Content": "For any inquiries regarding these terms and conditions, please contact us at: info@nawaeg.com"
   },
   "shipping": {
     "title": "Shipping & Delivery",
@@ -836,7 +836,7 @@
   },
   "returns": {
     "title": "Returns & Exchanges",
-    "description": "At Zahi, your satisfaction is our priority. If you're not completely satisfied with your purchase, you can return the product within 14 days of receipt.",
+    "description": "At NAWA, your satisfaction is our priority. If you're not completely satisfied with your purchase, you can return the product within 14 days of receipt.",
     "steps": "Return Steps",
     "step1Title": "1. Check Conditions",
     "step1Desc": "The product must be unused and in its original condition, with invoice and tags",
@@ -858,7 +858,7 @@
     "ineligibleUnderwear": "Underwear and swimwear",
     "ineligibleCustomized": "Customized products",
     "refundMethods": "Refund Methods",
-    "refundToWallet": "Refund to Zahi wallet (instant)",
+    "refundToWallet": "Refund to NAWA wallet (instant)",
     "refundToCard": "Refund to credit card (3-5 business days)",
     "refundBankTransfer": "Bank transfer (5-10 business days)",
     "refundExchange": "Exchange for another product (within 14 days)"
@@ -976,19 +976,19 @@
     },
     "testimonials": {
       "customer1": "Mahmoud Abdelrahman",
-      "customer1Comment": "Zahi store is my first choice for elegance. I ordered a suit and it arrived on time with luxurious packaging. Very high quality. I recommend everyone to shop here.",
+      "customer1Comment": "NAWA store is my first choice for elegance. I ordered a suit and it arrived on time with luxurious packaging. Very high quality. I recommend everyone to shop here.",
       "customer1Role": "VIP Customer",
       "customer2": "Hind Sami",
-      "customer2Comment": "My first time ordering from Zahi and I was hesitant, but the experience was amazing. The dress was even more beautiful than the pictures! Fast and professional customer service. I'll definitely order again.",
+      "customer2Comment": "My first time ordering from NAWA and I was hesitant, but the experience was amazing. The dress was even more beautiful than the pictures! Fast and professional customer service. I'll definitely order again.",
       "customer2Role": "New Customer",
       "customer3": "Omar Abdullah",
-      "customer3Comment": "Zahi is the best online clothing store in Egypt. Competitive prices and 100% authentic products. Easy-to-use website and fast delivery.",
+      "customer3Comment": "NAWA is the best online clothing store in Egypt. Competitive prices and 100% authentic products. Easy-to-use website and fast delivery.",
       "customer3Role": "Regular Customer",
       "customer4": "Laila Ahmed",
-      "customer4Comment": "I've shopped from Zahi many times and I'm always happy. Wide selection, high quality, fast delivery, and the products are exactly as described. Thank you Zahi!",
+      "customer4Comment": "I've shopped from NAWA many times and I'm always happy. Wide selection, high quality, fast delivery, and the products are exactly as described. Thank you NAWA!",
       "customer4Role": "VIP Customer",
       "customer5": "Mohamed Karim",
-      "customer5Comment": "The best online clothing store in Egypt. Real warranty and excellent after-sales service. Elegance that adorns you indeed! Very happy with my dealings with them.",
+      "customer5Comment": "The best online clothing store in Egypt. Real warranty and excellent after-sales service. Elegance begins from the core indeed! Very happy with my dealings with them.",
       "customer5Role": "Trusted Customer"
     },
     "notifications": {
@@ -1002,7 +1002,7 @@
       "orderShippedMsg": "Your order {{number}} has been shipped. Expected delivery tomorrow.",
       "summerSale": "Summer Sale",
       "summerSaleSummary": "Discounts up to 50% on summer clothing",
-      "summerSaleMsg": "Summer sales at Zahi! Up to 50% off all summer clothing. Limited time. Shop now and elegance adorns you!"
+      "summerSaleMsg": "Summer sales at NAWA! Up to 50% off all summer clothing. Limited time. Shop now and elegance begins from the core!"
     },
     "spinPrizes": {
       "tryAgain": "Try Again",

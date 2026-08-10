@@ -1,3 +1,4 @@
+// Key kept stable to preserve guest sessions across rebrand.
 export const GUEST_ACCOUNT_STORAGE_KEY = 'zahieg_guest_account';
 
 export interface GuestAccountCredentials {

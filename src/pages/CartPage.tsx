@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
-import { supabase } from '@/lib/supabase';
 import { formatPrice, cn } from '@/utils';
 import { PAGES } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
@@ -11,6 +10,7 @@ import { AccountGateModal } from '@/components/features/AccountGateModal';
 import { EmptyState, Button, Input, Divider } from '@/components/ui';
 import toast from 'react-hot-toast';
 import type { Coupon } from '@/types';
+import { supabase } from '@/lib/supabase';
 
 export function CartPage() {
   const { t, i18n } = useTranslation();

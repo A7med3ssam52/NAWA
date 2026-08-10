@@ -1,4 +1,4 @@
-# ZAHIEG Back-End Schema — دليل استخدام Supabase
+# NAWA Back-End Schema — دليل استخدام Supabase
 
 ## 🚀 طريقة التنفيذ في Supabase
 

@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Settings Schema
+-- NAWA - Settings Schema
 -- Key-Value store for application configuration
 -- ============================================================================
 
@@ -33,7 +33,7 @@ COMMENT ON FUNCTION settings_set_updated_at IS 'Auto-updates settings.updated_at
 -- ── Seed default settings ─────────────────────────────────────────────────
 INSERT INTO settings (key, value) VALUES
     ('announcement', '{"text": "توصيل مجاني للطلبات فوق 500 ج.م", "enabled": true, "dismissible": true}'::jsonb),
-    ('store_info', '{"name": "زاهي", "description": "متجر إلكتروني مصري", "currency": "ج.م", "phone": "", "email": "", "whatsapp": ""}'::jsonb),
+    ('store_info', '{"name": "نوى", "description": "متجر إلكتروني مصري", "currency": "ج.م", "phone": "", "email": "", "whatsapp": ""}'::jsonb),
     ('shipping', '{"cost": 30, "free_threshold": 500, "tax_rate": 0.14}'::jsonb)
 ON CONFLICT (key) DO NOTHING;
 

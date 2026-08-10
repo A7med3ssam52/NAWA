@@ -1,4 +1,3 @@
-import { supabase } from '@/lib/supabase';
 import type {
   AccountGroup,
   AccountGroupNode,
@@ -6,6 +5,7 @@ import type {
   AccountType,
   LedgerAccount,
 } from '@/types';
+import { supabase } from '@/lib/supabase';
 
 interface GroupRow {
   id: string;

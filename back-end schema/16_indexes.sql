@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Database Indexes
+-- NAWA - Database Indexes
 -- Performance optimization for common queries
 -- ============================================================================
 

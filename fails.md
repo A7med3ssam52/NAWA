@@ -1,4 +1,4 @@
-# تقرير الفحص الشامل لموقع ZAHIEG — `fails.md`
+# تقرير الفحص الشامل لموقع NAWA — `fails.md`
 
 > تاريخ الفحص: 2026-08-02 · الطريقة: فحص بأدوات آلية (`tsc`، `vite build`) + فريق من 5 Subagents متخصصين (React/Runtime، Supabase/Schema، Backend/SQL، البيانات/التعريب، الصفحات/SEO).
 > عدد الأخطاء المكتشفة: **47 خطأ** (7 حرجة، 14 عالية، 16 متوسطة، 10 منخفضة).
@@ -90,7 +90,7 @@
 `src/data/index.ts:21-29` — `loaded=true` يُضبط قبل `await`؛ وإذا فشل أي استعلام تعيد `loadTable` صفيفة فارغة → تُستبدل `localProducts`/`localCategories` (الكتالوج المحلي) بـ `[]` **إلى الأبد بلا إعادة محاولة** → الموقع يظهر فارغاً حتى لو عاد الإنترنت.
 
 ### H9. الأدمين محبوس عن لوحة التحكم
-- `src/data/users.json:25-35` — `user-3` (kiady@zahieg.com) **بلا حقل `role`** → `AdminLayout.tsx:139` (`user.role !== 'admin'`) يردّه للرئيسية.
+- `src/data/users.json:25-35` — `user-3` (admin@nawaeg.com) **بلا حقل `role`** → `AdminLayout.tsx:139` (`user.role !== 'admin'`) يردّه للرئيسية.
 - `User.role` غير موجود في schema الجذر → `mapProfile` (AuthContext.tsx:227) يعيد `'customer'` دائماً → الأدمين لا يُعرف أبداً في مسار DB.
 - `supabase-complete.sql:307-313` — تعليمات إنشاء الأدمين تفترض عمود `role` غير الموجود في الجذر (مستحيلة التنفيذ).
 

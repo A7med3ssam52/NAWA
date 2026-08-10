@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG — PRODUCTS FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
+-- NAWA — PRODUCTS FIX MIGRATION  (run in Supabase Dashboard → SQL Editor)
 -- ----------------------------------------------------------------------------
 -- Fixes:
 --  1. Products table used legacy TEXT columns `category` / `brand` while the
@@ -8,7 +8,7 @@
 --     admin panel can save products again ("حدث خطأ أثناء حفظ المنتج").
 --  2. Ensures the variant columns (colors / sizes / stock_by_color /
 --     stock_by_size) exist with safe defaults for products that have no variants.
---  3. Promotes kiady@zahieg.com to admin (or inserts his profile row) so the
+--  3. Promotes admin@nawaeg.com to admin (or inserts his profile row) so the
 --     admin panel is reachable for the owner account.
 -- Everything is idempotent — safe to run repeatedly.
 -- ============================================================================
@@ -61,7 +61,7 @@ BEGIN
         ALTER TABLE profiles DISABLE TRIGGER trg_protect_profile_role;
     END IF;
     BEGIN
-        UPDATE profiles SET role = 'admin' WHERE email = 'kiady@zahieg.com';
+        UPDATE profiles SET role = 'admin' WHERE email = 'admin@nawaeg.com';
         INSERT INTO profiles (id, name, email, avatar, role)
         SELECT id,
                COALESCE(raw_user_meta_data->>'full_name', raw_user_meta_data->>'name', ''),
@@ -69,7 +69,7 @@ BEGIN
                COALESCE(raw_user_meta_data->>'avatar_url', ''),
                'admin'
         FROM auth.users
-        WHERE email = 'kiady@zahieg.com'
+        WHERE email = 'admin@nawaeg.com'
         ON CONFLICT (id) DO NOTHING;
     EXCEPTION WHEN OTHERS THEN
         RAISE NOTICE 'admin upgrade skipped: %', SQLERRM;
@@ -80,7 +80,7 @@ BEGIN
 END $$;
 
 -- ── 4. VERIFY (run afterwards) ───────────────────────────────────────────────
--- SELECT id, name, email, role FROM profiles WHERE email = 'kiady@zahieg.com';
+-- SELECT id, name, email, role FROM profiles WHERE email = 'admin@nawaeg.com';
 -- → expect: role = 'admin'
 -- SELECT column_name, data_type FROM information_schema.columns
 --   WHERE table_schema = 'public' AND table_name = 'products'

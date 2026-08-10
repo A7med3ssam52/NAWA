@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZAHIEG - Supabase Storage Buckets Schema
+-- NAWA - Supabase Storage Buckets Schema
 -- SQL is informational only; buckets are created via Supabase Dashboard or API
 -- ============================================================================
 
