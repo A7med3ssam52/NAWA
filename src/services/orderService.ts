@@ -24,9 +24,11 @@ export const orderService = {
       p_discount: data.discount || 0,
       p_total: data.total || 0,
       p_coupon_code: data.couponCode || null,
-      p_payment_method: data.paymentMethod || 'cod',
+      p_payment_method: data.paymentMethod || 'instapay',
       p_shipping_address: data.shippingAddress || null,
       p_notes: data.notes || '',
+      p_payment_receipt_url: data.paymentReceiptUrl || null,
+      p_payment_phone: data.paymentPhone || null,
     });
     if (error) throw error;
 

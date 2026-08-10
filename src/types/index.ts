@@ -101,6 +101,8 @@ export interface Order {
   shippingAddress: Address;
   paymentMethod: string;
   notes?: string;
+  paymentReceiptUrl?: string;
+  paymentPhone?: string;
   createdAt: string;
   updatedAt: string;
   tracking: TrackingEvent[];

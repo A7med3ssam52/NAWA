@@ -40,13 +40,8 @@ const socialLinks = [
 ];
 
 const paymentMethods = [
-  { name: 'common.visa', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/visa.svg' },
-  { name: 'common.mastercard', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mastercard.svg' },
-  { name: 'common.mada', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/mada.svg' },
-  { name: 'utils.paymentMethods.vodafoneCash', src: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/vodafone.svg' },
-  { name: 'utils.paymentMethods.fawry', src: '' },
-  { name: 'utils.paymentMethods.instapay', src: '' },
-  { name: 'common.valu', src: '' },
+  { name: 'utils.paymentMethods.instapay' },
+  { name: 'utils.paymentMethods.wallet' },
 ];
 
 export const Footer = memo(function Footer() {
@@ -205,18 +200,9 @@ export const Footer = memo(function Footer() {
                   className="w-10 h-7 flex items-center justify-center bg-white rounded-lg border border-gray-100 px-1.5"
                   title={t(method.name)}
                 >
-                  {method.src ? (
-                    <img
-                      src={method.src}
-                      alt={t(method.name)}
-                      className="w-full h-full object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <span className="text-[6px] font-bold font-cairo text-gray-500 leading-tight text-center">
-                      {t(method.name)}
-                    </span>
-                  )}
+                  <span className="text-[6px] font-bold font-cairo text-gray-500 leading-tight text-center">
+                    {t(method.name)}
+                  </span>
                 </div>
               ))}
             </div>

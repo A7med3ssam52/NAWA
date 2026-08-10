@@ -1,29 +1,20 @@
 import { motion } from 'framer-motion';
-import { Smartphone, Building2, CreditCard, Wallet, Banknote, Landmark } from 'lucide-react';
+import { Landmark, Wallet, CreditCard, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { INSTAPAY_PHONE, WALLET_PHONE } from '@/constants';
+import toast from 'react-hot-toast';
 
 export function PaymentPage() {
   const { t, i18n } = useTranslation();
 
+  const copyText = async (text: string, successKey: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(t(successKey));
+    } catch {}
+  };
+
   const paymentMethods = [
-    {
-      id: 'vodafone-cash',
-      name: t('payment.vodafoneCash'),
-      desc: t('payment.vodafoneCashDesc'),
-      icon: Smartphone,
-      color: '#E60000',
-      bg: 'bg-red-50',
-      details: [t('payment.detailVodafoneTransfer'), t('payment.detailVodafone247'), t('payment.detailVodafoneFees')],
-    },
-    {
-      id: 'fawry',
-      name: t('payment.fawry'),
-      desc: t('payment.fawryDesc'),
-      icon: Building2,
-      color: '#00A651',
-      bg: 'bg-green-50',
-      details: [t('payment.detailFawryNearby'), t('payment.detailFawryCash'), t('payment.detailFawryInstant')],
-    },
     {
       id: 'instapay',
       name: t('payment.instapay'),
@@ -31,34 +22,20 @@ export function PaymentPage() {
       icon: Landmark,
       color: '#4A148C',
       bg: 'bg-purple-50',
-      details: [t('payment.detailInstapayBanks'), t('payment.detailInstapayFree'), t('payment.detailInstapayApp')],
+      phone: INSTAPAY_PHONE,
+      phoneLabel: t('payment.instapayPhone'),
+      details: [],
     },
     {
-      id: 'visa-mastercard',
-      name: t('payment.cards'),
-      desc: t('payment.cardsDesc'),
-      icon: CreditCard,
-      color: '#1A1F71',
-      bg: 'bg-blue-50',
-      details: [t('payment.detailCardsTypes'), t('payment.detailCardsSecure'), t('payment.detailCardsInstant')],
-    },
-    {
-      id: 'valu',
-      name: t('payment.valu'),
-      desc: t('payment.valuDesc'),
-      icon: Banknote,
-      color: '#1B9CFC',
-      bg: 'bg-sky-50',
-      details: [t('payment.detailValuMonths'), t('payment.detailValuApproval'), t('payment.detailValuNoDown')],
-    },
-    {
-      id: 'cod',
-      name: t('payment.cod'),
-      desc: t('payment.codDesc'),
+      id: 'wallet',
+      name: t('payment.wallet'),
+      desc: t('payment.walletDesc'),
       icon: Wallet,
-      color: '#F59E0B',
-      bg: 'bg-amber-50',
-      details: [t('payment.detailCodCash'), t('payment.detailCodAllAreas'), t('payment.detailCodInspect')],
+      color: '#0F172A',
+      bg: 'bg-slate-50',
+      phone: WALLET_PHONE,
+      phoneLabel: t('payment.walletPhone'),
+      details: [],
     },
   ];
 
@@ -105,14 +82,23 @@ export function PaymentPage() {
                   <p className="text-sm text-gray-500 font-cairo mb-4">
                     {method.desc}
                   </p>
+                  <div className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl border border-gray-100 mb-3">
+                    <span className="text-xs font-cairo text-gray-500">{method.phoneLabel}</span>
+                    <span dir="ltr" className="flex-1 text-sm font-bold font-cairo text-gray-900">{method.phone}</span>
+                    <button type="button" onClick={() => copyText(method.phone, 'checkout.copiedNumber')} className="p-1.5 text-gray-400 hover:text-secondary transition-colors" aria-label={method.phoneLabel}>
+                      <Copy className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {(method.details || []).length > 0 && (
                   <ul className="space-y-1.5">
-                    {method.details.map((detail) => (
+                    {(method.details || []).map((detail) => (
                       <li key={detail} className="flex items-center gap-2 text-xs text-gray-600 font-cairo">
                         <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: method.color }} />
                         {detail}
                       </li>
                     ))}
                   </ul>
+                  )}
                 </div>
               </div>
             </motion.div>

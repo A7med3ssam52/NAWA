@@ -6,12 +6,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { CreditCard, ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Smartphone, Building2, Landmark, Mail, Lock, LogIn, Copy, AlertCircle, KeyRound, Tag } from 'lucide-react';
+import { ClipboardCheck, Check, ChevronLeft, Truck, Wallet, Landmark, Mail, Lock, LogIn, Copy, AlertCircle, KeyRound, Tag } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { orderService } from '@/services';
 import { formatPrice, cn } from '@/utils';
-import { PAGES, SHIPPING_COST, FREE_SHIPPING_THRESHOLD, EGYPT_GOVERNORATES } from '@/constants';
-import { Button, Input, Select, Textarea, Divider, Spinner } from '@/components/ui';
+import { PAGES, EGYPT_GOVERNORATES, INSTAPAY_PHONE, WALLET_PHONE, PAYMENT_METHODS } from '@/constants';
+import { Button, Input, Select, Textarea, Divider, Spinner, ImageUpload } from '@/components/ui';
 import { AccountGateModal } from '@/components/features/AccountGateModal';
 import { supabase } from '@/lib/supabase';
 import { generateTemporaryPassword, saveGuestCredentials } from '@/lib/guestAccount';
@@ -39,8 +39,10 @@ export function CheckoutPage() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { items, subtotal, shippingCost, total, discount, notes, setNotes, clearCart, coupon, couponCode } = useCart();
   const [currentStep, setCurrentStep] = useState(() => new URLSearchParams(location.search).get('guest') === '1' ? 1 : 0);
-  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [processing, setProcessing] = useState(false);
+  const [receiptUrl, setReceiptUrl] = useState('');
+  const [transferDone, setTransferDone] = useState(false);
   const shippingDataRef = useRef<ShippingData | null>(null);
   const [orderPlaced, setOrderPlaced] = useState<{ id: string } | null>(null);
   const [guestFlow, setGuestFlow] = useState<GuestFlow | null>(null);
@@ -78,7 +80,6 @@ export function CheckoutPage() {
     }
   }, [authLoading, isAuthenticated, currentStep]);
 
-  const actualShipping = useMemo(() => subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST, [subtotal]);
   const isGuest = !isAuthenticated;
 
   const handleShippingSubmit = (data: ShippingData) => {
@@ -87,6 +88,14 @@ export function CheckoutPage() {
   };
 
   const handlePaymentSubmit = () => {
+    if (!paymentMethod) {
+      toast.error(t('checkout.paymentRequired'));
+      return;
+    }
+    if (!transferDone || !receiptUrl) {
+      toast.error(t('checkout.receiptRequired'));
+      return;
+    }
     setCurrentStep(3);
   };
 
@@ -159,6 +168,8 @@ export function CheckoutPage() {
           isDefault: false,
         },
         paymentMethod,
+        paymentPhone: paymentMethod === PAYMENT_METHODS.INSTAPAY ? INSTAPAY_PHONE : WALLET_PHONE,
+        paymentReceiptUrl: receiptUrl,
         notes,
       });
       await supabase.from('order_email_logs').insert({
@@ -379,15 +390,12 @@ export function CheckoutPage() {
                     <h2 className="text-base sm:text-lg font-bold font-cairo text-gray-900 mb-3 sm:mb-4">{t('checkout.paymentMethod')}</h2>
                     <div className="space-y-2 sm:space-y-3">
                       {[
-                        { id: 'cod', labelKey: 'cod', descKey: 'codDesc', icon: Wallet },
-                        { id: 'card', labelKey: 'card', descKey: 'cardDesc', icon: CreditCard },
-                        { id: 'vodafone-cash', labelKey: 'vodafoneCash', descKey: 'vodafoneCashDesc', icon: Smartphone },
-                        { id: 'fawry', labelKey: 'fawry', descKey: 'fawryDesc', icon: Building2 },
-                        { id: 'instapay', labelKey: 'instapay', descKey: 'instapayDesc', icon: Landmark },
+                        { id: PAYMENT_METHODS.INSTAPAY, labelKey: 'instapay', descKey: 'instapayDesc', icon: Landmark },
+                        { id: PAYMENT_METHODS.WALLET, labelKey: 'wallet', descKey: 'walletDesc', icon: Wallet },
                       ].map((method) => {
                         const Icon = method.icon;
                         return (
-                          <button key={method.id} type="button" onClick={() => setPaymentMethod(method.id)} className={cn('flex items-center gap-3 sm:gap-4 w-full p-3 sm:p-4 rounded-xl border-2 transition-all text-right', paymentMethod === method.id ? 'border-secondary bg-secondary/5' : 'border-gray-200 hover:border-gray-300')}>
+                          <button key={method.id} type="button" onClick={() => { setPaymentMethod(method.id); setTransferDone(false); setReceiptUrl(''); }} className={cn('flex items-center gap-3 sm:gap-4 w-full p-3 sm:p-4 rounded-xl border-2 transition-all text-right', paymentMethod === method.id ? 'border-secondary bg-secondary/5' : 'border-gray-200 hover:border-gray-300')}>
                             <div className={cn('flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl shrink-0', paymentMethod === method.id ? 'bg-secondary text-white' : 'bg-gray-100 text-gray-400')}>
                               <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                             </div>
@@ -400,6 +408,27 @@ export function CheckoutPage() {
                         );
                       })}
                     </div>
+                    {paymentMethod && (
+                      <div className="mt-3 p-4 bg-secondary/5 rounded-xl border border-secondary/20 space-y-3">
+                        <p className="text-sm font-bold font-cairo text-gray-900">{t('checkout.transferToNumber')}</p>
+                        <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 px-3.5 h-11">
+                          <span dir="ltr" className="flex-1 text-sm font-cairo text-gray-900">{paymentMethod === PAYMENT_METHODS.INSTAPAY ? INSTAPAY_PHONE : WALLET_PHONE}</span>
+                          <button type="button" onClick={() => copyText(paymentMethod === PAYMENT_METHODS.INSTAPAY ? INSTAPAY_PHONE : WALLET_PHONE, 'checkout.copiedNumber')} className="p-1 text-gray-400 hover:text-secondary transition-colors" aria-label={t('checkout.copyNumber')}>
+                            <Copy className="w-4 h-4" />
+                          </button>
+                        </div>
+                        {transferDone ? (
+                          <div className="space-y-2">
+                            <p className="text-xs font-cairo text-gray-500">{t('checkout.uploadReceipt')}</p>
+                            <ImageUpload bucket="receipts" max={1} value={receiptUrl ? [receiptUrl] : []} onChange={(urls) => setReceiptUrl(urls[0] || '')} />
+                          </div>
+                        ) : (
+                          <Button variant="secondary" size="md" rounded="xl" fullWidth onClick={() => setTransferDone(true)}>
+                            {t('checkout.done')}
+                          </Button>
+                        )}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between pt-4 gap-2 sm:gap-0">
                       <Button variant="accent" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={() => setCurrentStep(1)}>{t('common.previous')}</Button>
                       <Button variant="secondary" size="lg" rounded="xl" className="flex-1 sm:flex-none" onClick={handlePaymentSubmit}>{t('common.next')} <ChevronLeft className="w-4 h-4" /></Button>
@@ -510,7 +539,7 @@ export function CheckoutPage() {
               <h3 className="text-base font-bold font-cairo text-gray-900">{t('orders.orderSummary')}</h3>
               <div className="space-y-1.5 sm:space-y-2 text-sm font-cairo">
                 <div className="flex justify-between"><span className="text-gray-500">{t('cart.subtotal')}</span><span className="text-gray-900 font-semibold">{formatPrice(subtotal)}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">{t('cart.shipping')}</span><span className={actualShipping === 0 ? 'text-success font-semibold' : 'text-gray-900 font-semibold'}>{actualShipping === 0 ? t('common.free') : formatPrice(actualShipping)}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">{t('cart.shipping')}</span><span className={shippingCost === 0 ? 'text-success font-semibold' : 'text-gray-900 font-semibold'}>{shippingCost === 0 ? t('common.free') : formatPrice(shippingCost)}</span></div>
                 {discount > 0 && <div className="flex justify-between"><span className="text-success">{t('cart.discount')}</span><span className="text-success font-semibold">-{formatPrice(discount)}</span></div>}
                 <Divider />
                 <div className="flex justify-between"><span className="text-base font-bold text-gray-900">{t('cart.total')}</span><span className="text-lg sm:text-lg font-bold text-gray-900">{formatPrice(total)}</span></div>

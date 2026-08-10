@@ -1,6 +1,7 @@
-import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useReducer, useEffect, useMemo, useCallback, useState, type ReactNode } from 'react';
 import type { CartItem, Product, Coupon } from '@/types';
 import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD } from '@/constants';
+import { supabase } from '@/lib/supabase';
 
 interface CartState {
   items: CartItem[];
@@ -29,6 +30,7 @@ interface CartContextType extends CartState {
   subtotal: number;
   total: number;
   itemsCount: number;
+  shippingThreshold: number;
 }
 
 const initialState: CartState = {
@@ -102,6 +104,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return initial;
   });
 
+  const [shippingConfig, setShippingConfig] = useState({ cost: SHIPPING_COST, threshold: FREE_SHIPPING_THRESHOLD });
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('store_settings')
+          .select('shipping_cost, free_shipping_threshold')
+          .single();
+        if (!active) return;
+        if (data) {
+          setShippingConfig({
+            cost: Number(data.shipping_cost) || SHIPPING_COST,
+            threshold: Number(data.free_shipping_threshold) || FREE_SHIPPING_THRESHOLD,
+          });
+        }
+      } catch {}
+    })();
+    return () => { active = false; };
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       localStorage.setItem('cart', JSON.stringify(state));
@@ -131,9 +155,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [state.items]
   );
 
+  const shippingThreshold = shippingConfig.threshold;
   const shippingCost = useMemo(() =>
-    subtotal >= FREE_SHIPPING_THRESHOLD || subtotal === 0 ? 0 : SHIPPING_COST,
-    [subtotal]
+    subtotal >= shippingThreshold || subtotal === 0 ? 0 : shippingConfig.cost,
+    [subtotal, shippingThreshold, shippingConfig.cost]
   );
   const total = useMemo(() => subtotal + shippingCost - state.discount, [subtotal, shippingCost, state.discount]);
   const itemsCount = useMemo(() => state.items.reduce((sum, item) => sum + item.quantity, 0), [state.items]);
@@ -141,6 +166,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({
     ...state,
     shippingCost,
+    shippingThreshold,
     addItem,
     removeItem,
     updateQuantity,
@@ -150,7 +176,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     subtotal,
     total,
     itemsCount,
-  }), [state, shippingCost, addItem, removeItem, updateQuantity, setCoupon, setNotes, clearCart, subtotal, total, itemsCount]);
+  }), [state, shippingCost, shippingThreshold, addItem, removeItem, updateQuantity, setCoupon, setNotes, clearCart, subtotal, total, itemsCount]);
 
   return (
     <CartContext.Provider value={value}>

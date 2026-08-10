@@ -512,6 +512,20 @@ function OrderDetailContent({
             <CreditCard className="w-3.5 h-3.5 text-gray-400 shrink-0" />
             {getPaymentMethodLabel(order.paymentMethod)}
           </div>
+          {order.paymentPhone && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
+              <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+              <span dir="ltr">{order.paymentPhone}</span>
+            </div>
+          )}
+          {order.paymentReceiptUrl && (
+            <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
+              <span>{t('orders.paymentReceipt')}</span>
+              <a href={order.paymentReceiptUrl} target="_blank" rel="noreferrer">
+                <img src={order.paymentReceiptUrl} alt={t('orders.paymentReceipt')} className="h-24 w-auto rounded-xl border cursor-zoom-in" />
+              </a>
+            </div>
+          )}
           {order.couponCode && (
             <div className="flex items-center gap-2 text-sm text-secondary font-cairo">
               <CheckCircle className="w-3.5 h-3.5 shrink-0" />

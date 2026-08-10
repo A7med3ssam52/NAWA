@@ -5,7 +5,7 @@ import { Heart, ShoppingCart, Share2, Check, Truck, Package, Bell, Star, Message
 import { useQueryClient } from '@tanstack/react-query';
 import { useProduct, useRelatedProducts, useCategories, useProductReviews } from '@/api';
 import { useRecentlyViewed } from '@/hooks';
-import { PAGES, FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from '@/constants';
+import { PAGES } from '@/constants';
 import { useCart, useWishlist, useCompare, useAuth } from '@/contexts';
 import { formatPrice, cn } from '@/utils';
 import { supabase } from '@/lib/supabase';
@@ -130,7 +130,7 @@ export function ProductDetailsPage() {
   const navigate = useNavigate();
   const { data: product, isLoading, error, refetch } = useProduct(slug || '');
   const { data: related } = useRelatedProducts(product?.id || '');
-  const { addItem, items } = useCart();
+  const { addItem, items, shippingThreshold, shippingCost } = useCart();
   const { isInWishlist, toggleItem } = useWishlist();
   const { isInCompare, addItem: addCompare, removeItem: removeCompare } = useCompare();
   const { addItem: addRecentlyViewed } = useRecentlyViewed();
@@ -297,7 +297,7 @@ export function ProductDetailsPage() {
           <div className="flex items-center gap-4 text-sm text-gray-500 font-cairo">
             <div className="flex items-center gap-1.5">
               <Truck className="w-4 h-4" />
-              {product.price >= FREE_SHIPPING_THRESHOLD ? t('cart.freeShipping') : t('products.shippingCost', { cost: formatPrice(SHIPPING_COST) })}
+              {product.price >= shippingThreshold ? t('cart.freeShipping') : t('products.shippingCost', { cost: formatPrice(shippingCost) })}
             </div>
             <div className="flex items-center gap-1.5">
               <Package className="w-4 h-4" />

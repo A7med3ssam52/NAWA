@@ -5,7 +5,7 @@ import { ShoppingCart, Tag, Trash2, ArrowLeft } from 'lucide-react';
 import { useCart, useAuth } from '@/contexts';
 import { supabase } from '@/lib/supabase';
 import { formatPrice, cn } from '@/utils';
-import { PAGES, FREE_SHIPPING_THRESHOLD } from '@/constants';
+import { PAGES } from '@/constants';
 import { CartItem } from '@/components/features/CartItem';
 import { AccountGateModal } from '@/components/features/AccountGateModal';
 import { EmptyState, Button, Input, Divider } from '@/components/ui';
@@ -16,7 +16,7 @@ export function CartPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated, loading: authLoading } = useAuth();
-  const { items, subtotal, shippingCost, total, discount, couponCode, setCoupon, clearCart } = useCart();
+  const { items, subtotal, shippingCost, shippingThreshold, total, discount, couponCode, setCoupon, clearCart } = useCart();
   const [couponInput, setCouponInput] = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
   const [showAccountGate, setShowAccountGate] = useState(false);
@@ -91,8 +91,8 @@ export function CartPage() {
     }
   };
 
-  const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
-  const freeShippingRemaining = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
+  const progress = Math.min((subtotal / shippingThreshold) * 100, 100);
+  const freeShippingRemaining = Math.max(shippingThreshold - subtotal, 0);
 
   return (
     <div dir={i18n.language === 'ar' ? 'rtl' : 'ltr'} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 animate-fade-in-up"

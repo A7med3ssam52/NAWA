@@ -108,6 +108,8 @@ export function mapOrder(data: any): Order {
     shippingAddress: data.shipping_address || { fullName: '', phone: '', street: '', city: '', state: '' },
     paymentMethod: data.payment_method || '',
     notes: data.notes || '',
+    paymentReceiptUrl: data.payment_receipt_url || undefined,
+    paymentPhone: data.payment_phone || undefined,
     createdAt: data.created_at || new Date().toISOString(),
     updatedAt: data.updated_at || new Date().toISOString(),
     tracking: data.tracking || [],

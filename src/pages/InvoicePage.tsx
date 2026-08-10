@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useOrder } from '@/api';
-import { formatPrice, formatDate } from '@/utils';
+import { formatPrice, formatDate, getPaymentMethodLabel } from '@/utils';
 import { PAGES, SITE_NAME } from '@/constants';
 import { Button, Spinner } from '@/components/ui';
 import { Printer } from 'lucide-react';
@@ -53,7 +53,7 @@ export function InvoicePage() {
           </div>
           <div>
             <p className="text-xs text-gray-400 font-cairo mb-1">{t('checkout.paymentMethod')}</p>
-            <p className="font-semibold font-cairo text-gray-900">{order.paymentMethod}</p>
+            <p className="font-semibold font-cairo text-gray-900">{getPaymentMethodLabel(order.paymentMethod)}</p>
           </div>
           <div className="col-span-2">
             <p className="text-xs text-gray-400 font-cairo mb-1">{t('checkout.shippingAddress')}</p>

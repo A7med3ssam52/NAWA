@@ -1,7 +1,6 @@
 import { useRef, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronUp } from 'lucide-react';
-import { cn } from '@/utils';
+import { X } from 'lucide-react';
 
 interface IosBottomSheetProps {
   isOpen: boolean;
@@ -40,6 +39,16 @@ export const IosBottomSheet = memo(function IosBottomSheet({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -50,7 +59,7 @@ export const IosBottomSheet = memo(function IosBottomSheet({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleOverlayClick}
-            className="ios-bottom-sheet-overlay fixed inset-0 z-50"
+            className="ios-bottom-sheet-overlay fixed inset-0 z-[70]"
           />
 
           <motion.div
@@ -60,10 +69,7 @@ export const IosBottomSheet = memo(function IosBottomSheet({
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={handleSheetClick}
-            className={cn(
-              'ios-bottom-sheet ios-safe-area-inset',
-              isOpen && 'open'
-            )}
+            className="ios-bottom-sheet fixed inset-x-0 bottom-0 z-[70]"
             style={{ maxHeight: '85vh' }}
           >
             {showHandle && (

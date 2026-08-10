@@ -55,6 +55,7 @@ export function getPaymentMethodLabel(method: string): string {
     'vodafone-cash': i18n.t('utils.paymentMethods.vodafoneCash'),
     fawry: i18n.t('utils.paymentMethods.fawry'),
     instapay: i18n.t('utils.paymentMethods.instapay'),
+    wallet: i18n.t('utils.paymentMethods.wallet'),
   };
   return labels[method] || method;
 }
