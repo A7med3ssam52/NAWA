@@ -17,4 +17,3 @@ export { MobileSearchOverlay } from './MobileSearchOverlay';
 export { SpinWheel } from './SpinWheel';
 export { SpinResultModal } from './SpinResultModal';
 export { SpinEntryButton } from './SpinEntryButton';
-export { PaletteToggle } from './PaletteToggle';

@@ -9,7 +9,7 @@ import { PAGES } from '@/constants';
 export function CategoryProductsPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
-  const { data: categories } = useCategories();
+  const { data: categories, isLoading: categoriesLoading } = useCategories();
   const category = (categories || []).find((c) => c.slug === slug);
   const { data: result, isLoading } = useProducts({ category: category ? [category.id] : [], page: 1, pageSize: 50 });
 
@@ -24,10 +24,19 @@ export function CategoryProductsPage() {
         </div>
       );
     }
+    if (categoriesLoading) {
+      return (
+        <div className="flex items-center justify-center min-h-[40vh]">
+          <Spinner size="lg" />
+        </div>
+      );
+    }
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <Spinner size="lg" />
-      </div>
+      <EmptyState
+        icon={<ArrowLeft className="w-16 h-16" />}
+        title={t('products.noProducts')}
+        action={{ label: t('common.viewAll'), onClick: () => window.location.assign(PAGES.PRODUCTS) }}
+      />
     );
   }
 

@@ -1174,6 +1174,7 @@
     "slugExists": "This slug is already in use — choose another one",
     "invalidCategoryBrand": "The selected category or brand is invalid — choose from the list",
     "invalidCategory": "The selected category is invalid — choose from the list",
+    "noPermission": "You don't have enough permissions — sign in with an admin account",
     "deleteError": "Error deleting product",
     "storeInfo": "Store Info",
     "shippingTax": "Shipping & Tax",

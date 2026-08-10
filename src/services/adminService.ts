@@ -37,14 +37,8 @@ export type DashboardData = {
 export const adminService = {
   // ─── Products ─────────────────────────────────────
   async getProducts(search?: string, categoryId?: string, page = 1, pageSize = 10) {
-    let query;
-    if (categoryId) {
-      query = supabase.from('products')
-        .select('*, product_categories!inner(category_id)', { count: 'exact' })
-        .eq('product_categories.category_id', categoryId);
-    } else {
-      query = supabase.from('products').select('*', { count: 'exact' });
-    }
+    let query = supabase.from('products').select('*', { count: 'exact' });
+    if (categoryId) query = query.eq('category_id', categoryId);
     if (search) {
       const q = search.toLowerCase();
       query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
@@ -56,15 +50,15 @@ export const adminService = {
   },
 
   async getProduct(id: string) {
-    const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('products').select('*').eq('id', id).maybeSingle();
     if (!error && data) return mapProduct(data as any);
     return null;
   },
 
   async getProductCategoryIds(productId: string): Promise<string[]> {
-    const { data, error } = await supabase.from('product_categories').select('category_id').eq('product_id', productId);
+    const { data, error } = await supabase.from('products').select('category_id').eq('id', productId).maybeSingle();
     if (error || !data) return [];
-    return (data as any[]).map((r) => r.category_id);
+    return data.category_id ? [data.category_id] : [];
   },
 
   async createProduct(data: Partial<Product>): Promise<Product> {
@@ -102,12 +96,6 @@ export const adminService = {
     };
     const { error } = await supabase.from('products').insert(dbRow);
     if (error) throw error;
-    if (categoryIds.length > 0) {
-      const { error: linkError } = await supabase.from('product_categories').insert(
-        categoryIds.map((cid) => ({ product_id: product.id, category_id: cid }))
-      );
-      if (linkError) throw linkError;
-    }
     return product;
   },
 
@@ -121,8 +109,8 @@ export const adminService = {
     if (data.oldPrice !== undefined) dbRow.old_price = data.oldPrice;
     if (data.discount !== undefined) dbRow.discount = data.discount != null && data.discount >= 0 ? Math.floor(data.discount) : null;
     if (data.price !== undefined || data.oldPrice !== undefined) {
-      const price = data.price ?? (await supabase.from('products').select('price').eq('id', id).single()).data?.price ?? 0;
-      const oldPrice = data.oldPrice ?? (await supabase.from('products').select('old_price').eq('id', id).single()).data?.old_price;
+      const price = data.price ?? (await supabase.from('products').select('price').eq('id', id).maybeSingle()).data?.price ?? 0;
+      const oldPrice = data.oldPrice ?? (await supabase.from('products').select('old_price').eq('id', id).maybeSingle()).data?.old_price;
       if (oldPrice != null && oldPrice < price) dbRow.old_price = null;
       if ((dbRow.discount ?? 0) > 0 && dbRow.old_price == null) dbRow.old_price = price;
     }
@@ -132,14 +120,6 @@ export const adminService = {
         ? data.categoryIds
         : (data.category ? [data.category] : []);
       dbRow.category_id = categoryIds[0] ? categoryIds[0] : null;
-      if (categoryIds.length > 0) {
-        const { error: delErr } = await supabase.from('product_categories').delete().eq('product_id', id);
-        if (delErr) throw delErr;
-        const { error: insErr } = await supabase.from('product_categories').insert(
-          categoryIds.map((cid) => ({ product_id: id, category_id: cid }))
-        );
-        if (insErr) throw insErr;
-      }
     }
     if (data.brand !== undefined) dbRow.brand_id = nullableId(data.brand);
     if (data.stock !== undefined) dbRow.stock = data.stock;
@@ -151,8 +131,9 @@ export const adminService = {
     if (data.stockByColor !== undefined) dbRow.stock_by_color = data.stockByColor;
     if (data.stockBySize !== undefined) dbRow.stock_by_size = data.stockBySize;
     if (data.isFeatured !== undefined) dbRow.is_featured = data.isFeatured;
-    const { data: updated, error } = await supabase.from('products').update(dbRow).eq('id', id).select().single();
+    const { data: updated, error } = await supabase.from('products').update(dbRow).eq('id', id).select().maybeSingle();
     if (error) throw error;
+    if (!updated) throw new Error('PRODUCT_NOT_FOUND');
     return mapProduct(updated as any);
   },
 

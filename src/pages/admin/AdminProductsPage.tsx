@@ -284,10 +284,15 @@ export function AdminProductsPage() {
       setForm(emptyForm);
     } catch (err: unknown) {
       console.error('save product error', err);
-      const code = (err as { code?: string } | null)?.code;
+      const e = err as { code?: string; message?: string } | null;
+      const code = e?.code;
       if (code === '23505') toast.error(t('admin.slugExists'));
       else if (code === '23503') toast.error(t('admin.invalidCategory'));
-      else toast.error(t('admin.saveError'));
+      else if (code === '42501') toast.error(t('admin.noPermission'));
+      else {
+        const msg = `${t('admin.saveError')}${code ? ` [${code}]` : ''}`;
+        toast.error(e?.message ? `${msg} — ${e.message}` : msg);
+      }
     } finally {
       setSaving(false);
     }

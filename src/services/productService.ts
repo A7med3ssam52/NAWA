@@ -4,16 +4,10 @@ import { mapProduct } from '@/lib/mappers';
 
 export const productService = {
   async getAll(filters: Partial<FilterState>) {
-    const { search, category, brand, priceMin, priceMax, sort, page = 1, pageSize = 12 } = filters;
+    const { search, category, brand, priceMin, priceMax, rating, discount, inStock, sort, page = 1, pageSize = 12 } = filters;
 
-    let query;
-    if (category?.length) {
-      query = supabase.from('products')
-        .select('*, product_categories!inner(category_id)', { count: 'exact' })
-        .in('product_categories.category_id', category);
-    } else {
-      query = supabase.from('products').select('*', { count: 'exact' });
-    }
+    let query = supabase.from('products').select('*', { count: 'exact' });
+    if (category?.length) query = query.in('category_id', category);
 
     if (search) {
       const q = search.toLowerCase();
@@ -22,15 +16,21 @@ export const productService = {
     if (brand?.length) query = query.in('brand_id', brand);
     if (priceMin !== undefined && priceMin > 0) query = query.gte('price', priceMin);
     if (priceMax !== undefined && priceMax > 0) query = query.lte('price', priceMax);
+    if (rating != null && rating > 0) query = query.gte('rating', rating);
+    if (discount != null && discount > 0) query = query.gte('discount', discount);
+    if (inStock) query = query.gt('stock', 0);
 
     if (sort === 'price-asc') query = query.order('price', { ascending: true });
     else if (sort === 'price-desc') query = query.order('price', { ascending: false });
     else if (sort === 'rating') query = query.order('rating', { ascending: false });
+    else if (sort === 'popular') query = query.order('reviews_count', { ascending: false });
+    else if (sort === 'discount') query = query.order('discount', { ascending: false }).not('discount', 'is', null);
     else query = query.order('created_at', { ascending: false });
 
     const start = (page - 1) * pageSize;
     const { data, error, count } = await query.range(start, start + pageSize - 1);
 
+    if (error) console.error('productService.getAll error', error);
     const rows = !error && data ? (data as any[]) : [];
     return {
       items: rows.map(mapProduct),
