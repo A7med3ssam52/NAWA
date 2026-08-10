@@ -537,7 +537,14 @@ function OrderDetailContent({
                 className="overflow-hidden rounded-xl border border-gray-100 shadow-soft transition-transform hover:scale-[1.03] active:scale-95"
                 aria-label={t('orders.paymentReceipt')}
               >
-                <img src={order.paymentReceiptUrl} alt={t('orders.paymentReceipt')} className="h-24 w-auto object-cover" />
+                <img
+                  src={order.paymentReceiptUrl}
+                  alt={t('orders.paymentReceipt')}
+                  className="h-24 w-auto object-cover"
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
+                  onContextMenu={(e) => e.preventDefault()}
+                />
               </button>
             </div>
           )}
@@ -611,9 +618,33 @@ function ReceiptViewer({ url, onClose }: { url: string; onClose: () => void }) {
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const objectUrlRef = useRef<string | null>(null);
   const pinchRef = useRef<{ startDist: number; startZoom: number } | null>(null);
   const panRef = useRef<{ startX: number; startY: number; startPos: { x: number; y: number } } | null>(null);
   const lastTapRef = useRef(0);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        if (!active) return;
+        if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = URL.createObjectURL(blob);
+        setBlobUrl(objectUrlRef.current);
+      } catch {
+        setBlobUrl(null);
+        setLoadFailed(true);
+      }
+    })();
+    return () => {
+      active = false;
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    };
+  }, [url]);
 
   useEffect(() => {
     const prevOverflow = document.body.style.overflow;
@@ -725,17 +756,32 @@ function ReceiptViewer({ url, onClose }: { url: string; onClose: () => void }) {
           onTouchCancel={handleTouchEnd}
           onWheel={handleWheel}
           onClick={handleTap}
+          onContextMenu={(e) => e.preventDefault()}
+          onDragStart={(e) => e.preventDefault()}
         >
-          <motion.img
-            src={url}
-            alt={t('orders.paymentReceipt')}
-            draggable={false}
-            className="absolute inset-0 m-auto max-w-full max-h-full object-contain select-none"
-            style={{
-              transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
-            }}
-            transition={{ type: 'spring', damping: 40, stiffness: 400 }}
-          />
+          {blobUrl ? (
+            <motion.img
+              src={blobUrl}
+              alt={t('orders.paymentReceipt')}
+              draggable={false}
+              className="absolute inset-0 m-auto max-w-full max-h-full object-contain select-none"
+              style={{
+                transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
+              }}
+              transition={{ type: 'spring', damping: 40, stiffness: 400 }}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loadFailed ? (
+                <div className="flex flex-col items-center gap-2 px-6 text-center">
+                  <AlertTriangle className="w-8 h-8 text-white/50" />
+                  <p className="text-sm font-cairo text-white/60">{t('orders.receiptLoadFailed')}</p>
+                </div>
+              ) : (
+                <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-center gap-3 px-4 py-4 border-t border-white/10 shrink-0">

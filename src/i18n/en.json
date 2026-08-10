@@ -331,6 +331,7 @@
     "paymentReceipt": "Payment Receipt",
     "paymentPhone": "Payment Phone",
     "receiptViewerTitle": "View Payment Receipt",
+    "receiptLoadFailed": "Could not load the receipt",
     "zoomIn": "Zoom In",
     "zoomOut": "Zoom Out",
     "rotate": "Rotate",

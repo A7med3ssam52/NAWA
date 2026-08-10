@@ -331,6 +331,7 @@
     "paymentReceipt": "إيصال الدفع",
     "paymentPhone": "رقم الدفع",
     "receiptViewerTitle": "عرض إيصال الدفع",
+    "receiptLoadFailed": "تعذر تحميل الإيصال",
     "zoomIn": "تكبير",
     "zoomOut": "تصغير",
     "rotate": "تدوير",
