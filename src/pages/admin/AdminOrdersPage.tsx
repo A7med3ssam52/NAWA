@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   Package, Search, X, Eye, Trash2, ShoppingBag, AlertTriangle,
   CheckCircle, MapPin, CreditCard, Phone, User, Clock,
+  ZoomIn, ZoomOut, RotateCw, RefreshCcw,
 } from 'lucide-react';
 import { formatPrice, formatDate, formatDateTime, cn, getPaymentMethodLabel } from '@/utils';
 import { getOrderStatusMap } from '@/constants';
@@ -43,6 +45,7 @@ export function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [receiptViewer, setReceiptViewer] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
 
@@ -359,6 +362,7 @@ export function AdminOrdersPage() {
             order={selectedOrder}
             onUpdateStatus={handleUpdateStatus}
             onDelete={() => { setDeleteConfirm(selectedOrder.id); setModalOpen(false); }}
+            onViewReceipt={setReceiptViewer}
             updating={updating}
           />
         )}
@@ -396,6 +400,10 @@ export function AdminOrdersPage() {
           </div>
         </div>
       </Modal>
+
+      {receiptViewer && (
+        <ReceiptViewer url={receiptViewer} onClose={() => setReceiptViewer(null)} />
+      )}
     </motion.div>
   );
 }
@@ -404,11 +412,13 @@ function OrderDetailContent({
   order,
   onUpdateStatus,
   onDelete,
+  onViewReceipt,
   updating,
 }: {
   order: Order;
   onUpdateStatus: (id: string, status: string) => void;
   onDelete: () => void;
+  onViewReceipt: (url: string) => void;
   updating: boolean;
 }) {
   const { t, i18n } = useTranslation();
@@ -521,9 +531,14 @@ function OrderDetailContent({
           {order.paymentReceiptUrl && (
             <div className="flex items-center gap-2 text-sm text-gray-500 font-cairo">
               <span>{t('orders.paymentReceipt')}</span>
-              <a href={order.paymentReceiptUrl} target="_blank" rel="noreferrer">
-                <img src={order.paymentReceiptUrl} alt={t('orders.paymentReceipt')} className="h-24 w-auto rounded-xl border cursor-zoom-in" />
-              </a>
+              <button
+                type="button"
+                onClick={() => onViewReceipt(order.paymentReceiptUrl!)}
+                className="overflow-hidden rounded-xl border border-gray-100 shadow-soft transition-transform hover:scale-[1.03] active:scale-95"
+                aria-label={t('orders.paymentReceipt')}
+              >
+                <img src={order.paymentReceiptUrl} alt={t('orders.paymentReceipt')} className="h-24 w-auto object-cover" />
+              </button>
             </div>
           )}
           {order.couponCode && (
@@ -566,5 +581,179 @@ function OrderDetailContent({
         </div>
       )}
     </div>
+  );
+}
+
+function ViewerButton({
+  children,
+  onClick,
+  label,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 active:scale-90 transition-all [&_svg]:w-4 [&_svg]:h-4"
+    >
+      {children}
+    </button>
+  );
+}
+
+function ReceiptViewer({ url, onClose }: { url: string; onClose: () => void }) {
+  const { t } = useTranslation();
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const pinchRef = useRef<{ startDist: number; startZoom: number } | null>(null);
+  const panRef = useRef<{ startX: number; startY: number; startPos: { x: number; y: number } } | null>(null);
+  const lastTapRef = useRef(0);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [onClose]);
+
+  const clampZoom = (z: number) => Math.min(5, Math.max(1, z));
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2) {
+      pinchRef.current = {
+        startDist: Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        ),
+        startZoom: zoom,
+      };
+    } else if (e.touches.length === 1) {
+      panRef.current = {
+        startX: e.touches[0].clientX,
+        startY: e.touches[0].clientY,
+        startPos: position,
+      };
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (pinchRef.current && e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const next = clampZoom(pinchRef.current.startZoom * (dist / pinchRef.current.startDist));
+      setZoom(next);
+      if (next === 1) setPosition({ x: 0, y: 0 });
+    } else if (panRef.current && e.touches.length === 1 && zoom > 1) {
+      setPosition({
+        x: panRef.current.startPos.x + (e.touches[0].clientX - panRef.current.startX),
+        y: panRef.current.startPos.y + (e.touches[0].clientY - panRef.current.startY),
+      });
+    }
+  };
+
+  const handleTouchEnd = () => {
+    pinchRef.current = null;
+    panRef.current = null;
+  };
+
+  const handleTap = () => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      if (zoom > 1) {
+        setZoom(1);
+        setPosition({ x: 0, y: 0 });
+      } else {
+        setZoom(2);
+      }
+    }
+    lastTapRef.current = now;
+  };
+
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    setZoom((z) => clampZoom(z + (e.deltaY < 0 ? 0.25 : -0.25)));
+  };
+
+  const reset = () => {
+    setZoom(1);
+    setRotation(0);
+    setPosition({ x: 0, y: 0 });
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[90] flex flex-col bg-black/95"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('orders.receiptViewerTitle')}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 shrink-0">
+          <h3 className="text-sm font-bold font-cairo text-white">{t('orders.receiptViewerTitle')}</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 active:scale-90 transition-all"
+            aria-label={t('common.close')}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div
+          className="relative flex-1 overflow-hidden"
+          style={{ touchAction: 'none' }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+          onWheel={handleWheel}
+          onClick={handleTap}
+        >
+          <motion.img
+            src={url}
+            alt={t('orders.paymentReceipt')}
+            draggable={false}
+            className="absolute inset-0 m-auto max-w-full max-h-full object-contain select-none"
+            style={{
+              transform: `translate(${position.x}px, ${position.y}px) scale(${zoom}) rotate(${rotation}deg)`,
+            }}
+            transition={{ type: 'spring', damping: 40, stiffness: 400 }}
+          />
+        </div>
+
+        <div className="flex items-center justify-center gap-3 px-4 py-4 border-t border-white/10 shrink-0">
+          <ViewerButton onClick={() => setZoom((z) => clampZoom(z - 0.5))} label={t('orders.zoomOut')}>
+            <ZoomOut />
+          </ViewerButton>
+          <span className="text-xs font-cairo text-white/80 w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <ViewerButton onClick={() => setZoom((z) => clampZoom(z + 0.5))} label={t('orders.zoomIn')}>
+            <ZoomIn />
+          </ViewerButton>
+          <ViewerButton onClick={() => setRotation((r) => (r + 90) % 360)} label={t('orders.rotate')}>
+            <RotateCw />
+          </ViewerButton>
+          <ViewerButton onClick={reset} label={t('orders.resetView')}>
+            <RefreshCcw />
+          </ViewerButton>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
