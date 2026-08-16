@@ -58,7 +58,7 @@ export function ContactUsPage() {
           <div className="header-brand">
             <img
               className="header-logo"
-              src="/images/nawa.png"
+              src="/images/logo.png"
               alt={t('contactPage.headerTitle')}
               width="56"
               height="56"
@@ -88,7 +88,7 @@ export function ContactUsPage() {
               <div className="hero-logo">
                 <img
                   className="hero-logo-img"
-                  src="/images/nawa.png"
+              src="/images/logo.png"
                   alt={t('contactPage.heroTitle')}
                   width="120"
                   height="120"

@@ -208,7 +208,11 @@ export const Navbar = memo(function Navbar() {
                 className="shrink-0 h-full flex items-center"
                 aria-label={t('nav.homePage')}
               >
-                <span className="font-extrabold text-2xl tracking-wider text-gray-900 font-cairo hover:text-secondary transition-colors">نوى</span>
+                <img
+                  src="/images/logo.png"
+                  alt={t('nav.homePage')}
+                  className="h-9 lg:h-11 w-auto object-contain"
+                />
               </Link>
             </div>
 
