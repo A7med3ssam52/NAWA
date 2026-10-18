@@ -19,7 +19,7 @@ export default function NotFound() {
       </span>
       <p className="mt-6 text-sm font-bold tracking-[0.3em] text-ink-500">404 — المسار مش موجود</p>
       <h1 className="font-display mt-3 text-4xl leading-snug font-bold text-balance md:text-6xl">
-        الصفحة دي ضاع ريحتها
+        الصفحة دي ريحتها طارت
       </h1>
       <p className="mt-4 max-w-md leading-loose text-ink-700">
         يبدو إن الرابط اتغيّر أو الصفحة اتنقلت. مش مشكلة — العطور كلها موجودة، محتاج بس إنك تختار من أول.

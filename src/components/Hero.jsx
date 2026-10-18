@@ -107,7 +107,7 @@ export default function Hero() {
               fetchPriority="high"
               decoding="async"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-950/40 via-transparent to-transparent" />
           </div>
 
           <div className="absolute -right-3 top-8 rounded-2xl border border-cream-100/20 bg-ink-950/85 px-4 py-3 shadow-xl backdrop-blur md:-right-8">
