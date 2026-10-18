@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollToTop } from "./router";
 import Navbar from "./components/Navbar";
+import Preloader from "./components/Preloader";
 import Footer from "./components/Footer";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import MobileTabBar from "./components/MobileTabBar";
@@ -41,6 +43,8 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -54,6 +58,7 @@ export default function App() {
         <WhatsAppFloat />
         <MobileTabBar />
       </div>
+      {loading && <Preloader onComplete={() => setLoading(false)} />}
     </BrowserRouter>
   );
 }

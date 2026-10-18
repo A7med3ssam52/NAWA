@@ -31,7 +31,16 @@ export default function Navbar() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open ]);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header
@@ -103,7 +112,13 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             id="mobile-menu"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setOpen(false);
+            }}
             className="grain fixed inset-0 z-40 flex flex-col overflow-y-auto bg-ink-950 px-6 pt-24 pb-10 md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="القائمة"
           >
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-20 right-0 h-72 w-72 rounded-full bg-cream-50/10 blur-[100px]" />
@@ -120,6 +135,7 @@ export default function Navbar() {
                 >
                   <NavLink
                     to={l.to}
+                    onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       `flex items-center justify-between border-b border-cream-100/10 py-5 ${
                         isActive ? "text-cream-50" : "text-cream-50/80"
