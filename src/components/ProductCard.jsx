@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Star, MessageCircle, Sparkles } from "lucide-react";
+import { Star, MessageCircle, Sparkles, ShoppingCart } from "lucide-react";
 import { orderLink } from "../config/store";
+import { useCart } from "../context/CartContext";
 import { toArabicIndex } from "../utils/plural";
 import { SEASON_ICONS, intensityLevel } from "../utils/perfume";
 import PerfumePlaceholder from "./PerfumePlaceholder";
@@ -15,7 +16,7 @@ function noteRows(p) {
   ].filter(([, v]) => v);
 }
 
-// «10 مل · 50 مل · 100 مل» → «10 · 50 · 100 مل» — نص مختصر يليق بشيب الكارت
+// «50 مل · 100 مل» → «50 · 100 مل» — نص مختصر يليق بشيب الكارت (أُلغي 10 مل)
 function sizesLabel(sizes, fallback) {
   if (!sizes?.length) return fallback || null;
   const numbers = sizes.map((s) => String(s).replace(/\s*مل\s*/g, "").trim());
@@ -23,8 +24,12 @@ function sizesLabel(sizes, fallback) {
 }
 
 export default function ProductCard({ p, index = 0, featured = false }) {
+  const { addItem } = useCart();
   const imgSrc = p.images?.[0] || p.image;
   const hasPrice = typeof p.price === "number";
+  // طابع الفئة في صفحة المنتجات فقط — ياخد لون الصورة: بينك حريمي / فحمي رجالي / كريمي جنسين
+  const bandClass = p.category === "نسائي" ? "bg-blush-300" : p.category === "رجالي" ? "bg-ink-950" : "bg-[#D8C9A3]";
+  const pillClass = p.category === "نسائي" ? "bg-blush-100 text-[#7A3345]" : "bg-cream-100 text-ink-700";
   const discount =
     p.oldPrice && hasPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0;
   const level = intensityLevel(p.intensity);
@@ -47,6 +52,7 @@ export default function ProductCard({ p, index = 0, featured = false }) {
         featured ? "sm:col-span-2 sm:grid sm:grid-cols-2" : ""
       }`}
     >
+      <div aria-hidden="true" className={`h-1.5 w-full ${bandClass}`} />
       {/* ===== الصورة ===== */}
       <div className="relative overflow-hidden">
         <Link to={`/product/${p.id}`} aria-label={`تفاصيل ${p.name}`}>
@@ -120,7 +126,7 @@ export default function ProductCard({ p, index = 0, featured = false }) {
 
       {/* ===== المحتوى ===== */}
       <div className={`flex flex-col ${featured ? "justify-center p-6 md:p-7" : "p-5"}`}>
-        <p className="text-xs font-bold tracking-widest text-ink-500">{p.category} · {p.nameEn}</p>
+        <p className={`inline-flex w-fit items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold tracking-widest ${pillClass}`}>{p.category} · {p.nameEn}</p>
         <Link to={`/product/${p.id}`}>
           <h3 className={`font-display mt-1 font-bold transition-colors hover:text-ink-700 ${featured ? "text-3xl" : "text-2xl"}`}>
             {p.name}
@@ -199,7 +205,7 @@ export default function ProductCard({ p, index = 0, featured = false }) {
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-1 gap-2">
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <a
             href={orderLink(p.name, p.size, p.sizes)}
             target="_blank"
@@ -209,6 +215,14 @@ export default function ProductCard({ p, index = 0, featured = false }) {
             <MessageCircle size={16} strokeWidth={2.3} aria-hidden="true" />
             اطلب عبر واتساب
           </a>
+          <button
+            type="button"
+            onClick={() => addItem(p, p.size)}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-ink-950/15 bg-cream-50/10 px-4 py-2.5 text-center text-sm font-extrabold transition-colors hover:border-ink-950 hover:bg-ink-950/5"
+          >
+            <ShoppingCart size={14} strokeWidth={2.3} />
+            أضف للسلة
+          </button>
           <Link
             to={`/product/${p.id}`}
             className="inline-flex items-center justify-center gap-2 rounded-full border border-ink-950/15 px-4 py-2.5 text-center text-sm font-extrabold transition-colors hover:border-ink-950 hover:bg-ink-950/5"

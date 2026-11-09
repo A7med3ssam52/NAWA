@@ -19,7 +19,7 @@ function upsert(selector, attr, value) {
   el.setAttribute(attr, value);
 }
 
-export function setMeta({ title, description, image = "/products/naseem.jpg", path = "" }) {
+export function setMeta({ title, description, image = "/products/Naseem_50ml.png", path = "" }) {
   const fullTitle = title ? `${title} — NAWA نوى` : SITE;
   document.title = fullTitle;
 

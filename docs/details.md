@@ -1,7 +1,7 @@
-# كتالوج عطور NAWA 🤍 — تفاصيل المنتجات الـ 15
+# كتالوج عطور NAWA 🤍 — تفاصيل المنتجات الـ 23
 
-> وثيقة منسّقة من details.txt — المصدر المكتوب من صاحب المتجر.
-> **تاريخ:** 2026-10-17 · **عدد المنتجات:** 15 (رجالي 4 · للجنسين 4 · نسائي 7) · **الصور:** 22 جاهزة للربط
+> وثيقة منسّقة من details.txt — المصدر المكتوب من صاحب المتجر + بوسترات public/products (PNG 50ml + 100ml).
+> **تاريخ التحديث:** 2026-11-09 · **عدد المنتجات:** 23 (رجالي 12 · للجنسين 4 · نسائي 7) · **الصور:** 46 صورة PNG مربوطة في الكود · **الأحجام:** 50 مل و100 مل فقط (أُلغي 10 مل)
 
 | الملاحظات المهمة |
 |---|
@@ -31,10 +31,18 @@
 | 13 | سكر | `sugar` | Lattafa Yara | نسائي |
 | 14 | همس | `hamss` | Prada Paradoxe | نسائي |
 | 15 | دهب | `dahab` | YSL Libre Intense | نسائي |
+| 16 | السائد | `alsaed` | Creed Aventus | رجالي |
+| 17 | أميرال | `amiral` | Orto Parisi Megamare | رجالي |
+| 18 | فخر | `fakher-winter` | Nasomatto Black Afgano | رجالي |
+| 19 | هيبة | `haybah` | Sospiro Vibrato | رجالي |
+| 20 | سحر | `sehr` | Versace Eros Energy | رجالي |
+| 21 | ثقة | `thiqah` | Emporio Armani Stronger With You Intensely | رجالي |
+| 22 | وقار | `waqar` | Parfums de Marly Layton | رجالي |
+| 23 | زخرف | `zukhrof` | Creed Millésime Impérial | رجالي |
 
 ---
 
-# 🧔 رجالي (4)
+# 🧔 رجالي (12)
 
 ## 1. نسيم — NASEEM (`naseem`)
 - **مصدر الإلهام:** Louis Vuitton Imagination

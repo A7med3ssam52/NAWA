@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, MessageCircle } from "lucide-react";
 import Logo from "./Logo";
+import CartIcon from "./CartIcon";
 import { STORE, generalLink } from "../config/store";
 
 const links = [
@@ -80,6 +81,7 @@ export default function Navbar() {
               )}
             </NavLink>
           ))}
+          <CartIcon />
           <a
             href={generalLink()}
             target="_blank"
@@ -93,15 +95,18 @@ export default function Navbar() {
           </a>
         </nav>
 
-        <button
-          onClick={() => setOpen(!open)}
-          className="grid h-11 w-11 place-items-center rounded-xl border border-cream-100/20 text-cream-50 md:hidden"
+        <div className="flex items-center gap-2 md:hidden">
+          <CartIcon />
+          <button
+            onClick={() => setOpen(!open)}
+            className="grid h-11 w-11 place-items-center rounded-xl border border-cream-100/20 text-cream-50"
           aria-label={open ? "إغلاق القائمة" : "القائمة"}
           aria-expanded={open}
           aria-controls="mobile-menu"
         >
           {open ? <X size={22} /> : <Menu size={22} />}
         </button>
+      </div>
       </div>
 
       <AnimatePresence>

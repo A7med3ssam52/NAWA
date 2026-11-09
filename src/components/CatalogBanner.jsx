@@ -9,14 +9,20 @@ const names = PRODUCTS.map((p) => `${p.name} — ${p.nameEn}`);
 
 // بانر الكتالوج — مدخل داكن فاخر بنفس لغة الهيرو (grain + توهج + خط عربي كبير)
 // ووراها شريط لفّة بطيء بأسماء العطور تبعث الحنين من أول ثانية
-export default function CatalogBanner() {
+// الطابع بيتبدل مع الفئة في صفحة المنتجات فقط: نسائي واين (بينك عميق) / رجالي فحمي / جنسين بني دافئ
+export default function CatalogBanner({ cat = "الكل" }) {
+  const isWomen = cat === "نسائي";
+  const isUnisex = cat === "للجنسين";
+  const sectionBg = isWomen ? "bg-wine-900" : isUnisex ? "bg-[#221E1A]" : "bg-ink-950";
+  const glowBg = isWomen ? "bg-[#E08CA3]/20" : "bg-cream-50/10";
+  const fadeFrom = isWomen ? "from-wine-900" : isUnisex ? "from-[#221E1A]" : "from-ink-950";
   return (
-    <section className="grain relative overflow-hidden rounded-b-[2.5rem] bg-ink-950 text-cream-50">
+    <section className={`grain relative overflow-hidden rounded-b-[2.5rem] ${sectionBg} text-cream-50 transition-colors duration-700`}>
       {/* خلفية متوهجة */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-32 right-1/4 h-96 w-96 rounded-full bg-cream-50/10 blur-[120px]" />
+        <div className={`absolute -top-32 right-1/4 h-96 w-96 rounded-full blur-[120px] ${glowBg}`} />
         <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-cream-50/5 blur-[100px]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink-950 to-transparent" />
+        <div className={`absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t ${fadeFrom} to-transparent`} />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 pt-28 pb-10 text-center md:px-8 md:pt-36 md:pb-14">

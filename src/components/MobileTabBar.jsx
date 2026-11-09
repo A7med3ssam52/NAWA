@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Home, ShoppingBag, BookHeart, MessageCircle } from "lucide-react";
+import { Home, ShoppingBag, BookHeart, MessageCircle, ShoppingCart } from "lucide-react";
 
 // شريط التنقل السفلي — قلب إحساس التطبيق على الموبايل
 const TABS = [
   { to: "/", label: "الرئيسية", icon: Home },
   { to: "/shop", label: "المتجر", icon: ShoppingBag },
+  { to: "/cart", label: "السلة", icon: ShoppingCart },
   { to: "/about", label: "قصتنا", icon: BookHeart },
   { to: "/contact", label: "تواصل", icon: MessageCircle },
 ];

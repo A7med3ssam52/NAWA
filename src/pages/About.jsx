@@ -34,9 +34,9 @@ export default function About() {
   useEffect(() => {
     setMeta({
       title: "قصتنا",
-      description: "دار NAWA — رحلة عطر من شغف واحد إلى 15 عطراً فاخراً بتركيز Extrait de Parfum. تعرف على قصتنا وفلسفتنا.",
+      description: "دار NAWA — رحلة عطر من شغف واحد إلى 23 عطراً فاخراً بتركيز Extrait de Parfum. تعرف على قصتنا وفلسفتنا.",
       path: "/about",
-      image: "/products/qarar.jpg",
+      image: "/products/Qarar_50ml.png",
     });
   }, []);
 
@@ -72,7 +72,7 @@ export default function About() {
             className="mt-6 max-w-2xl text-base leading-loose text-cream-200/85 md:text-xl"
           >
             من شغف واحد — ليه العطر الفخم لازم يبقى غالي أوي أو ثابت ضعيف؟ —
-            إلى دار عربية بروح عالمية، صممت 15 عطراً لتكون توقيعك.
+            إلى دار عربية بروح عالمية، صممت 23 عطراً لتكون توقيعك.
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
@@ -113,7 +113,7 @@ export default function About() {
           </Reveal>
           <Reveal delay={0.1}>
             <img
-              src="/products/qarar.jpg"
+              src="/products/Qarar_50ml.png"
               alt="زجاجة عطر قرار من نوى — Extrait de Parfum بتركيز عالٍ"
               width={714}
               height={1280}
@@ -241,7 +241,7 @@ export default function About() {
               اختر عطرك — <span className="text-shine">وكون توقيعك</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-cream-200/80">
-              15 عطراً — رجالي، نسائي، وللجنسين. اطلب عبر واتساب واحجز عطرك.
+              23 عطراً — رجالي، نسائي، وللجنسين. اطلب عبر واتساب واحجز عطرك.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link

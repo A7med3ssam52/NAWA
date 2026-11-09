@@ -51,7 +51,7 @@ export default function Contact() {
               id="contact-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="مثال: أحمد محمد"
+              placeholder="مثال: أحمد عصام"
               className="mt-2 w-full rounded-2xl border border-ink-950/12 bg-cream-100 px-5 py-3 font-semibold outline-none focus:border-ink-950"
             />
             <label htmlFor="contact-msg" className="mt-5 block font-extrabold">رسالتك</label>

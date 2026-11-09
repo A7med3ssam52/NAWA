@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route, useParams, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollToTop } from "./router";
+import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import Preloader from "./components/Preloader";
 import Footer from "./components/Footer";
@@ -13,6 +14,7 @@ import ProductDetails from "./pages/ProductDetails";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Cart from "./pages/Cart";
 
 // إعادة تركيب PDP مع كل slug — الحالة تبدأ نظيفة من غير أي effect تصفير
 function ProductPage() {
@@ -36,6 +38,7 @@ function AnimatedRoutes() {
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </motion.div>
@@ -48,6 +51,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <CartProvider>
       {/* مساحة شريط التنقل السفلي بتتحسب جوه الفوتر نفسه (تحت) — مفيش فراغ كريمي زيادة */}
       <div className="min-h-screen bg-cream-100">
         <Navbar />
@@ -58,6 +62,7 @@ export default function App() {
         <WhatsAppFloat />
         <MobileTabBar />
       </div>
+      </CartProvider>
       {loading && <Preloader onComplete={() => setLoading(false)} />}
     </BrowserRouter>
   );

@@ -144,12 +144,16 @@ export default function Shop() {
 
   const moodLabel = (id) => MOODS.find((m) => m.id === id)?.label;
 
+  // طابع الصور في صفحة المنتجات فقط — الباك جراوند ياخد نفس طابع الفئة المختارة
+  const shopBg = cat === "نسائي" ? "bg-blush-50" : cat === "رجالي" ? "bg-[#F7EFE0]" : cat === "للجنسين" ? "bg-[#FBF6E9]" : "bg-cream-100";
+  const activeCatBg = (c) => (c === "نسائي" ? "bg-wine-900 text-cream-50 shadow-lg" : "bg-ink-950 text-cream-50 shadow-lg");
+
   return (
-    <>
-      <CatalogBanner />
+    <div className={`${shopBg} transition-colors duration-700`}>
+      <CatalogBanner cat={cat} />
 
       {/* البحث والترتيب — بيتحركوا مع الصفحة عادي، مفيش حاجة لاصقة أثناء التكنول */}
-      <div className="border-b border-ink-950/10 bg-cream-100">
+      <div className={`border-b border-ink-950/10 ${shopBg} transition-colors duration-700`}>
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 py-2.5 md:px-8">
           <label className="relative min-w-[170px] flex-1">
             <span className="sr-only">بحث في العطور</span>
@@ -197,7 +201,7 @@ export default function Shop() {
               aria-pressed={cat === c}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-extrabold transition-all ${
                 cat === c
-                  ? "bg-ink-950 text-cream-50 shadow-lg"
+                  ? activeCatBg(c)
                   : "border border-ink-950/12 bg-cream-50 hover:border-ink-950"
               }`}
             >
@@ -364,6 +368,6 @@ export default function Shop() {
           </motion.div>
         )}
       </div>
-    </>
+    </div>
   );
 }

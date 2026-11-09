@@ -28,7 +28,7 @@ export default function Home() {
       title: "عطور تُشبهك",
       description: "عطور NAWA شرقية وفرنسية بتركيز Extrait de Parfum وثبات يدوم 8-12 ساعة — اطلب عبر واتساب مع توصيل لكل المحافظات.",
       path: "/",
-      image: "/products/naseem.jpg",
+      image: "/products/Naseem_50ml.png",
     });
   }, []);
   return (

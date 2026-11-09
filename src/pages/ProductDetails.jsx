@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  Star, FlaskConical, Check, MessageCircle, Sparkles, Sun, Clock, Gauge, Timer, Sunrise, Heart, Moon,
+  Star, FlaskConical, Check, MessageCircle, Sparkles, Sun, Clock, Gauge, Timer, Sunrise, Heart, Moon, ShoppingCart,
 } from "lucide-react";
 import { PRODUCTS } from "../data/products";
 import ProductCard from "../components/ProductCard";
@@ -10,6 +10,7 @@ import PerfumePlaceholder from "../components/PerfumePlaceholder";
 import Marquee from "../components/Marquee";
 import CountUp from "../components/CountUp";
 import { orderLink } from "../config/store";
+import { useCart } from "../context/CartContext";
 import { setMeta } from "../utils/setMeta";
 import { toArabicIndex } from "../utils/plural";
 import { SEASON_ICONS, intensityLevel } from "../utils/perfume";
@@ -54,11 +55,12 @@ export default function ProductDetails() {
   const { id } = useParams();
   const product = PRODUCTS.find((p) => p.id === id);
   const [size, setSize] = useState(() => defaultSize(product));
+  const { addItem } = useCart();
   const [imgIndex, setImgIndex] = useState(0);
 
   // بيانات meta كبدائيات حتى الاختيارات تبقى نظيفة ومراقَبة
   const metaTitle = product?.name;
-  const metaImage = product?.images?.[0] || "/products/naseem.jpg";
+  const metaImage = product?.images?.[0] || "/products/Naseem_50ml.png";
   const metaDesc = product
     ? `${product.tagline} — عائلة ${product.family} بتركيز ${product.concentration}. اطلب عبر واتساب`
     : undefined;
@@ -91,6 +93,11 @@ export default function ProductDetails() {
   const shown = related.length ? related : PRODUCTS.filter((p) => p.id !== product.id).slice(0, 4);
   const images = product.images || [];
   const mainImg = images[imgIndex] || product.image;
+  // طابع الصورة: حريمي بينك / رجالي فحمي / جنسين بني — في صفحة المنتج فقط
+  const isWomen = product.category === "نسائي";
+  const isUnisex = product.category === "للجنسين";
+  const heroBg = isWomen ? "bg-wine-900" : isUnisex ? "bg-[#221E1A]" : "bg-ink-950";
+  const heroGlow = isWomen ? "bg-[#E08CA3]/20" : "bg-cream-100/12";
 
   const notes = product.notes || {};
   const allNotes = [...splitNotes(notes.top), ...splitNotes(notes.heart), ...splitNotes(notes.base)];
@@ -184,10 +191,10 @@ export default function ProductDetails() {
   return (
     <div className="pb-16">
       {/* ===== الهيرو الداكن: صورة معلّقة في إطار + قرار الشراء كله فوق ===== */}
-      <section className="grain relative overflow-hidden rounded-b-[2.5rem] bg-ink-950 px-4 pt-24 pb-12 text-cream-50 md:px-8 md:pt-32 md:pb-16">
+      <section className={`grain relative overflow-hidden rounded-b-[2.5rem] ${heroBg} px-4 pt-24 pb-12 text-cream-50 md:px-8 md:pt-32 md:pb-16 transition-colors duration-700`}>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-24 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-cream-100/12 blur-3xl md:h-[560px] md:w-[560px]"
+          className={`pointer-events-none absolute -top-24 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full blur-3xl md:h-[560px] md:w-[560px] ${heroGlow}`}
         />
         <div className="relative mx-auto max-w-7xl">
           <nav className="mb-6 text-sm font-bold text-cream-100/60">
@@ -307,7 +314,7 @@ export default function ProductDetails() {
                 </div>
               )}
 
-              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <a
                   href={orderLink(product.name, size || product.size, product.sizes)}
                   target="_blank"
@@ -317,6 +324,14 @@ export default function ProductDetails() {
                   <MessageCircle size={20} strokeWidth={2.2} aria-hidden="true" />
                   اطلب عبر واتساب
                 </a>
+                <button
+                  type="button"
+                  onClick={() => addItem(product, size || product.size)}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-ink-950 px-6 py-4 text-center text-lg font-extrabold text-cream-50 shadow-xl transition-transform hover:scale-[1.03] active:scale-[0.99]"
+                >
+                  <ShoppingCart size={20} strokeWidth={2.2} aria-hidden="true" />
+                  أضف للسلة
+                </button>
                 <Link
                   to="/shop"
                   className="rounded-full border border-cream-100/25 px-6 py-4 text-center text-lg font-extrabold text-cream-50 transition-colors hover:bg-cream-50/10"
@@ -407,11 +422,15 @@ export default function ProductDetails() {
                 </span>
                 <p className="relative mt-3 text-[11px] font-bold tracking-wider text-ink-400">{hint}</p>
                 <div className="relative mt-3 flex flex-wrap gap-1.5">
-                  {splitNotes(notes[field]).map((n) => (
-                    <span key={n} className="rounded-full bg-cream-200/70 px-2.5 py-1 text-xs font-bold text-ink-800">
-                      {n}
-                    </span>
-                  ))}
+                  {splitNotes(notes[field]).length ? (
+                    splitNotes(notes[field]).map((n) => (
+                      <span key={n} className="rounded-full bg-cream-200/70 px-2.5 py-1 text-xs font-bold text-ink-800">
+                        {n}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs font-bold text-ink-400">تُضاف قريباً — افتتاحية وقاعدة من البوستر الرسمي</span>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -442,10 +461,10 @@ export default function ProductDetails() {
         </section>
 
         {/* ===== نهاية داكنة: القرار + لفة النوتات ===== */}
-        <motion.section {...rise()} className="grain relative mt-12 overflow-hidden rounded-[2.5rem] bg-ink-950 text-cream-50">
+        <motion.section {...rise()} className={`grain relative mt-12 overflow-hidden rounded-[2.5rem] ${heroBg} text-cream-50 transition-colors duration-700`}>
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -bottom-32 left-1/2 h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-cream-100/10 blur-3xl"
+            className={`pointer-events-none absolute -bottom-32 left-1/2 h-[360px] w-[360px] -translate-x-1/2 rounded-full blur-3xl ${heroGlow}`}
           />
           <div className="relative px-6 pt-10 pb-8 text-center md:px-12">
             <h2 className="font-display text-3xl leading-snug font-bold text-balance md:text-4xl">

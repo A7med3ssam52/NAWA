@@ -99,7 +99,7 @@ export default function Hero() {
           <div className="absolute inset-0 -z-10 scale-110 rounded-full bg-cream-50/10 blur-[90px]" />
           <div className="animate-float overflow-hidden rounded-[2.5rem] border border-cream-100/20 shadow-2xl shadow-black/60">
             <img
-              src="/products/naseem.jpg"
+              src="/products/Naseem_50ml.png"
               alt="زجاجة عطر نسيم من نوى — Extrait de Parfum بتركيز عالٍ، مستوحاة من الليمون والبرغموت والقرفة والشاي الأسود"
               width={714}
               height={1280}

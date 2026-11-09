@@ -24,6 +24,15 @@
   --color-gold-600: #0a0a0a;
   --color-gold-700: #383838;
 
+  /* طابع الصور الجديدة — بينك حريمي (غطاء دهبي + مائية وردي) / بيج رجالي (غطاء أسود) */
+  --color-blush-50: #fff5f7;
+  --color-blush-100: #fce8ed;
+  --color-blush-200: #f9d6de;
+  --color-blush-300: #f3b8c6;
+  --color-blush-400: #e89db0;
+  --color-wine-900: #3b1a24;
+  --color-wine-800: #4a2430;
+
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 7s ease-in-out infinite;
   --animate-shine: shine 3.5s linear infinite;
